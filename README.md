@@ -20,7 +20,7 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
    
 4. Check the port that Ganache is running on (7545 if Ganache Desktop or 8545 if Ganache CLI, by default)
    
-   `ganache-cli`
+   `ganache-cli --defaultBalanceEther 9000000000000000000000`
 
    Then edit `truffle-config.js` (`networks/development`) to match the port
 
@@ -58,6 +58,24 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
    npm start
    ```
 
+4. In another terminal, seed the app with dummy auctions
+   ```
+   cd truffle/scripts
+   truffle exec seed.js
+   ```
+
+   If you don't see any auctions, refresh the page
+
+## Play Around with the App
+### As a Buyer
+1. At the top right, connect to Metamask and make sure you use the correct account that is tied to your local Ganache blockchain. It should have 9000000000000000000000 ETH
+
+2. Click Open on any of the auctions. Find one that is in progress (Auction Started Yes but Auction Ended No) and submit your bid. It must be higher than the current highest bid.
+
+### As a Seller
+1. You should see a `My Auction` as the first auction. This is an auction that has already been created for you. Click Open and end the auction.
+
+If you want to mint your own NFT and create an auction for it, follow the steps below.
 
 ## Minting NFT
 
@@ -154,7 +172,7 @@ How to prevent reentrancy attack?
 > To prevent a reentrancy attack in a Solidity smart contract, you should:
 >
 > - Ensure all state changes happen before calling external contracts, i.e., update balances or code internally before calling external code
-> - se function modifiers that prevent reentrancy
+> - Use function modifiers that prevent reentrancy
 
 Resources:
 
