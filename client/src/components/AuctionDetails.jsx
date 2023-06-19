@@ -17,6 +17,11 @@ import {
 } from '../utils';
 import NFTListingBidModal from './NFTListingBidModal';
 
+const CustomTypography = styled(Typography)`
+  font-family: "Google Sans", sans-serif;
+  font-weight: 600;
+`;
+
 const ListItemAvatarWrapper = styled(ListItemAvatar)(
   ({ theme }) => `
   display: flex;
@@ -63,21 +68,21 @@ function AuctionDetails({ auction, refetchData }) {
     <ListItemWrapper id={auction.auctionContract._address}>
       <ListItemAvatarWrapper>
         {accounts[0] === auction.seller && (
-          <Typography sx={{ fontWeight: 'bold' }}>✨My Auction✨</Typography>
+          <CustomTypography sx={{ fontWeight: 'bold' }}>✨My Auction✨</CustomTypography>
         )}
         <img alt="img" src={pinataMetadata.image} width={450} height={450} />
       </ListItemAvatarWrapper>
       <Box display="flex" flexDirection="column" sx={{ width: '100%' }}>
-        <Typography
+        <CustomTypography
           sx={{ fontWeight: 'bold' }}
-        >{`Title: ${pinataMetadata.name}`}</Typography>
-        <Typography
+        >{`Title: ${pinataMetadata.name}`}</CustomTypography>
+        <CustomTypography
           sx={{ fontWeight: 'bold' }}
-        >{`Description: ${pinataMetadata.description}`}</Typography>
+        >{`Description: ${pinataMetadata.description}`}</CustomTypography>
         <Tooltip title={auction.seller} arrow>
-          <Typography sx={{ fontWeight: 'bold' }}>
+          <CustomTypography sx={{ fontWeight: 'bold' }}>
             {`Owned by: ${auction.seller.slice(0, 8)}...`}
-          </Typography>
+          </CustomTypography>
         </Tooltip>
         <Divider
           variant="middle"
@@ -95,7 +100,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Highest Bid</Typography>
+            <CustomTypography>Highest Bid</CustomTypography>
             {displayInGwei(auction.highestBid)} gwei
           </Stack>
           <Stack
@@ -104,11 +109,11 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Auction Address</Typography>
+            <CustomTypography>Auction Address</CustomTypography>
             <Tooltip title={auction.auctionContract._address} arrow>
-              <Typography>
+              <CustomTypography>
                 {auction.auctionContract._address.slice(0, 8) + '...'}
-              </Typography>
+              </CustomTypography>
             </Tooltip>
           </Stack>
           <Stack
@@ -117,9 +122,9 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>NFT Address</Typography>
+            <CustomTypography>NFT Address</CustomTypography>
             <Tooltip title={auction.nft} arrow>
-              <Typography>{auction.nft.slice(0, 8) + '...'}</Typography>
+              <CustomTypography>{auction.nft.slice(0, 8) + '...'}</CustomTypography>
             </Tooltip>
           </Stack>
           <Stack
@@ -128,7 +133,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Token ID</Typography>
+            <CustomTypography>Token ID</CustomTypography>
             {auction.nftId}
           </Stack>
           <Stack
@@ -137,7 +142,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Token Standard</Typography>
+            <CustomTypography>Token Standard</CustomTypography>
             ERC-721
           </Stack>
           <Stack
@@ -146,7 +151,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Minimal increment</Typography>
+            <CustomTypography>Minimal increment</CustomTypography>
             {displayInGwei(auction.increment)} gwei
           </Stack>
           <Stack
@@ -155,7 +160,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Start At</Typography>
+            <CustomTypography>Start At</CustomTypography>
             {displayTimestampInHumanReadable(auction.startAt)}
           </Stack>
           <Stack
@@ -164,7 +169,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Duration</Typography>
+            <CustomTypography>Duration</CustomTypography>
             {displayInHours(auction.duration)} hours
           </Stack>
           <Stack
@@ -173,7 +178,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Auction Started</Typography>
+            <CustomTypography>Auction Started</CustomTypography>
             {auction.started ? 'Yes' : 'No'}
           </Stack>
           <Stack
@@ -182,7 +187,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <Typography>Auction Ended</Typography>
+            <CustomTypography>Auction Ended</CustomTypography>
             {auction.ended ? 'Yes' : 'No'}
           </Stack>
           <NFTListingBidModal

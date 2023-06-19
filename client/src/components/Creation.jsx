@@ -13,6 +13,12 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useState } from 'react';
 import { useEth } from '../contexts/EthContext';
+
+const CustomTypography = styled(Typography)`
+  font-family: "Google Sans", sans-serif;
+  font-weight: 600;
+`;
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
@@ -243,10 +249,10 @@ export default function Creation({ refetchData }) {
               Create
             </Button>
           </Box>
-          <Typography gutterBottom>
+          <CustomTypography gutterBottom>
             *Note: This only creates the auction, you still need to approve the
             NFT and start the auction when you are done
-          </Typography>
+          </CustomTypography>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>

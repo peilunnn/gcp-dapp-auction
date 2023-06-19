@@ -1,5 +1,12 @@
 import { Card, Box, Grid, Typography, List, Button } from '@mui/material';
 import AuctionDetails from './AuctionDetails';
+import { styled } from "@mui/system";
+
+const CustomTypography = styled(Typography)`
+  font-family: "Google Sans", sans-serif;
+  font-weight: 600;
+`;
+
 function Listing({ auctions, refetchData }) {
   if (auctions === undefined) {
     return (
@@ -11,13 +18,13 @@ function Listing({ auctions, refetchData }) {
           height: '100%',
         }}
       >
-        <Typography variant="h3">Loading...</Typography>
+        <CustomTypography variant="h3">Loading...</CustomTypography>
       </Box>
     );
   }
   return (
     <Card>
-      <Typography
+      <CustomTypography
         display="flex"
         justifyContent="center"
         alignItems="center"
@@ -35,7 +42,7 @@ function Listing({ auctions, refetchData }) {
         >
           Refresh
         </Button>
-      </Typography>
+      </CustomTypography>
       <Grid spacing={0} container>
         <Box py={4} pr={4} flex={1}>
           <Grid
@@ -52,13 +59,13 @@ function Listing({ auctions, refetchData }) {
               }}
             >
               {auctions === [] ? (
-                <Typography
+                <CustomTypography
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
                 >
                   No Auctions available at the moment...
-                </Typography>
+                </CustomTypography>
               ) : (
                 auctions.map((auction, idx) => (
                   <AuctionDetails

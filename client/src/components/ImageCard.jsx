@@ -6,6 +6,12 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import { Collapse } from '@material-ui/core';
+import { styled } from "@mui/system";
+
+const CustomTypography = styled(Typography)`
+  font-family: "Google Sans", sans-serif;
+  font-weight: 600;
+`;
 
 const useStyles = makeStyles({
   root: {
@@ -41,22 +47,22 @@ export default function ImageCard({ item, checked }) {
           title="Contemplative Reptile"
         />
         <CardContent>
-          <Typography
+          <CustomTypography
             gutterBottom
             variant="h5"
             component="h1"
             className={classes.title}
           >
             {item.title}
-          </Typography>
-          <Typography
+          </CustomTypography>
+          <CustomTypography
             variant="body2"
             color="textSecondary"
             component="p"
             className={classes.desc}
           >
             {item.description}
-          </Typography>
+          </CustomTypography>
         </CardContent>
       </Card>
     </Collapse>

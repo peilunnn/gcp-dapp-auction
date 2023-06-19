@@ -8,6 +8,13 @@ import {
 import React, { useState } from 'react';
 import { useEth } from '../contexts/EthContext';
 import { useSnackbar } from 'notistack';
+import { styled } from "@mui/system";
+
+const CustomTypography = styled(Typography)`
+  font-family: "Google Sans", sans-serif;
+  font-weight: 600;
+`;
+
 const NftApprovalCard = () => {
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -55,13 +62,13 @@ const NftApprovalCard = () => {
   return (
     <Card>
       <CardContent>
-        <Typography variant="h4" component="div">
+        <CustomTypography variant="h4" component="div">
           Approve Auction Contract for NFT
-        </Typography>
-        <Typography variant="body1">
+        </CustomTypography>
+        <CustomTypography variant="body1">
           Enter the auction contract address and the NFT token id which you want
           to allow the auction to make changes to.
-        </Typography>
+        </CustomTypography>
         <form className="nft-approval-form">
           <TextField
             placeholder="Auction Address"

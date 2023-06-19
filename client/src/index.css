@@ -26,3 +26,34 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+.upload-label {
+  font-family: "Google Sans";
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.file-input {
+  font-family: "Google Sans";
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.upload-button {
+  font-family: "Google Sans";
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.upload-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

@@ -9,6 +9,12 @@ import { useEffect, useState } from 'react';
 import { useEth } from '../contexts/EthContext';
 import { displayInGwei } from '../utils';
 import CountdownTimer from './CountdownTimer';
+import { styled } from "@mui/system";
+
+const CustomTypography = styled(Typography)`
+  font-family: "Google Sans", sans-serif;
+  font-weight: 600;
+`;
 
 const style = {
   position: 'absolute',
@@ -236,13 +242,13 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
               marginLeft: '14px',
             }}
           >
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <CustomTypography id="modal-modal-title" variant="h6" component="h2">
               Title: {pinataMetadata.name}
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            </CustomTypography>
+            <CustomTypography id="modal-modal-description" sx={{ mt: 2 }}>
               Highest Bid: {displayInGwei(highestBid)} gwei
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            </CustomTypography>
+            <CustomTypography id="modal-modal-description" sx={{ mt: 2 }}>
               Time Till Expiry:{' '}
               {auctionData.ended ? (
                 <span>
@@ -259,7 +265,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                   <i>Auction has not yet started</i>
                 </span>
               )}
-            </Typography>
+            </CustomTypography>
             <hr />
             <Box
               sx={{
@@ -276,7 +282,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                 gap="10px"
               >
                 {role === 'seller' && (
-                  <Typography>
+                  <CustomTypography>
                     As the seller, you can{' '}
                     <Button variant="contained" onClick={handleStartAuction}>
                       Start
@@ -284,7 +290,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                     <Button variant="contained" onClick={handleEnd}>
                       End
                     </Button>
-                  </Typography>
+                  </CustomTypography>
                 )}
                 {(role === 'notBidder' || role === 'bidder') && (
                   <Box display="flex">
@@ -306,23 +312,23 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
 
                 {role === 'bidder' && (
                   <Box display="flex">
-                    <Typography>
+                    <CustomTypography>
                       No longer interested?{' '}
                       <Button variant="contained" onClick={handleWithdraw}>
                         {' '}
                         Withdraw{' '}
                       </Button>
-                    </Typography>
+                    </CustomTypography>
                   </Box>
                 )}
 
                 {role === 'highestBidder' && (
-                  <Typography>
+                  <CustomTypography>
                     As the highest bidder:{' '}
                     <Button variant="contained" onClick={handleEnd}>
                       End
                     </Button>
-                  </Typography>
+                  </CustomTypography>
                 )}
               </Box>
             </Box>

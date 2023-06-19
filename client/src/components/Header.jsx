@@ -1,62 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useEffect, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   AppBar,
   IconButton,
   Toolbar,
   Collapse,
   Button,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Link as Scroll } from 'react-scroll';
+} from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Link as Scroll } from "react-scroll";
 
 const useStyles = makeStyles(() => ({
   root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    fontFamily: 'Nunito',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    fontFamily: "Google Sans, sans-serif",
   },
   appbar: {
-    background: 'none',
+    background: "none",
   },
   appbarWrapper: {
-    width: '80%',
-    margin: '0 auto',
+    width: "80%",
+    margin: "0 auto",
   },
   appbarTitle: {
-    flexGrow: '1',
+    flexGrow: "1",
+    fontSize: "2rem",
   },
   icon: {
-    color: '#fff',
-    fontSize: '2rem',
+    color: "#fff",
+    fontSize: "2rem",
   },
   colorText: {
-    color: 'khaki',
+    color: "khaki",
   },
   container: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   title: {
-    color: '#fff',
-    fontSize: '8rem',
+    color: "#fff",
+    fontSize: "6rem",
   },
   subtitle: {
-    color: '#fff',
-    fontSize: '5rem',
+    color: "#fff",
+    fontSize: "5rem",
   },
   button: {
-    color: 'darkslategrey',
-    fontWeight: 'bold',
-    fontSize: '1rem',
-    backgroundColor: 'khaki',
+    color: "darkslategrey",
+    fontWeight: "bold",
+    fontSize: "1rem",
+    backgroundColor: "khaki",
   },
   goDown: {
-    color: 'khaki',
-    fontSize: '4rem',
+    color: "khaki",
+    fontSize: "4rem",
   },
 }));
+
 export default function Header() {
   const classes = useStyles();
   const [checked, setChecked] = useState(false);
@@ -68,7 +70,7 @@ export default function Header() {
       <AppBar className={classes.appbar} elevation={0}>
         <Toolbar className={classes.appbarWrapper}>
           <h1 className={classes.appbarTitle}>
-            NFT<span className={classes.colorText}>Auction</span>
+            <span className={classes.colorText}>NFTAuctionHouse</span>
           </h1>
           <Button
             className={classes.button}
@@ -77,7 +79,7 @@ export default function Header() {
             color="default"
             href="/auction"
           >
-            Launch App
+            Get Started
           </Button>
         </Toolbar>
       </AppBar>
@@ -90,7 +92,7 @@ export default function Header() {
         <div className={classes.container}>
           <h1 className={classes.title}>
             Welcome to <br />
-            NFT <span className={classes.colorText}>Auction</span>
+            <span className={classes.colorText}>NFTAuctionHouse</span>
           </h1>
           <Scroll to="explainers" smooth={true}>
             <IconButton>

@@ -1,6 +1,6 @@
-import Footer from './components/Footer';
 import Account from './components/Account';
 import { useEth } from './contexts/EthContext';
+import NFTUploadButton from './components/NFTUpload';
 
 import PageHeader from './components/PageHeader';
 import PageTitleWrapper from './components/PageTitleWrapper';
@@ -107,13 +107,13 @@ function AuctionApp() {
           alignItems="stretch"
           spacing={4}
         >
+          <NFTUploadButton />
           <Grid item xs={12}>
             <Account auctions={auctions} />
           </Grid>
         </Grid>
         <Listing auctions={auctions} refetchData={refetchData} />
       </Container>
-      <Footer />
       <button className="scrollToTopBtn cursor-pointer">☝️</button>
     </Box>
   );
