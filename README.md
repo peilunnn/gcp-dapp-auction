@@ -1,8 +1,3 @@
-Flow
-1. When we deploy contracts, artifacts (JSON files) are generated automatically
-2. Web3 library converts that JSON file into a native JS Contract object for the FE to call its functions
-3. ABI allows web3 library to know what methods and properties there are in the contract
-
 ## Setup Instructions
 
 You will be using the Truffle suite for Ethereum, using Ganache to run a local blockchain. The frontend uses React, and the React Truffle box to interact with deployed smart contracts on the Ethereum blockchain.
@@ -20,7 +15,9 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
    
 4. Check the port that Ganache is running on (7545 if Ganache Desktop or 8545 if Ganache CLI, by default)
    
-   `ganache-cli --defaultBalanceEther 9000000000000000000000`
+   ```
+   ganache-cli --defaultBalanceEther 900000000000000000000
+   ```
 
    Then edit `truffle-config.js` (`networks/development`) to match the port
 
@@ -68,7 +65,7 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
 
 ## Play Around with the App
 ### As a Buyer
-1. At the top right, connect to Metamask and make sure you use the correct account that is tied to your local Ganache blockchain. It should have 9000000000000000000000 ETH
+1. At the top right, connect to Metamask and make sure you use the correct account that is tied to your local Ganache blockchain. It should have 900000000000000000000 ETH
 
 2. Click Open on any of the auctions. Find one that is in progress (Auction Started Yes but Auction Ended No) and submit your bid. It must be higher than the current highest bid.
 

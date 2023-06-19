@@ -15,14 +15,12 @@ module.exports = async function (callback) {
     // Fetch accounts from wallet - these are unlocked
     const accounts = await web3.eth.getAccounts();
 
-    // Fetch the deployed auction factory
+    // Fetch deployed contracts
     const auctionFactory = await AuctionFactory.deployed();
     console.log("AuctionFactory fetched", auctionFactory.address);
-
-    // Fetch the deployed MintNFT
     const mintNFT = await MintNFT.deployed();
     console.log("MintNFT fetched", mintNFT.address);
-    // Set up 7 demo users in an array in a loop
+
     const demoUsers = [];
     for (let i = 0; i < 7; i++) {
       demoUsers.push({
@@ -30,8 +28,6 @@ module.exports = async function (callback) {
       });
     }
 
-    // Read URL from allDemoNFTs.json
-    // const allDemoNFTs = require("./scripts/allDemoNFTs.json");
     const allDemoNFTs = [
       {
         id: 1,
@@ -84,6 +80,7 @@ module.exports = async function (callback) {
           "https://gateway.pinata.cloud/ipfs/QmZ5YDGxnAjtHB6apV2wAiRUAcAXeNsNfsaSHPjosGnTZT",
       },
     ];
+
     for (let i = 0; i < demoUsers.length; i++) {
       const user = demoUsers[i];
       const nft = allDemoNFTs[i];
@@ -92,7 +89,6 @@ module.exports = async function (callback) {
       demoUsers[i].tokenId = tokenId;
     }
 
-    // Construct auction
     for (let i = 0; i < demoUsers.length; i++) {
       const user = demoUsers[i];
       let duration;
@@ -132,14 +128,11 @@ module.exports = async function (callback) {
     for (let i = 0; i < demoUsers.length; i++) {
       const user = demoUsers[i];
       if (i % 2 === 0) {
-        // fetch auction
         const auction = await Auction.at(user.auctionAddress);
-        // start auction
         await auction.start({ from: user.account });
       }
     }
 
-    // Print out the demo users
     console.log("These are the demo users:\n");
     console.log(demoUsers);
   } catch (error) {

@@ -12,7 +12,6 @@ const pinMetaData = async (metaDataFilePath, fileName) => {
 
   var metadata = await fs.readFile(metaDataFilePath, "utf8");
   var metadataJson = JSON.parse(metadata);
-  // console.log(metadataJson);
   var data = JSON.stringify({
     ipfsPinHash: ipfsData.IpfsHash,
     name: fileName,
@@ -22,7 +21,6 @@ const pinMetaData = async (metaDataFilePath, fileName) => {
       description: metadataJson.description,
     },
   });
-  // console.log(data);
 
   let authorization = "Bearer " + process.env.PINATA_JWT;
   var req = {

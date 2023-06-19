@@ -8,7 +8,6 @@ const pinataEndpoint = process.env.PINATA_ENDPOINT;
 const pinataApiKey = process.env.REACT_APP_PINATA_API_KEY;
 const pinataApiSecret = process.env.REACT_APP_PINATA_API_SECRET;
 
-// Calls Pinata API's to pin file to IPFS
 const pinImage = async (filePath) => {
   const form_data = new FormData();
   try {

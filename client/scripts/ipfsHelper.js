@@ -28,23 +28,20 @@ async function fileExists(path) {
     const res = await fs.access(path);
     return true;
   } catch (err) {
-    // no such file or directory. File really does not exist
+
     if (err.code == "ENOENT") {
       return false;
     }
     console.log("Exception fs.statSync (" + path + "): " + err);
-    // some other exception occurred
     throw err;
   }
 }
 
 const fillIpfsHashToMetaData = async (metaDataFilePath) => {
   const ipfsFilePath = path.join(__dirname, "../data/ipfsHash.json");
-  // Read ipfsHash
   const data = await fs.readFile(ipfsFilePath, "utf8");
   const json = JSON.parse(data);
   const ipfsHash = json[json.length - 1].IpfsHash;
-  // Write Hash into image link
   var metadata = await fs.readFile(metaDataFilePath, "utf8");
   var metadataJson = JSON.parse(metadata);
   metadataJson.image = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
