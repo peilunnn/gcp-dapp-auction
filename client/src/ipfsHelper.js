@@ -1,17 +1,11 @@
 const fs = require("fs").promises;
 const path = require("path");
 
-// https://stackoverflow.com/questions/36856232/write-add-data-in-json-file-using-node-js
-// Accepts json data and stores in specified filePath.
-// If the file does not exists in specified location, it creates it
 const storeDataToFile = async (jsonData) => {
   try {
     const filePath = path.join(__dirname, "../../data/ipfsHash.json");
     const ipfsFileExists = await fileExists(filePath);
     if (!ipfsFileExists) {
-      console.log("ipfsFileExists: ", ipfsFileExists);
-      // First time creating an empty file with [].
-      // We will be storing all ipfsHashes as array of objects
       await fs.writeFile(filePath, JSON.stringify([]));
     }
     const data = await fs.readFile(filePath, "utf8");
@@ -25,10 +19,10 @@ const storeDataToFile = async (jsonData) => {
 
 async function fileExists(path) {
   try {
-    const res = await fs.access(path);
+    await fs.access(path);
     return true;
   } catch (err) {
-    if (err.code == "ENOENT") {
+    if (err.code === "ENOENT") {
       return false;
     }
     console.log("Exception fs.statSync (" + path + "): " + err);

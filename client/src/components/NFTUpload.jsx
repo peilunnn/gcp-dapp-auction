@@ -1,9 +1,20 @@
 import React, { useState } from "react";
-import { Card, CardContent, Typography, Button, Box } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Box,
+  TextField,
+} from "@mui/material";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 function NFTUpload() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -11,19 +22,30 @@ function NFTUpload() {
   };
 
   const handleFileUpload = () => {
-    if (selectedFile) {
+    if (selectedFile && name.trim() !== "") {
       const formData = new FormData();
       formData.append("file", selectedFile);
+      formData.append("name", name);
+      formData.append("description", description);
 
       axios
         .post("http://localhost:5000/pin", formData)
         .then((response) => {
-          console.log("File uploaded successfully");
           setSelectedFile(null);
+          setName("");
+          setDescription("");
+          enqueueSnackbar("Pinned NFT and metadata to IPFS", {
+            variant: "success",
+          });
+          console.log("File uploaded successfully");
         })
         .catch((error) => {
           console.log("Error uploading file:", error);
         });
+    } else {
+      enqueueSnackbar("Please select a picture and provide a name", {
+        variant: "error",
+      });
     }
   };
 
@@ -57,9 +79,29 @@ function NFTUpload() {
             </label>
           </Box>
           <Box mt={2}>
+            <TextField
+              id="name"
+              label="Name"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Box>
+          <Box mt={2}>
+            <TextField
+              id="description"
+              label="Description"
+              fullWidth
+              multiline
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </Box>
+          <Box mt={2}>
             <Button
               onClick={handleFileUpload}
-              disabled={!selectedFile}
+              disabled={!selectedFile || name.trim() === ""}
               variant="contained"
               color="primary"
               fullWidth

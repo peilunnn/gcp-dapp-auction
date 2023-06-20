@@ -65,7 +65,7 @@ function AuctionApp() {
     }
   }, [auctionFactoryContract, web3, accounts]);
   async function refetchData() {
-    debugger;
+    // debugger;
     const auctions = await getAuctions(web3, auctionFactoryContract, accounts);
     setAuctions(auctions);
     enqueueSnackbar("Auctions refreshed", {

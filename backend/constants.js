@@ -1,5 +1,9 @@
-const folderName = "uploadedImages/";
+const uploadedImagesFolder = "uploadedImages/";
+const dataFolder = "data/";
+const ipfsHashFileName = "ipfsHash.json";
 
 module.exports = {
-  folderName,
+  uploadedImagesFolder,
+  dataFolder,
+  ipfsHashFileName
 };
