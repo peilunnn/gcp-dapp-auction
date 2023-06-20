@@ -29,7 +29,7 @@ export default function Landing() {
   return (
     <div className={classes.root}>
       <Helmet>
-        <title>NFT Auction</title>
+        <title>NFTAuctionHouse</title>
         <meta charSet="utf-8" />
         <meta name="description" content="NFT Auction" />
         <link

@@ -17,7 +17,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
-    "axios": "^1.1.2",
+    "axios": "^1.4.0",
     "config": "^3.3.8",
     "contracts": "file:./../bin/truffle/contracts",
     "dotenv": "^16.0.3",
@@ -30,6 +30,7 @@
     "react-router-dom": "^6.4.2",
     "react-scripts": "^4.0.3",
     "react-scroll": "^1.8.8",
+    "streamifier": "^0.1.1",
     "web3": "^1.7.5"
   },
   "scripts": {
