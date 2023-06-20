@@ -16,7 +16,7 @@ function NFTUpload() {
       formData.append("file", selectedFile);
 
       axios
-        .post("http://your-backend-url/upload", formData)
+        .post("http://localhost:5000/pin", formData)
         .then((response) => {
           console.log("File uploaded successfully");
           setSelectedFile(null);

@@ -1,6 +1,6 @@
-import axios from "axios";
+// import axios from "axios";
 require("dotenv").config();
-// const axios = require("axios");
+const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
 const { storeDataToFile } = require("./ipfsHelper.js");
@@ -33,5 +33,4 @@ const pinImage = async (filePath) => {
   }
 };
 
-// module.exports = pinImage;
-export default pinImage;
+module.exports = pinImage;
