@@ -10,7 +10,6 @@ const pinataApiKey = process.env.REACT_APP_PINATA_API_KEY;
 const pinataApiSecret = process.env.REACT_APP_PINATA_API_SECRET;
 
 const pinImage = async (filePath) => {
-  debugger;
   const form_data = new FormData();
   try {
     form_data.append("file", fs.createReadStream(filePath));
@@ -33,4 +32,4 @@ const pinImage = async (filePath) => {
   }
 };
 
-module.exports = pinImage;
+module.exports = { pinImage };

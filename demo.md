@@ -6,7 +6,7 @@ cd ..
 cd client
 npm start
 
-cd client/scripts
+cd client/src/scripts
 node runScript.js
 cd ..
 cd ..

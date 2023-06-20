@@ -51,6 +51,7 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
       .call({ from: accounts[0] });
     // console.log("Auction info", info);
     try {
+      debugger;
       const mintNftContractAddress = await auctionContract.methods.nft().call();
       const mintNftContract = new web3.eth.Contract(
         mintNftContractJson.abi,
@@ -82,7 +83,6 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
       auctions.push(auction);
     } catch (e) {
       console.log("Unable to get NFT for auction: " + auctionContractAddress);
-      console.log(e);
       continue;
     }
   }

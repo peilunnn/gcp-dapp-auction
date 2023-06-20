@@ -17,7 +17,6 @@ const pinMetaData = async (metaDataFilePath, fileName) => {
     name: fileName,
     keyvalues: {
       name: metadataJson.name,
-      image: metadataJson.image,
       description: metadataJson.description,
     },
   });

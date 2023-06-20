@@ -1,37 +1,37 @@
-import Account from './components/Account';
-import { useEth } from './contexts/EthContext';
-import NFTUploadButton from './components/NFTUpload';
+import Account from "./components/Account";
+import { useEth } from "./contexts/EthContext";
+import NFTUpload from "./components/NFTUpload";
 
-import PageHeader from './components/PageHeader';
-import PageTitleWrapper from './components/PageTitleWrapper';
-import { Box, alpha, lighten, Container, Grid, useTheme } from '@mui/material';
+import PageHeader from "./components/PageHeader";
+import PageTitleWrapper from "./components/PageTitleWrapper";
+import { Box, alpha, lighten, Container, Grid, useTheme } from "@mui/material";
 
-import RootHeader from './components/RootHeader';
-import Listing from './components/Listing';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { getAuctionFactoryContract, getAuctions } from './utils';
-import { useSnackbar } from 'notistack';
+import RootHeader from "./components/RootHeader";
+import Listing from "./components/Listing";
+import { useEffect } from "react";
+import { useState } from "react";
+import { getAuctionFactoryContract, getAuctions } from "./utils";
+import { useSnackbar } from "notistack";
 
 function AuctionApp() {
   useEffect(() => {
-    var scrollToTopBtn = document.querySelector('.scrollToTopBtn');
+    var scrollToTopBtn = document.querySelector(".scrollToTopBtn");
     var rootElement = document.documentElement;
     const scrollFunction = () => {
       if (rootElement.scrollTop > 300) {
-        scrollToTopBtn.classList.add('showBtn');
+        scrollToTopBtn.classList.add("showBtn");
       } else {
-        scrollToTopBtn.classList.remove('showBtn');
+        scrollToTopBtn.classList.remove("showBtn");
       }
     };
 
     function scrollToTop() {
       rootElement.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
     }
-    scrollToTopBtn.addEventListener('click', scrollToTop);
+    scrollToTopBtn.addEventListener("click", scrollToTop);
     window.onscroll = function () {
       scrollFunction();
     };
@@ -65,22 +65,23 @@ function AuctionApp() {
     }
   }, [auctionFactoryContract, web3, accounts]);
   async function refetchData() {
+    debugger;
     const auctions = await getAuctions(web3, auctionFactoryContract, accounts);
     setAuctions(auctions);
-    enqueueSnackbar('Auctions refreshed', {
-      variant: 'success',
+    enqueueSnackbar("Auctions refreshed", {
+      variant: "success",
     });
   }
   return (
     <Box
       sx={{
         flex: 1,
-        height: '100%',
-        '.MuiPageTitle-wrapper': {
+        height: "100%",
+        ".MuiPageTitle-wrapper": {
           background: theme.colors.alpha.trueWhite[5],
           marginBottom: `${theme.spacing(4)}`,
           boxShadow:
-            theme.palette.mode === 'dark'
+            theme.palette.mode === "dark"
               ? `0 1px 0 ${alpha(
                   lighten(theme.colors.primary.main, 0.7),
                   0.15
@@ -107,7 +108,7 @@ function AuctionApp() {
           alignItems="stretch"
           spacing={4}
         >
-          <NFTUploadButton />
+          <NFTUpload />
           <Grid item xs={12}>
             <Account auctions={auctions} />
           </Grid>

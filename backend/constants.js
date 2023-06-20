@@ -1,5 +1,5 @@
-const imgPath = "uploadedImages/";
+const folderName = "uploadedImages/";
 
 module.exports = {
-  imgPath,
+  folderName,
 };

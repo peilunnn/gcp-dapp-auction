@@ -94,7 +94,7 @@ First you will pin the NFT to IPFS (uploading the image and metadata) using Pina
 6. Execute `runScript.js` from its immediate directory, which will pin your NFT to IPFS
    
    ```
-   cd client/scripts
+   cd client/src/scripts
    node runScript.js
    ```
 
