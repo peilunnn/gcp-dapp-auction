@@ -108,7 +108,7 @@ function AuctionApp() {
           alignItems="stretch"
           spacing={4}
         >
-          <NFTUpload />
+          <NFTUpload web3={web3} networkID={networkID} accounts={accounts}/>
           <Grid item xs={12}>
             <Account auctions={auctions} />
           </Grid>

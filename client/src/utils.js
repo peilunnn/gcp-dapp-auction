@@ -22,6 +22,25 @@ export function getAuctionFactoryContract(web3, networkID) {
   return auctionFactoryContract;
 }
 
+export function getMintNFTContract(web3, networkID) {
+  if (web3 === null || networkID === null) {
+    console.log("Unable to get MintNFT contract. web3 or networkID is null.");
+    return;
+  }
+
+  const mintNFTJson = require("./contracts/MintNFT.json");
+  if (mintNFTJson && mintNFTJson.networks[networkID] === undefined) {
+    console.log("Unable to get MintNFT contract. networkID is invalid.");
+    return;
+  }
+  const mintNFTAddress = mintNFTJson.networks[networkID].address;
+  const mintNFTContract = new web3.eth.Contract(
+    mintNFTJson.abi,
+    mintNFTAddress
+  );
+  return mintNFTContract;
+}
+
 export async function getAuctions(web3, auctionFactoryContract, accounts) {
   if (
     web3 === null ||
@@ -87,6 +106,19 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
     }
   }
   return auctions;
+}
+
+export async function mintNFT(web3, mintNFTContract, accounts, tokenURI) {
+  if (
+    web3 === null ||
+    mintNFTContract === null ||
+    accounts == null ||
+    mintNFTContract === undefined
+  ) {
+    console.log("Unable to get auctions. web3 or mintNFTContract is null.");
+    return [];
+  }
+  await mintNFTContract.methods.mint(tokenURI).call();
 }
 
 export function displayInGwei(wei) {

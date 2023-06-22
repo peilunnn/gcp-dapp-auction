@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: `${__dirname}/.env` });
 const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
