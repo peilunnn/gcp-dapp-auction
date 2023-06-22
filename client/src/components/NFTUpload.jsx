@@ -7,7 +7,7 @@ import {
   Box,
   TextField,
 } from "@mui/material";
-import axios from "axios";
+import { pinNFT } from "../scripts/pinNFT";
 import { useSnackbar } from "notistack";
 
 function NFTUpload() {
@@ -19,34 +19,6 @@ function NFTUpload() {
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
-  };
-
-  const handleFileUpload = () => {
-    if (selectedFile && name.trim() !== "") {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("name", name);
-      formData.append("description", description);
-
-      axios
-        .post("http://localhost:5000/pin", formData)
-        .then((response) => {
-          setSelectedFile(null);
-          setName("");
-          setDescription("");
-          enqueueSnackbar("Pinned NFT and metadata to IPFS", {
-            variant: "success",
-          });
-          console.log("File uploaded successfully");
-        })
-        .catch((error) => {
-          console.log("Error uploading file:", error);
-        });
-    } else {
-      enqueueSnackbar("Please select a picture and provide a name", {
-        variant: "error",
-      });
-    }
   };
 
   return (
@@ -100,7 +72,17 @@ function NFTUpload() {
           </Box>
           <Box mt={2}>
             <Button
-              onClick={handleFileUpload}
+              onClick={() =>
+                pinNFT(
+                  selectedFile,
+                  name,
+                  description,
+                  setSelectedFile,
+                  setName,
+                  setDescription,
+                  enqueueSnackbar
+                )
+              }
               disabled={!selectedFile || name.trim() === ""}
               variant="contained"
               color="primary"

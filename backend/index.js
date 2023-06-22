@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { uploadedImagesFolder } = require("./constants");
-const { pinNFT } = require("../client/src/scripts/pinNFT");
+const { pinNFT } = require("./scripts/pinNFT");
 
 const app = express();
 var cors = require("cors");
@@ -24,14 +24,8 @@ const upload = multer({ storage });
 app.post("/pin", upload.single("file"), async (req, res) => {
   const imgPath = path.join(uploadedImagesFolder, req.file.filename);
   const metadataJSON = JSON.stringify(req.body);
-  pinNFT(imgPath, metadataJSON);
-
-  // TODO: return ipfsHash to FE
-  const ipfsHashPath = path.join(__dirname, "../client/data/ipfsHash.json");
-  const ipfsHashData = fs.readFileSync(ipfsHashPath, "utf8");
-  const ipfsHashArray = JSON.parse(ipfsHashData);
-  const ipfsHash = ipfsHashArray[ipfsHashArray.length - 1].IpfsHash;
-  res.sendStatus(200);
+  const ipfsHash = await pinNFT(imgPath, metadataJSON);
+  res.json({ ipfsHash: ipfsHash });
 });
 
 app.listen(5000, () => {

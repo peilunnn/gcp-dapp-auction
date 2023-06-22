@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ImageCard from './ImageCard';
 import explanations from '../static/Explanation';
-import useWindowPosition from '../hook/useWindowPosition';
+import useWindowPosition from '../hooks/useWindowPosition';
 const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: '100vh',
