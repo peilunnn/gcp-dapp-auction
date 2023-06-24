@@ -1,13 +1,13 @@
-import { Card, Box, Grid, Typography, Divider, Stack } from '@mui/material';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { useEth } from '../contexts/EthContext';
+import { Card, Box, Grid, Typography, Divider, Stack } from "@mui/material";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useEth } from "../contexts/EthContext";
 import {
   displayInGwei,
   displayInHours,
   displayTimestampInHumanReadable,
-} from '../utils';
-import NftApprovalCard from './NftApprovalCard';
+} from "../utils";
+import NftApprovalCard from "./NftApprovalCard";
 import { styled } from "@mui/system";
 
 const CustomTypography = styled(Typography)`
@@ -90,7 +90,7 @@ function Account({ auctions }) {
                     spacing={2}
                   >
                     <CustomTypography variant="h4">
-                      Auction Address
+                      NFT Address
                     </CustomTypography>
                     {auction.auctionContract._address}
                   </Stack>
@@ -131,7 +131,9 @@ function Account({ auctions }) {
                     alignItems="center"
                     spacing={2}
                   >
-                    <CustomTypography variant="h4">Minimal increment</CustomTypography>
+                    <CustomTypography variant="h4">
+                      Minimal increment
+                    </CustomTypography>
                     {displayInGwei(auction.increment)} gwei
                   </Stack>
                   <Stack

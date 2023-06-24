@@ -1,6 +1,6 @@
-import { Typography, Avatar, Grid, useTheme } from '@mui/material';
-import { useEth } from '../contexts/EthContext';
-import Creation from './Creation';
+import { Typography, Avatar, Grid, useTheme } from "@mui/material";
+import { useEth } from "../contexts/EthContext";
+import Creation from "./Creation";
 import { styled } from "@mui/system";
 
 const CustomTypography = styled(Typography)`
@@ -14,7 +14,7 @@ function PageHeader({ refetchData }) {
   } = useEth();
   const user = {
     avatar: `https://avatars.dicebear.com/api/pixel-art-neutral/${
-      accounts === null ? '1' : accounts[0]
+      accounts === null ? "1" : accounts[0]
     }.svg`,
   };
   const theme = useTheme();
@@ -25,8 +25,8 @@ function PageHeader({ refetchData }) {
         <Avatar
           sx={{
             mr: 2,
-            width: theme.spacing(12),
-            height: theme.spacing(12),
+            width: theme.spacing(15),
+            height: theme.spacing(15),
           }}
           variant="rounded"
           alt={user.name}
@@ -37,7 +37,7 @@ function PageHeader({ refetchData }) {
         <CustomTypography variant="h3" component="h3" gutterBottom>
           Welcome
         </CustomTypography>
-        <CustomTypography variant="subtitle2">
+        <CustomTypography variant="h3">
           Participate in NFT auctions now!
         </CustomTypography>
         <Creation refetchData={refetchData} />

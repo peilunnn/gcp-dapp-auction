@@ -1,6 +1,6 @@
-import Button from '@mui/material/Button';
-import { useWeb3React } from '@web3-react/core';
-import { InjectedConnector } from '@web3-react/injected-connector';
+import Button from "@mui/material/Button";
+import { useWeb3React } from "@web3-react/core";
+import { InjectedConnector } from "@web3-react/injected-connector";
 
 const Injected = new InjectedConnector({
   supportedChainIds: [
@@ -18,7 +18,17 @@ const ConnectWallet = () => {
           ✅ Account {account.slice(0, 5)}... on chain {chainId}
         </Button>
       ) : (
-        <Button variant="contained" onClick={() => activate(Injected)}>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={() => activate(Injected)}
+          sx={{
+            backgroundColor: "#FF9900",
+            "&:hover": {
+              backgroundColor: "#cc7a00",
+            },
+          }}
+        >
           Connect to Metamask
         </Button>
       )}

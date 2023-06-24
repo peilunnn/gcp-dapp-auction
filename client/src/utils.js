@@ -65,6 +65,7 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
     accounts == null ||
     auctionFactoryContract === undefined
   ) {
+    debugger;
     console.log(
       "Unable to get auctions. web3 or auctionFactoryContract is null."
     );
@@ -114,7 +115,6 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
         nft: info[11],
         auctionContract: auctionContract,
       };
-      // console.log("auction object", auction);
       auctions.push(auction);
     } catch (e) {
       console.log("Unable to get NFT for auction: " + auctionContractAddress);

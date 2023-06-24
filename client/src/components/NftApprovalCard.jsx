@@ -4,10 +4,10 @@ import {
   Typography,
   Button,
   TextField,
-} from '@mui/material';
-import React, { useState } from 'react';
-import { useEth } from '../contexts/EthContext';
-import { useSnackbar } from 'notistack';
+} from "@mui/material";
+import React, { useState } from "react";
+import { useEth } from "../contexts/EthContext";
+import { useSnackbar } from "notistack";
 import { styled } from "@mui/system";
 
 const CustomTypography = styled(Typography)`
@@ -20,41 +20,45 @@ const NftApprovalCard = () => {
   const {
     state: { web3, networkID, accounts },
   } = useEth();
-  const nftJson = require('../contracts/MintNFT.json');
+  const nftJson = require("../contracts/MintNFT.json");
   const [vars, setVars] = useState({
-    auctionAddress: '',
-    nftId: '', //token id,
+    mintNFTContractAddress: "",
+    tokenId: "",
   });
 
   const handleAddressInput = (event) => {
     setVars({
       ...vars,
-      auctionAddress: event.target.value,
+      mintNFTContractAddress: event.target.value,
     });
   };
 
   const handleNftIdInput = (event) => {
     setVars({
       ...vars,
-      nftId: event.target.value,
+      tokenId: event.target.value,
     });
   };
 
   const handleApproval = async () => {
-    let nftAddress = nftJson.networks[networkID].address;
-    let nftContract = new web3.eth.Contract(nftJson.abi, nftAddress);
-    const tid = parseInt(vars.nftId);
+    let mintNFTContractAddress = nftJson.networks[networkID].address;
+    let mintNFTContract = new web3.eth.Contract(nftJson.abi, mintNFTContractAddress);
+    const tokenId = parseInt(vars.tokenId);
     try {
-      await nftContract.methods
-        .approve(vars.auctionAddress, tid)
+      await mintNFTContract.methods
+        .approve(vars.mintNFTContractAddress, tokenId)
         .send({ from: accounts[0] });
-      enqueueSnackbar('Approval successful', {
-        variant: 'success',
+      enqueueSnackbar("Approval successful", {
+        variant: "success",
+      });
+      setVars({
+        mintNFTContractAddress: "",
+        tokenId: "",
       });
     } catch (err) {
       console.log(err);
-      enqueueSnackbar('Approval failed', {
-        variant: 'error',
+      enqueueSnackbar("Approval failed", {
+        variant: "error",
       });
     }
   };
@@ -62,23 +66,19 @@ const NftApprovalCard = () => {
   return (
     <Card>
       <CardContent>
-        <CustomTypography variant="h4" component="div">
+        <CustomTypography variant="h3" component="div">
           Approve Auction Contract for NFT
-        </CustomTypography>
-        <CustomTypography variant="body1">
-          Enter the auction contract address and the NFT token id which you want
-          to allow the auction to make changes to.
         </CustomTypography>
         <form className="nft-approval-form">
           <TextField
-            placeholder="Auction Address"
-            name="auctionAddress"
-            value={vars.auctionAddress}
+            placeholder="NFT Address"
+            name="mintNFTContractAddress"
+            value={vars.mintNFTContractAddress}
             onChange={handleAddressInput}
             margin="normal"
             required
-            label="Auction Address"
-            id="auctionAddress"
+            label="NFT Address"
+            id="mintNFTContractAddress"
           />
           <TextField
             margin="normal"
@@ -87,13 +87,25 @@ const NftApprovalCard = () => {
             id="nftTokenId"
             placeholder="NFT token ID"
             name="tokenId"
-            value={vars.nftId}
+            value={vars.tokenId}
             onChange={handleNftIdInput}
             type="number"
           />
         </form>
-        <Button onClick={handleApproval} variant="outlined">
-          Set Approve
+        <Button
+          onClick={handleApproval}
+          variant="outlined"
+          sx={{
+            padding: "10px 30px",
+            marginTop: "8px",
+            color: "#fff",
+            backgroundColor: "#3f51b5",
+            "&:hover": {
+              backgroundColor: "#303f9f",
+            },
+          }}
+        >
+          Approve
         </Button>
       </CardContent>
     </Card>

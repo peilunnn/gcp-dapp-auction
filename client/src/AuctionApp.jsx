@@ -64,7 +64,9 @@ function AuctionApp() {
       fetchData();
     }
   }, [auctionFactoryContract, web3, accounts]);
+
   async function refetchData() {
+    debugger;
     const auctions = await getAuctions(web3, auctionFactoryContract, accounts);
     setAuctions(auctions);
     enqueueSnackbar("Auctions refreshed", {
@@ -107,7 +109,7 @@ function AuctionApp() {
           alignItems="stretch"
           spacing={4}
         >
-          <NFTUpload web3={web3} networkID={networkID} accounts={accounts}/>
+          <NFTUpload web3={web3} networkID={networkID} accounts={accounts} />
           <Grid item xs={12}>
             <Account auctions={auctions} />
           </Grid>

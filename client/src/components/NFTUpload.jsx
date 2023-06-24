@@ -20,7 +20,7 @@ function NFTUpload({ web3, networkID, accounts }) {
   const [description, setDescription] = useState("");
   const { enqueueSnackbar } = useSnackbar();
   const [tokenId, setTokenId] = useState(null);
-  const [contractAddress, setContractAddress] = useState(null);
+  const [mintNFTContractAddress, setMintNFTContractAddress] = useState(null);
 
   const mintNFTContract = getMintNFTContract(web3, networkID);
 
@@ -30,11 +30,11 @@ function NFTUpload({ web3, networkID, accounts }) {
   };
 
   return (
-    <Box border={1} borderRadius={4} p={2} mt={2}>
+    <Box border={1} borderRadius={4} p={1} mt={1}>
       <Card>
         <CardContent>
           <Typography variant="h6" component="div" gutterBottom>
-            <strong style={{ fontSize: "1.5rem" }}>
+            <strong style={{ fontSize: "1.4rem" }}>
               Upload and mint a NFT
             </strong>
           </Typography>
@@ -52,7 +52,13 @@ function NFTUpload({ web3, networkID, accounts }) {
                 color="primary"
                 fullWidth
                 size="large"
-                style={{ fontWeight: "bold" }}
+                sx={{
+                  backgroundColor: "#4caf50",
+                  "&:hover": {
+                    backgroundColor: "#388e3c",
+                  },
+                  fontWeight: "bold",
+                }}
               >
                 Choose File
               </Button>
@@ -93,50 +99,56 @@ function NFTUpload({ web3, networkID, accounts }) {
                   mintNFTContract,
                   accounts,
                   setTokenId,
-                  setContractAddress
+                  setMintNFTContractAddress
                 )
               }
               disabled={!selectedFile || name.trim() === ""}
               variant="contained"
-              color="primary"
               fullWidth
               size="large"
-              style={{
+              sx={{
+                backgroundColor: "#198754",
+                "&:hover": {
+                  backgroundColor: "#10643b",
+                },
+                color: "#FFFFFF",
                 fontWeight: "bold",
-                backgroundColor: "pink",
               }}
             >
               Upload
             </Button>
           </Box>
-          {tokenId && contractAddress && (
+          {tokenId && mintNFTContractAddress && (
             <Box mt={2}>
               <Typography
                 variant="h6"
                 gutterBottom
                 style={{
-                  color: "green",
+                  color: "#303f9f",
                   fontWeight: "bold",
                   fontSize: "1.5rem",
                 }}
               >
-                Use the following to create an auction for your newly minted NFT:
+                Use the following to create an auction for your newly minted
+                NFT:
               </Typography>
               <Box display="flex" alignItems="center" mt={1}>
                 <Typography
                   variant="h6"
                   style={{
-                    color: "green",
+                    color: "#303f9f",
                     fontWeight: "bold",
                     fontSize: "1.5rem",
                   }}
                 >
-                  Token ID: {tokenId}
+                  NFT Address: {mintNFTContractAddress}
                 </Typography>
                 <Tooltip title="Copy to clipboard">
                   <IconButton
                     edge="end"
-                    onClick={() => navigator.clipboard.writeText(tokenId)}
+                    onClick={() =>
+                      navigator.clipboard.writeText(mintNFTContractAddress)
+                    }
                   >
                     <FileCopyIcon />
                   </IconButton>
@@ -146,19 +158,17 @@ function NFTUpload({ web3, networkID, accounts }) {
                 <Typography
                   variant="h6"
                   style={{
-                    color: "green",
+                    color: "#303f9f",
                     fontWeight: "bold",
                     fontSize: "1.5rem",
                   }}
                 >
-                  NFT Address: {contractAddress}
+                  NFT Token ID: {tokenId}
                 </Typography>
                 <Tooltip title="Copy to clipboard">
                   <IconButton
                     edge="end"
-                    onClick={() =>
-                      navigator.clipboard.writeText(contractAddress)
-                    }
+                    onClick={() => navigator.clipboard.writeText(tokenId)}
                   >
                     <FileCopyIcon />
                   </IconButton>

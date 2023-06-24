@@ -8,14 +8,14 @@ import {
   Stack,
   Divider,
   Tooltip,
-} from '@mui/material';
-import { useEth } from '../contexts/EthContext';
+} from "@mui/material";
+import { useEth } from "../contexts/EthContext";
 import {
   displayInGwei,
   displayInHours,
   displayTimestampInHumanReadable,
-} from '../utils';
-import NFTListingBidModal from './NFTListingBidModal';
+} from "../utils";
+import NFTListingBidModal from "./NFTListingBidModal";
 
 const CustomTypography = styled(Typography)`
   font-family: "Google Sans", sans-serif;
@@ -32,7 +32,7 @@ const ListItemAvatarWrapper = styled(ListItemAvatar)(
   padding: ${theme.spacing(0.5)};
   border-radius: 5px;
   background: ${
-    theme.palette.mode === 'dark'
+    theme.palette.mode === "dark"
       ? theme.colors.alpha.trueWhite[30]
       : alpha(theme.colors.alpha.black[100], 0.07)
   };
@@ -49,7 +49,7 @@ const ListItemAvatarWrapper = styled(ListItemAvatar)(
 
 const ListItemWrapper = styled(ListItem)(
   ({ theme }) => `
-  transition: ${theme.transitions.create(['background-color', 'transform'], {
+  transition: ${theme.transitions.create(["background-color", "transform"], {
     duration: theme.transitions.duration.standard,
   })};
   &:hover {
@@ -68,30 +68,32 @@ function AuctionDetails({ auction, refetchData }) {
     <ListItemWrapper id={auction.auctionContract._address}>
       <ListItemAvatarWrapper>
         {accounts[0] === auction.seller && (
-          <CustomTypography sx={{ fontWeight: 'bold' }}>✨My Auction✨</CustomTypography>
+          <CustomTypography sx={{ fontWeight: "bold" }}>
+            ✨My Auction✨
+          </CustomTypography>
         )}
         <img alt="img" src={pinataMetadata.image} width={450} height={450} />
       </ListItemAvatarWrapper>
-      <Box display="flex" flexDirection="column" sx={{ width: '100%' }}>
+      <Box display="flex" flexDirection="column" sx={{ width: "100%" }}>
         <CustomTypography
-          sx={{ fontWeight: 'bold' }}
+          sx={{ fontWeight: "bold" }}
         >{`Title: ${pinataMetadata.name}`}</CustomTypography>
         <CustomTypography
-          sx={{ fontWeight: 'bold' }}
+          sx={{ fontWeight: "bold" }}
         >{`Description: ${pinataMetadata.description}`}</CustomTypography>
         <Tooltip title={auction.seller} arrow>
-          <CustomTypography sx={{ fontWeight: 'bold' }}>
+          <CustomTypography sx={{ fontWeight: "bold" }}>
             {`Owned by: ${auction.seller.slice(0, 8)}...`}
           </CustomTypography>
         </Tooltip>
         <Divider
           variant="middle"
-          sx={{ marginTop: '10px', marginBottom: '10px' }}
+          sx={{ marginTop: "10px", marginBottom: "10px" }}
         />
         <Box
           display="flex"
           sx={{
-            flexDirection: 'column',
+            flexDirection: "column",
           }}
         >
           <Stack
@@ -109,10 +111,10 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <CustomTypography>Auction Address</CustomTypography>
+            <CustomTypography>NFT Address</CustomTypography>
             <Tooltip title={auction.auctionContract._address} arrow>
               <CustomTypography>
-                {auction.auctionContract._address.slice(0, 8) + '...'}
+                {auction.auctionContract._address.slice(0, 8) + "..."}
               </CustomTypography>
             </Tooltip>
           </Stack>
@@ -124,7 +126,9 @@ function AuctionDetails({ auction, refetchData }) {
           >
             <CustomTypography>NFT Address</CustomTypography>
             <Tooltip title={auction.nft} arrow>
-              <CustomTypography>{auction.nft.slice(0, 8) + '...'}</CustomTypography>
+              <CustomTypography>
+                {auction.nft.slice(0, 8) + "..."}
+              </CustomTypography>
             </Tooltip>
           </Stack>
           <Stack
@@ -179,7 +183,7 @@ function AuctionDetails({ auction, refetchData }) {
             spacing={2}
           >
             <CustomTypography>Auction Started</CustomTypography>
-            {auction.started ? 'Yes' : 'No'}
+            {auction.started ? "Yes" : "No"}
           </Stack>
           <Stack
             direction="row"
@@ -188,7 +192,7 @@ function AuctionDetails({ auction, refetchData }) {
             spacing={2}
           >
             <CustomTypography>Auction Ended</CustomTypography>
-            {auction.ended ? 'Yes' : 'No'}
+            {auction.ended ? "Yes" : "No"}
           </Stack>
           <NFTListingBidModal
             pinataMetadata={pinataMetadata}
