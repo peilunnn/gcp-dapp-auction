@@ -41,6 +41,23 @@ export function getMintNFTContract(web3, networkID) {
   return mintNFTContract;
 }
 
+export async function mintNFT(web3, mintNFTContract, accounts, tokenURI) {
+  if (
+    web3 === null ||
+    mintNFTContract === null ||
+    accounts == null ||
+    mintNFTContract === undefined
+  ) {
+    console.log("Unable to get auctions. web3 or mintNFTContract is null.");
+    return [];
+  }
+  const receipt = await mintNFTContract.methods
+    .mint(tokenURI)
+    .send({ from: accounts[0] });
+  const tokenId = receipt.events.Transfer.returnValues.tokenId;
+  return tokenId;
+}
+
 export async function getAuctions(web3, auctionFactoryContract, accounts) {
   if (
     web3 === null ||
@@ -70,7 +87,6 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
       .call({ from: accounts[0] });
     // console.log("Auction info", info);
     try {
-      // debugger;
       const mintNftContractAddress = await auctionContract.methods.nft().call();
       const mintNftContract = new web3.eth.Contract(
         mintNftContractJson.abi,
@@ -106,19 +122,6 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
     }
   }
   return auctions;
-}
-
-export async function mintNFT(web3, mintNFTContract, accounts, tokenURI) {
-  if (
-    web3 === null ||
-    mintNFTContract === null ||
-    accounts == null ||
-    mintNFTContract === undefined
-  ) {
-    console.log("Unable to get auctions. web3 or mintNFTContract is null.");
-    return [];
-  }
-  await mintNFTContract.methods.mint(tokenURI).call();
 }
 
 export function displayInGwei(wei) {

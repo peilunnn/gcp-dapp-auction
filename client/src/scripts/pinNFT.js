@@ -1,4 +1,5 @@
 import axios from "axios";
+import { mintNFT } from "../utils";
 
 export function pinNFT(
   selectedFile,
@@ -7,7 +8,12 @@ export function pinNFT(
   setSelectedFile,
   setName,
   setDescription,
-  enqueueSnackbar
+  enqueueSnackbar,
+  web3,
+  mintNFTContract,
+  accounts,
+  setTokenId,
+  setContractAddress
 ) {
   if (!(selectedFile && name.trim() !== "")) {
     enqueueSnackbar("Please select a picture and provide a name", {
@@ -21,14 +27,20 @@ export function pinNFT(
 
   axios
     .post("http://localhost:5000/pin", formData)
-    .then((response) => {
+    .then(async (response) => {
+      const ipfsHash = response.data.ipfsHash;
+      const tokenURI = `gateway.pinata.cloud/ipfs/${ipfsHash}`;
+      const tokenId = await mintNFT(web3, mintNFTContract, accounts, tokenURI);
+      const contractAddress = mintNFTContract.options.address;
+
       setSelectedFile(null);
       setName("");
       setDescription("");
-      enqueueSnackbar("Pinned NFT and metadata to IPFS", {
+      enqueueSnackbar("Successfully pinned and minted NFT", {
         variant: "success",
       });
-      console.log("File uploaded successfully");
+      setTokenId(tokenId);
+      setContractAddress(contractAddress);
     })
     .catch((error) => {
       console.log("Error uploading file:", error);

@@ -10,6 +10,8 @@ contract MintNFT is Ownable, ERC721 {
     Counters.Counter private _tokenIds;
     using Strings for uint256;
 
+    event MintedToken(uint256 tokenId);
+
     // Optional mapping for token URIs
     mapping(uint256 => string) private _tokenURIs;
 
@@ -95,6 +97,7 @@ contract MintNFT is Ownable, ERC721 {
         uint256 newItemId = _tokenIds.current();
         _safeMint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURIInput);
+        emit MintedToken(newItemId);
         return newItemId;
     }
 

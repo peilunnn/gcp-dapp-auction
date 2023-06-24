@@ -6,15 +6,23 @@ import {
   Button,
   Box,
   TextField,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
-import { pinNFT } from "../scripts/pinNFT";
 import { useSnackbar } from "notistack";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import { pinNFT } from "../scripts/pinNFT";
+import { getMintNFTContract } from "../utils";
 
-function NFTUpload() {
+function NFTUpload({ web3, networkID, accounts }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const { enqueueSnackbar } = useSnackbar();
+  const [tokenId, setTokenId] = useState(null);
+  const [contractAddress, setContractAddress] = useState(null);
+
+  const mintNFTContract = getMintNFTContract(web3, networkID);
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -80,7 +88,12 @@ function NFTUpload() {
                   setSelectedFile,
                   setName,
                   setDescription,
-                  enqueueSnackbar
+                  enqueueSnackbar,
+                  web3,
+                  mintNFTContract,
+                  accounts,
+                  setTokenId,
+                  setContractAddress
                 )
               }
               disabled={!selectedFile || name.trim() === ""}
@@ -90,12 +103,69 @@ function NFTUpload() {
               size="large"
               style={{
                 fontWeight: "bold",
-                backgroundColor: "green",
+                backgroundColor: "pink",
               }}
             >
               Upload
             </Button>
           </Box>
+          {tokenId && contractAddress && (
+            <Box mt={2}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                style={{
+                  color: "green",
+                  fontWeight: "bold",
+                  fontSize: "1.5rem",
+                }}
+              >
+                Use the following to create an auction for your newly minted NFT:
+              </Typography>
+              <Box display="flex" alignItems="center" mt={1}>
+                <Typography
+                  variant="h6"
+                  style={{
+                    color: "green",
+                    fontWeight: "bold",
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  Token ID: {tokenId}
+                </Typography>
+                <Tooltip title="Copy to clipboard">
+                  <IconButton
+                    edge="end"
+                    onClick={() => navigator.clipboard.writeText(tokenId)}
+                  >
+                    <FileCopyIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Box display="flex" alignItems="center" mt={1}>
+                <Typography
+                  variant="h6"
+                  style={{
+                    color: "green",
+                    fontWeight: "bold",
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  NFT Address: {contractAddress}
+                </Typography>
+                <Tooltip title="Copy to clipboard">
+                  <IconButton
+                    edge="end"
+                    onClick={() =>
+                      navigator.clipboard.writeText(contractAddress)
+                    }
+                  >
+                    <FileCopyIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
+          )}
         </CardContent>
       </Card>
     </Box>

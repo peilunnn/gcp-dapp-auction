@@ -24,7 +24,7 @@ const pinNFT = async (imgPath, metadata) => {
       },
       data: formData,
     };
-    const data = (await axios(request)).data
+    const data = (await axios(request)).data;
     console.log("Successfully pinned image and metadata");
     return data.IpfsHash;
   } catch (err) {

@@ -7,6 +7,7 @@ function EthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const init = useCallback(async (artifact) => {
+    console.log(artifact);
     if (artifact) {
       const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
       const accounts = await web3.eth.requestAccounts();
