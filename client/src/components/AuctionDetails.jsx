@@ -83,7 +83,11 @@ function AuctionDetails({ auction, refetchData }) {
         >{`Description: ${pinataMetadata.description}`}</CustomTypography>
         <Tooltip title={auction.seller} arrow>
           <CustomTypography sx={{ fontWeight: "bold" }}>
-            {`Owned by: ${auction.seller.slice(0, 8)}...`}
+            {`Owned by: ${
+              auction.started && auction.ended && auction.highestBidder
+                ? auction.highestBidder.slice(0, 8) + "..."
+                : auction.seller.slice(0, 8) + "..."
+            }`}
           </CustomTypography>
         </Tooltip>
         <Divider
