@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export function getAuctionFactoryContract(web3, networkID) {
   if (web3 === null || networkID === null) {
     console.log(
@@ -65,7 +67,6 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
     accounts == null ||
     auctionFactoryContract === undefined
   ) {
-    debugger;
     console.log(
       "Unable to get auctions. web3 or auctionFactoryContract is null."
     );
@@ -75,29 +76,32 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
     .getAuctions()
     .call();
   const auctionContractJson = require("./contracts/Auction.json");
-  const mintNftContractJson = require("./contracts/MintNFT.json");
+  const mintNFTContractJson = require("./contracts/MintNFT.json");
   const auctions = [];
   for (let auctionContractAddress of auctionContractAddresses) {
     const auctionContract = new web3.eth.Contract(
       auctionContractJson.abi,
       auctionContractAddress
     );
-    const nftId = parseInt(await auctionContract.methods.nftId().call());
+    const tokenId = parseInt(await auctionContract.methods.nftId().call());
     const info = await auctionContract.methods
       .info()
       .call({ from: accounts[0] });
-    // console.log("Auction info", info);
     try {
-      const mintNftContractAddress = await auctionContract.methods.nft().call();
-      const mintNftContract = new web3.eth.Contract(
-        mintNftContractJson.abi,
-        mintNftContractAddress
+      const mintNFTContractAddress = await auctionContract.methods.nft().call();
+      const mintNFTContract = new web3.eth.Contract(
+        mintNFTContractJson.abi,
+        mintNFTContractAddress
       );
-      const nftMetadataUri = await mintNftContract.methods
-        .tokenURI(nftId)
-        .call();
-      const nftMetadata = await fetch(nftMetadataUri);
+      const tokenURI = await mintNFTContract.methods.tokenURI(tokenId).call();
+      const nftMetadata = await axios.get(`https://${tokenURI}`, {
+        headers: {
+          Accept: "text/plain",
+        },
+      });
+    // debugger;
       const nftMetadataJson = await nftMetadata.json();
+      console.log("before auction object");
       const auction = {
         pinataImageUri: nftMetadataJson.image,
         pinataMetadata: nftMetadataJson,
@@ -115,6 +119,7 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
         nft: info[11],
         auctionContract: auctionContract,
       };
+      console.log("auction object", auction);
       auctions.push(auction);
     } catch (e) {
       console.log("Unable to get NFT for auction: " + auctionContractAddress);

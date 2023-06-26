@@ -28,8 +28,8 @@ export function pinNFT(
   axios
     .post("http://localhost:5000/pin", formData)
     .then(async (response) => {
-      const ipfsHash = response.data.ipfsHash;
-      const tokenURI = `gateway.pinata.cloud/ipfs/${ipfsHash}`;
+      const imageIpfsHash = response.data.imageIpfsHash;
+      const tokenURI = `gateway.pinata.cloud/ipfs/${imageIpfsHash}`;
       const tokenId = await mintNFT(web3, mintNFTContract, accounts, tokenURI);
       const contractAddress = mintNFTContract.options.address;
 
