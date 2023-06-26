@@ -40,7 +40,7 @@ function Account({ auctions }) {
               sx={{
                 pb: 3,
               }}
-              variant="h4"
+              variant="h3"
             >
               Your Latest Auction
             </CustomTypography>
@@ -158,8 +158,8 @@ function Account({ auctions }) {
                 </Box>
               </Box>
             ) : (
-              <CustomTypography variant="h3">
-                You have not created any auctions yet...
+              <CustomTypography variant="h4">
+                You have not created any auctions yet.
               </CustomTypography>
             )}
           </Box>
