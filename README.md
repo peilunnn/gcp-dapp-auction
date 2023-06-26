@@ -76,7 +76,7 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
 
 3. You should see details of your newly created auction under `Your Latest Auction`. Clicking `Go to Auction` will bring you to the NFT image and more auction details.
 
-4. Using the same NFT Address and NFT Token ID, fill in the `Approve Auction Contract for NFT` section and click `Approve`. Confirm the Metamask transaction.
+4. Using the same NFT Address and NFT Token ID, fill in the `Approve Auction Contract to Own NFT` section and click `Approve`. Confirm the Metamask transaction.
 
 ## Smart Contract Design
 
@@ -86,7 +86,7 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
 
 1. NFT seller starts an auction
    1. User first deploys the auction contract
-   2. User approves the auction contract to transfer his/her NFT from the ERC721 contract
+   2. User approves the auction contract to transfer his NFT from the ERC721 contract
    3. User starts the auction via `start()` function, and supplies:
       1. NFT address
       2. NFT ID
@@ -94,20 +94,20 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
       4. Bid increment limit
       5. Duration of auction
 2. User joins the auction
-   1. User views the auction details by calling `info()` function
-   2. User participate in the auction by calling `bid()` function, and supplies:
-      1. Amount to bid
-         1. Which must be higher than the starting/existing bid
+   1. User views the auction details by calling `info()`
+   2. User participates in the auction by calling `bid()`, and supplies:
+      1. Bid amount
+         1. Which must be higher than the existing bid
          2. For the second bid onwards, the amount is treated as a bid increment, and must be higher than the increment limit
-   3. User can only withdraw bid amount if he/she is not the highest bidder
-3. NFT seller settles the auction
-   1. User views the auction details by calling `info()` function
-   2. User settles the auction by calling `end()` function
-      1. If the auction is not yet ended, the function will revert
-      2. If the auction is ended, the function will transfer the NFT to the highest bidder, and transfer the funds to the NFT seller
+   3. User can only withdraw bid amount if he is not the highest bidder
+3. NFT seller ends the auction
+   1. User views the auction details by calling `info()`
+   2. User ends the auction by calling `end()`
+      1. If the timer has not yet run out, the function will revert
+      2. If the timer has run out, the function will transfer the NFT to the highest bidder, and transfer the funds to the NFT seller
 4. Auction participants who are not the highest bidder can withdraw their bid amount
-   1. User views the auction details by calling `info()` function
-   2. User withdraws the bid amount by calling `withdraw()` function
+   1. User views the auction details by calling `info()`
+   2. User withdraws the bid amount by calling `withdraw()`
 
 ### Prevent Reentrancy Attack
 
@@ -134,19 +134,7 @@ Mathematical operations in Solidity are subject to overflow and underflow bugs. 
 
 One possible solution is to use the SafeMath library. However, the SafeMath library is not used in this project as stated in the comment:
 
-> /\*\*
->
-> - @dev Wrappers over Solidity's arithmetic operations.
-> -
-> - NOTE: `SafeMath` is generally not needed starting with Solidity 0.8, since the compiler
-> - now has built in overflow checking.
->   \*/
+- @dev Wrappers over Solidity's arithmetic operations.
+- NOTE: `SafeMath` is generally not needed starting with Solidity 0.8, since the compiler now has built in overflow checking.
 
 Our auction contract uses Solidity 0.8.0, which has built-in overflow checking. Therefore, we do not need to use the SafeMath library.
-
-## Credits
-
-Images:
-
-- Beeple, Everydays: The First 5000 Days. Sold for: $69.3 million Beeple/Christie’s
-- (And all other images used in our client/assets folder)

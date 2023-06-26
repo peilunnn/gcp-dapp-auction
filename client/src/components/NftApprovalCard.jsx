@@ -67,7 +67,7 @@ const NftApprovalCard = () => {
     <Card>
       <CardContent>
         <CustomTypography variant="h3" component="div">
-          Approve Transfer of NFT Ownership to Auction Contract
+          Approve Auction Contract to Own NFT
         </CustomTypography>
         <form className="nft-approval-form">
           <TextField

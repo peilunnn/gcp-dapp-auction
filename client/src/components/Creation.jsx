@@ -270,8 +270,7 @@ export default function Creation({ refetchData }) {
               fontSize: "1.2rem",
             }}
           >
-            Note: This only creates the auction, you still need to approve the
-            NFT and start the auction once you are done
+            Note: This only creates the auction, you still need to set approval and start the auction once you are done.
           </CustomTypography>
         </DialogContent>
         <DialogActions>
