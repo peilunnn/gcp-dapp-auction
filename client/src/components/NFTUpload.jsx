@@ -33,9 +33,9 @@ function NFTUpload({ web3, networkID, accounts }) {
     <Box border={1} borderRadius={4} p={1} mt={1}>
       <Card>
         <CardContent>
-          <Typography variant="h6" component="div" gutterBottom>
+          <Typography variant="h6" component="div" gutterBottom align="center">
             <strong style={{ fontSize: "1.4rem" }}>
-              Upload and mint a NFT
+              Upload and Mint a NFT
             </strong>
           </Typography>
           <Box mt={2}>
@@ -53,9 +53,9 @@ function NFTUpload({ web3, networkID, accounts }) {
                 fullWidth
                 size="large"
                 sx={{
-                  backgroundColor: "#4caf50",
+                  backgroundColor: "#FF9900",
                   "&:hover": {
-                    backgroundColor: "#388e3c",
+                    backgroundColor: "#cc7a00",
                   },
                   fontWeight: "bold",
                 }}
@@ -107,11 +107,10 @@ function NFTUpload({ web3, networkID, accounts }) {
               fullWidth
               size="large"
               sx={{
-                backgroundColor: "#198754",
+                backgroundColor: "#FF9900",
                 "&:hover": {
-                  backgroundColor: "#10643b",
+                  backgroundColor: "#cc7a00",
                 },
-                color: "#FFFFFF",
                 fontWeight: "bold",
               }}
             >
@@ -124,9 +123,8 @@ function NFTUpload({ web3, networkID, accounts }) {
                 variant="h6"
                 gutterBottom
                 style={{
-                  color: "#303f9f",
                   fontWeight: "bold",
-                  fontSize: "1.5rem",
+                  fontSize: "1.2rem",
                 }}
               >
                 Use the following to create an auction for your newly minted
@@ -136,9 +134,8 @@ function NFTUpload({ web3, networkID, accounts }) {
                 <Typography
                   variant="h6"
                   style={{
-                    color: "#303f9f",
                     fontWeight: "bold",
-                    fontSize: "1.5rem",
+                    fontSize: "1.2rem",
                   }}
                 >
                   NFT Address: {mintNFTContractAddress}
@@ -158,9 +155,8 @@ function NFTUpload({ web3, networkID, accounts }) {
                 <Typography
                   variant="h6"
                   style={{
-                    color: "#303f9f",
                     fontWeight: "bold",
-                    fontSize: "1.5rem",
+                    fontSize: "1.2rem",
                   }}
                 >
                   NFT Token ID: {tokenId}

@@ -165,8 +165,8 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
     const auctionContract = auctionData.auctionContract;
     try {
       await auctionContract.methods.start().send({ from: accounts[0] });
-      enqueueSnackbar('Auction Successfully Started', { variant: 'success' });
-      console.log('auction started :D');
+      enqueueSnackbar("Auction Successfully Started", { variant: "success" });
+      handleClose();
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: 'error' });
     }

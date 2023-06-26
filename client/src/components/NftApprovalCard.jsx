@@ -22,14 +22,14 @@ const NftApprovalCard = () => {
   } = useEth();
   const nftJson = require("../contracts/MintNFT.json");
   const [vars, setVars] = useState({
-    mintNFTContractAddress: "",
+    auctionContractAddress: "",
     tokenId: "",
   });
 
   const handleAddressInput = (event) => {
     setVars({
       ...vars,
-      mintNFTContractAddress: event.target.value,
+      auctionContractAddress: event.target.value,
     });
   };
 
@@ -41,18 +41,18 @@ const NftApprovalCard = () => {
   };
 
   const handleApproval = async () => {
-    let mintNFTContractAddress = nftJson.networks[networkID].address;
-    let mintNFTContract = new web3.eth.Contract(nftJson.abi, mintNFTContractAddress);
+    let auctionContractAddress = nftJson.networks[networkID].address;
+    let mintNFTContract = new web3.eth.Contract(nftJson.abi, auctionContractAddress);
     const tokenId = parseInt(vars.tokenId);
     try {
       await mintNFTContract.methods
-        .approve(vars.mintNFTContractAddress, tokenId)
+        .approve(vars.auctionContractAddress, tokenId)
         .send({ from: accounts[0] });
       enqueueSnackbar("Approval successful", {
         variant: "success",
       });
       setVars({
-        mintNFTContractAddress: "",
+        auctionContractAddress: "",
         tokenId: "",
       });
     } catch (err) {
@@ -67,18 +67,18 @@ const NftApprovalCard = () => {
     <Card>
       <CardContent>
         <CustomTypography variant="h3" component="div">
-          Approve Auction Contract for NFT
+          Approve Transfer of NFT Ownership to Auction Contract
         </CustomTypography>
         <form className="nft-approval-form">
           <TextField
-            placeholder="NFT Address"
-            name="mintNFTContractAddress"
-            value={vars.mintNFTContractAddress}
+            placeholder="Auction Address"
+            name="auctionContractAddress"
+            value={vars.auctionContractAddress}
             onChange={handleAddressInput}
             margin="normal"
             required
-            label="NFT Address"
-            id="mintNFTContractAddress"
+            label="Auction Address"
+            id="auctionContractAddress"
           />
           <TextField
             margin="normal"

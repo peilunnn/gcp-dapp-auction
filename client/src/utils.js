@@ -43,7 +43,7 @@ export function getMintNFTContract(web3, networkID) {
   return mintNFTContract;
 }
 
-export async function mintNFT(web3, mintNFTContract, accounts, tokenURI) {
+export async function mintNFT(web3, mintNFTContract, accounts, metadataURI) {
   if (
     web3 === null ||
     mintNFTContract === null ||
@@ -54,7 +54,7 @@ export async function mintNFT(web3, mintNFTContract, accounts, tokenURI) {
     return [];
   }
   const receipt = await mintNFTContract.methods
-    .mint(tokenURI)
+    .mint(metadataURI)
     .send({ from: accounts[0] });
   const tokenId = receipt.events.Transfer.returnValues.tokenId;
   return tokenId;
@@ -93,18 +93,20 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
         mintNFTContractJson.abi,
         mintNFTContractAddress
       );
-      const tokenURI = await mintNFTContract.methods.tokenURI(tokenId).call();
-      const nftMetadata = await axios.get(`https://${tokenURI}`, {
-        headers: {
-          Accept: "text/plain",
-        },
-      });
-    // debugger;
-      const nftMetadataJson = await nftMetadata.json();
-      console.log("before auction object");
+      const metadataURI = await mintNFTContract.methods
+        .tokenURI(tokenId)
+        .call();
+      const nftMetadata = (
+        await axios.get(metadataURI, {
+          headers: {
+            Accept: "text/plain",
+          },
+        })
+      ).data;
+      const nftMetadataJSON = JSON.parse(nftMetadata);
       const auction = {
-        pinataImageUri: nftMetadataJson.image,
-        pinataMetadata: nftMetadataJson,
+        pinataImageUri: nftMetadataJSON.image,
+        pinataMetadata: nftMetadataJSON,
         seller: info[0],
         highestBidder: info[1],
         startAt: parseInt(info[2]),
@@ -119,7 +121,6 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
         nft: info[11],
         auctionContract: auctionContract,
       };
-      console.log("auction object", auction);
       auctions.push(auction);
     } catch (e) {
       console.log("Unable to get NFT for auction: " + auctionContractAddress);

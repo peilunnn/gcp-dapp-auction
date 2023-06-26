@@ -21,7 +21,6 @@ const pinMetadata = async (metadata) => {
       },
       data: data,
     };
-    debugger;
     const responseData = (await axios(request)).data;
     console.log("Successfully pinned metadata");
     return responseData.IpfsHash;

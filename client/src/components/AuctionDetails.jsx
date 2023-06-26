@@ -111,7 +111,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <CustomTypography>NFT Address</CustomTypography>
+            <CustomTypography>Auction Address</CustomTypography>
             <Tooltip title={auction.auctionContract._address} arrow>
               <CustomTypography>
                 {auction.auctionContract._address.slice(0, 8) + "..."}

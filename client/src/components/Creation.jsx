@@ -150,9 +150,9 @@ export default function Creation({ refetchData }) {
           padding: "10px 30px",
           marginTop: "8px",
           color: "#fff",
-          backgroundColor: "#3f51b5",
+          backgroundColor: "#FF9900",
           "&:hover": {
-            backgroundColor: "#303f9f",
+            backgroundColor: "#cc7a00",
           },
         }}
       >

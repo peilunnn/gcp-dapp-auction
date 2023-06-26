@@ -16,7 +16,7 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
 4. Check the port that Ganache is running on (7545 if Ganache Desktop or 8545 if Ganache CLI, by default)
    
    ```
-   ganache-cli --defaultBalanceEther 900000000000000000000
+   ganache-cli --defaultBalanceEther 1000
    ```
 
    Then edit `truffle-config.js` (`networks/development`) to match the port
@@ -65,66 +65,18 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
 
 ## Play Around with the App
 ### As a Buyer
-1. At the top right, connect to Metamask and make sure you use the correct account that is tied to your local Ganache blockchain. It should have 900000000000000000000 ETH
+1. At the top right, connect to Metamask and make sure you use the correct account that is tied to your local Ganache blockchain. It should have 2000 ETH
 
 2. Click Open on any of the auctions. Find one that is in progress (Auction Started Yes but Auction Ended No) and submit your bid. It must be higher than the current highest bid.
 
 ### As a Seller
-1. You should see a `My Auction` as the first auction. This is an auction that has already been created for you. Click Open and end the auction.
+1. Upload an image, fill in the name and description, and click `Upload`. Confirm the Metamask transaction.
 
-If you want to mint your own NFT and create an auction for it, follow the steps below.
+2. Copy the NFT Address and NFT Token ID, and click `Create New Auction`. Follow the steps and once you're finished, confirm the Metamask transaction.
 
-## Minting NFT
+3. You should see details of your newly created auction under `Your Latest Auction`. Clicking `Go to Auction` will bring you to the NFT image and more auction details.
 
-### Instructions
-First you will pin the NFT to IPFS (uploading the image and metadata) using Pinata's REST API, then mint the NFT (creating the NFT on the local Ethereum blockchain with the NFT's unique token id)
-
-1. [Sign up for a Pinata account](https://app.pinata.cloud/signup) and create an API key
-
-2. The scripts require secrets to be filled, so create a `.env` file in `client` with the content of `.env.example` and fill in the secrets. For `PINATA_ENDPOINT`, it will be `https://api.pinata.cloud/pinning/pinFileToIPFS`
-
-3. Find a picture or gif that you like and move it into `client/assets`
-
-4. Open `client/data/metadata.json`. Change the name, description and attributes to your liking. The image link does not matter
-
-5. Edit `runScript.js` in `client/scripts` by editing `imgPath` in line 8 to be:
-    
-   `const imgPath = path.join(__dirname, "../assets/{your-file-name}.{file-type}");`
-
-6. Execute `runScript.js` from its immediate directory, which will pin your NFT to IPFS
-   
-   ```
-   cd client/src/scripts
-   node runScript.js
-   ```
-
-7. To view your pinned NFT, get your IPFS hash from the last entry of `ipfsHash.json` and go to https://gateway.pinata.cloud/ipfs/{your-IPFS-hash}
-
-8. Now you need to mint the NFT on the Ganache `development` local blockchain using the metadata you have just created
-```
-cd truffle
-truffle migrate --network development
-npx truffle console --network development
-const nft = await MintNFT.deployed() // get the deployed instance of the contract. Returns undefined
-nft.address // address where the MintNFT contract is deployed to. Record this down for later
-
-// Once the above are confirmed, you can mint your NFT
-let res = await nft.mint('https://gateway.pinata.cloud/ipfs/{your-IPFS-hash}') // the same IPFS hash you used earlier to view your pinned image
-let tokenId = res.logs[0].args.tokenId.words[0] // get the token ID of the newly minted NFT. Record this down for later
-await nft.ownerOf(tokenId) // should return your metamask address
-```
-
-let res = await nft.mint('https://gateway.pinata.cloud/ipfs/QmRD1GLXJhZ1QmiPKfMr6o2joQUYsXTZCkqfuhuyqQVohX') // the same IPFS hash you used earlier to view your pinned image
-
-
-## Auction Your Minted NFT
-
-1. Now you will use `nft.address` and `tokenId` recorded down from the previous step
-   
-2. On the website, press `Create Auction`, and fill in the fields
-   - NFT Address : nft.address
-   - NFT Token Id : tokenId
-   - Starting Bid / Increment : as desired
+4. Using the same NFT Address and NFT Token ID, fill in the `Approve Auction Contract for NFT` section and click `Approve`. Confirm the Metamask transaction.
 
 ## Smart Contract Design
 

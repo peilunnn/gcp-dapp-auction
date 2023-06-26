@@ -90,7 +90,7 @@ function Account({ auctions }) {
                     spacing={2}
                   >
                     <CustomTypography variant="h4">
-                      NFT Address
+                      Auction Address
                     </CustomTypography>
                     {auction.auctionContract._address}
                   </Stack>
