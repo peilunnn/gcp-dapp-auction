@@ -26,10 +26,15 @@ export function pinNFT(
   formData.append("description", description);
 
   axios
-    .post("http://localhost:5000/pin", formData)
+    .post("https://dapp-be-staging-6gnnhrwjpa-as.a.run.app/pin", formData)
     .then(async (response) => {
       const metadataURI = response.data.metadataURI;
-      const tokenId = await mintNFT(web3, mintNFTContract, accounts, metadataURI);
+      const tokenId = await mintNFT(
+        web3,
+        mintNFTContract,
+        accounts,
+        metadataURI
+      );
       const contractAddress = mintNFTContract.options.address;
 
       setSelectedFile(null);
