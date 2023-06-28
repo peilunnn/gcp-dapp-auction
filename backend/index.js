@@ -28,15 +28,6 @@ app.post("/pin", upload.single("file"), async (req, res) => {
   const imageIpfsHash = await pinImage(imgPath);
 
   // Pin metadata
-  /*
-  Metadata looks like this:
-  {
-    name: "book",
-    description: "some book",
-    image: "QmbXvahAeVzspFRmryVdqGePkjCJu8H3L7U7PUMQXknRbu"
-  };
-  image is the imageIpfsHash which links us to the actual NFT image
-  */
   const metadata = {
     ...req.body,
     image: `https://gateway.pinata.cloud/ipfs/${imageIpfsHash}`,
