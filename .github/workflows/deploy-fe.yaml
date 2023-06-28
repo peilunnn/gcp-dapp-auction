@@ -28,24 +28,17 @@ jobs:
       - name: Set up Docker CLI
         uses: docker/setup-buildx-action@v1
 
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
-      - name: Echo npm cache directory
-        run: echo "npm cache directory is ${{ steps.npm-cache.outputs.dir }}"
-        
-      - name: Cache node modules
-        id: my-cache-step
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
+      - name: Cache node modules in truffle directory
+        id: cache-npm-truffle
+        uses: actions/cache@v2
         with:
-          path: /home/runner/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          path: truffle/node_modules
+          key: ${{ runner.os }}-truffle-${{ hashFiles('truffle/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-truffle-
 
       - name: Install dependencies
-        if: steps.my-cache-step.outputs.cache-hit != 'true'
+        # if: steps.cache-npm-truffle.outputs.cache-hit != 'true'
         run: |
           cd truffle
           npm i -g truffle
@@ -66,7 +59,7 @@ jobs:
           ETH_CLIENT_URL: ${{ secrets.ETH_CLIENT_URL }}
           API_KEY: ${{ secrets.API_KEY }}
 
-      - name: Build and deploy FE to Cloud Run
+      - name: Build FE image and deploy FE to Cloud Run
         run: |
           cd client
           docker build -t dapp-fe-image .
