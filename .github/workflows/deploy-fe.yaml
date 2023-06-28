@@ -28,15 +28,24 @@ jobs:
       - name: Set up Docker CLI
         uses: docker/setup-buildx-action@v1
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Echo npm cache directory
+        run: echo "npm cache directory is ${{ steps.npm-cache.outputs.dir }}"
+        
+      - name: Cache node modules
+        id: my-cache-step
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
         with:
-          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          path: /home/runner/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
+        if: steps.my-cache-step.outputs.cache-hit != 'true'
         run: |
           cd truffle
           npm i -g truffle
@@ -48,11 +57,17 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
-      - name: Deploy smart contracts to Goerli Testnet
+      - name: Deploy smart contracts to BNE Sepolia Testnet
         run: |
-          truffle migrate --network goerli
+          cd truffle
+          truffle migrate --reset --network bne
+        env:
+          MNEMONIC: ${{ secrets.MNEMONIC }}
+          ETH_CLIENT_URL: ${{ secrets.ETH_CLIENT_URL }}
+          API_KEY: ${{ secrets.API_KEY }}
 
       - name: Build and deploy FE to Cloud Run
         run: |
+          cd client
           docker build -t dapp-fe-image .
-          gcloud run deploy dapp-fe-staging --source . --region=asia-southeast1 --port=3000
+          gcloud run deploy dapp-fe-staging --source . --region=asia-southeast1 --port=3000 --service-account=${{ secrets.SERVICE_ACCOUNT }}

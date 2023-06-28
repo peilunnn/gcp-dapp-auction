@@ -21,7 +21,7 @@
 require("dotenv").config();
 const mnemonic = process.env.MNEMONIC;
 const clientURL = process.env.ETH_CLIENT_URL;
-const infuraApiKey = process.env.INFURA_API_KEY;
+const apiKey = process.env.API_KEY;
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
@@ -63,13 +63,25 @@ module.exports = {
     // Useful for deploying to a public network.
     // Note: It's important to wrap the provider as a function to ensure truffle uses a new provider every time.
     goerli: {
-      provider: () => new HDWalletProvider(mnemonic, `${clientURL}/${infuraApiKey}`),
+      provider: () => new HDWalletProvider(mnemonic, `${clientURL}/${apiKey}`),
       network_id: 5, // Goerli's network id
       chain_id: 5, // Goerli's chain id
       gas: 5500000, // Gas limit used for deploys.
       confirmations: 2, // # of confirmations to wait between deployments. (default: 0)
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets)
+    },
+
+    sepolia: {
+      provider: () => new HDWalletProvider(mnemonic, `${clientURL}/${apiKey}`),
+      network_id: "11155111",
+      gas: 4465030,
+    },
+
+    bne: {
+      provider: () =>
+        new HDWalletProvider(mnemonic, `${clientURL}?key=${apiKey}`),
+      network_id: "11155111",
     },
     //
     // Useful for private networks
