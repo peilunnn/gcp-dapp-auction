@@ -23,12 +23,14 @@ function NFTUpload({ web3, networkID, accounts }) {
   const [tokenId, setTokenId] = useState(null);
   const [mintNFTContractAddress, setMintNFTContractAddress] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const mintNFTContract = getMintNFTContract(web3, networkID);
 
   const handleUploadImage = (event) => {
     const img = event.target.files[0];
     setUploadedImage(img);
+    setImagePreview(URL.createObjectURL(img));
   };
 
   const handleMintButtonClick = async () => {
@@ -51,7 +53,12 @@ function NFTUpload({ web3, networkID, accounts }) {
   };
 
   return (
-    <Card sx={{ border: "1px solid #ccc", mt: "20px", height: "550px" }}>
+    <Card
+      sx={{
+        border: "1px solid #ccc",
+        mt: "20px"
+      }}
+    >
       <CardContent>
         <Typography variant="h6" component="div" gutterBottom align="center">
           <strong style={{ fontSize: "1.4rem" }}>Upload and Mint a NFT</strong>
@@ -82,6 +89,15 @@ function NFTUpload({ web3, networkID, accounts }) {
             </Button>
           </label>
         </Box>
+        {imagePreview && (
+          <Box mt={2} display="flex" justifyContent="center">
+            <img
+              src={imagePreview}
+              alt="Preview"
+              style={{ maxWidth: "100%", maxHeight: "300px" }}
+            />
+          </Box>
+        )}
         <Box mt={2}>
           <TextField
             id="name"
@@ -140,12 +156,11 @@ function NFTUpload({ web3, networkID, accounts }) {
             )}
             {loading && (
               <Box
-                position="absolute"
+                position="relative"
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
-                marginTop="40px"
               >
                 <CircularProgress
                   size={24}
@@ -157,7 +172,7 @@ function NFTUpload({ web3, networkID, accounts }) {
                   variant="subtitle1"
                   sx={{
                     color: "#FF9900",
-                    marginTop: "5px",
+                    marginTop: "10px",
                   }}
                 >
                   Waiting for wallet confirmation...
