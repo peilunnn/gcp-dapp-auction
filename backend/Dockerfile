@@ -6,4 +6,6 @@ COPY package.json .
 RUN npm install --legacy-peer-deps
 COPY . .
 EXPOSE 5000
-CMD npm start
+
+ENV NODE_ENV staging
+CMD ["npm", "start"]

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { mintNFT } from "../utils";
 
+const beEndpoint = process.env.REACT_APP_BE_ENDPOINT;
+
 export function pinNFT(
   selectedFile,
   name,
@@ -20,13 +22,14 @@ export function pinNFT(
       variant: "error",
     });
   }
+
   const formData = new FormData();
   formData.append("file", selectedFile);
   formData.append("name", name);
   formData.append("description", description);
-
+  
   axios
-    .post("https://dapp-be-staging-6gnnhrwjpa-as.a.run.app/pin", formData)
+    .post(beEndpoint, formData)
     .then(async (response) => {
       const metadataURI = response.data.metadataURI;
       const tokenId = await mintNFT(
