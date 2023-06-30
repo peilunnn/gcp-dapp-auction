@@ -25,6 +25,11 @@ jobs:
         with:
           node-version: "14"
 
+      - name: Install global npm dependencies
+        run: |
+          cd truffle
+          npm install -g truffle
+
       - name: Set up Docker CLI
         uses: docker/setup-buildx-action@v1
 
