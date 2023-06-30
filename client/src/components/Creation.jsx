@@ -97,6 +97,7 @@ export default function Creation({ refetchData }) {
       auctionFactoryContractAddress
     );
     try {
+      debugger;
       let val = await auctionFactoryContract.methods
         .createNewAuction(
           vars.nftAddress,
