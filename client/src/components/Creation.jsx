@@ -57,7 +57,11 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function Creation({ refetchData }) {
+export default function Creation({
+  refetchData,
+  mintNFTContractAddress,
+  tokenId,
+}) {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -69,10 +73,6 @@ export default function Creation({ refetchData }) {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    if (vars.nftAddress === "") {
-      enqueueSnackbar("NFT Address is required", { variant: "error" });
-      return;
-    }
     if (vars.startingBid <= 0) {
       enqueueSnackbar("Starting Bid must be greater than 0", {
         variant: "error",
@@ -97,11 +97,10 @@ export default function Creation({ refetchData }) {
       auctionFactoryContractAddress
     );
     try {
-      debugger;
       let val = await auctionFactoryContract.methods
         .createNewAuction(
-          vars.nftAddress,
-          vars.nftId,
+          vars.nftAddress || mintNFTContractAddress,
+          vars.nftId || tokenId,
           vars.startingBid * Math.pow(10, 9),
           vars.increment * Math.pow(10, 9), //convert from Gwei in form input to wei in Auction constructor
           vars.duration * 60 * 60 // convert from hours in form input to seconds in Auction constructor
@@ -134,8 +133,8 @@ export default function Creation({ refetchData }) {
     setOpen(false);
   };
   const [vars, setVars] = useState({
-    nftAddress: "",
-    nftId: 0,
+    nftAddress: mintNFTContractAddress,
+    nftId: tokenId,
     startingBid: 0,
     increment: 0,
     duration: 0,
@@ -157,7 +156,7 @@ export default function Creation({ refetchData }) {
           },
         }}
       >
-        Create new auction
+        Create New Auction
       </Button>
       <BootstrapDialog
         onClose={handleClose}
@@ -271,7 +270,8 @@ export default function Creation({ refetchData }) {
               fontSize: "1.2rem",
             }}
           >
-            Note: This only creates the auction, you still need to set approval and start the auction once you are done.
+            Note: This only creates the auction, you still need to set approval
+            and start the auction once you are done.
           </CustomTypography>
         </DialogContent>
         <DialogActions>

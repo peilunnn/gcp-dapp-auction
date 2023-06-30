@@ -1,6 +1,5 @@
 import { Typography, Avatar, Grid, useTheme } from "@mui/material";
 import { useEth } from "../contexts/EthContext";
-import Creation from "./Creation";
 import { styled } from "@mui/system";
 
 const CustomTypography = styled(Typography)`
@@ -8,7 +7,7 @@ const CustomTypography = styled(Typography)`
   font-weight: 600;
 `;
 
-function PageHeader({ refetchData }) {
+function PageHeader() {
   const {
     state: { accounts },
   } = useEth();
@@ -25,8 +24,8 @@ function PageHeader({ refetchData }) {
         <Avatar
           sx={{
             mr: 2,
-            width: theme.spacing(15),
-            height: theme.spacing(15),
+            width: theme.spacing(10),
+            height: theme.spacing(10),
           }}
           variant="rounded"
           alt={user.name}
@@ -40,7 +39,6 @@ function PageHeader({ refetchData }) {
         <CustomTypography variant="h3">
           Participate in NFT auctions now!
         </CustomTypography>
-        <Creation refetchData={refetchData} />
       </Grid>
     </Grid>
   );

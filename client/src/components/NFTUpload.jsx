@@ -14,14 +14,15 @@ import { useSnackbar } from "notistack";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import { pinNFT } from "../scripts/pinNFT";
 import { getMintNFTContract } from "../utils";
+import Creation from "./Creation";
 
-function NFTUpload({ web3, networkID, accounts }) {
+function NFTUpload({ web3, networkID, accounts, refetchData }) {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const { enqueueSnackbar } = useSnackbar();
-  const [tokenId, setTokenId] = useState(null);
   const [mintNFTContractAddress, setMintNFTContractAddress] = useState(null);
+  const [tokenId, setTokenId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -56,7 +57,7 @@ function NFTUpload({ web3, networkID, accounts }) {
     <Card
       sx={{
         border: "1px solid #ccc",
-        mt: "20px"
+        mt: "20px",
       }}
     >
       <CardContent>
@@ -182,7 +183,7 @@ function NFTUpload({ web3, networkID, accounts }) {
           </Box>
         </Box>
         {tokenId && mintNFTContractAddress && !loading && (
-          <Box mt={2}>
+          <Box mt={2} textAlign="center">
             <Typography
               variant="h6"
               gutterBottom
@@ -191,47 +192,26 @@ function NFTUpload({ web3, networkID, accounts }) {
                 fontSize: "1.2rem",
               }}
             >
-              Use the following to create an auction for your newly minted NFT:
+              Now you can create an auction for your newly minted NFT.
             </Typography>
-            <Box display="flex" alignItems="center" mt={1}>
-              <Typography
-                variant="h6"
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                }}
-              >
-                NFT Address: {mintNFTContractAddress}
-              </Typography>
-              <Tooltip title="Copy to clipboard">
-                <IconButton
-                  edge="end"
-                  onClick={() =>
-                    navigator.clipboard.writeText(mintNFTContractAddress)
-                  }
-                >
-                  <FileCopyIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
-            <Box display="flex" alignItems="center" mt={1}>
-              <Typography
-                variant="h6"
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                }}
-              >
-                NFT Token ID: {tokenId}
-              </Typography>
-              <Tooltip title="Copy to clipboard">
-                <IconButton
-                  edge="end"
-                  onClick={() => navigator.clipboard.writeText(tokenId)}
-                >
-                  <FileCopyIcon />
-                </IconButton>
-              </Tooltip>
+            <Typography
+              variant="h6"
+              gutterBottom
+              style={{
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+              }}
+            >
+              The <span style={{ color: "orange" }}>NFT Address</span> and{" "}
+              <span style={{ color: "orange" }}>NFT Token ID</span> fields have
+              been filled in for you.{" "}
+            </Typography>
+            <Box mt={2} display="flex" justifyContent="center">
+              <Creation
+                refetchData={refetchData}
+                mintNFTContractAddress={mintNFTContractAddress}
+                tokenId={tokenId}
+              />
             </Box>
           </Box>
         )}
