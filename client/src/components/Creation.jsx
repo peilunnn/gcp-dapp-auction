@@ -17,6 +17,10 @@ import { useEth } from "../contexts/EthContext";
 const CustomTypography = styled(Typography)`
   font-family: "Google Sans", sans-serif;
   font-weight: 600;
+
+  span.highlight {
+    color: orange;
+  }
 `;
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -257,21 +261,39 @@ export default function Creation({
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{
+                mt: 3,
+                mb: 2,
+                backgroundColor: "#FF9900",
+                "&:hover": {
+                  backgroundColor: "#cc7a00",
+                },
+              }}
             >
               Create
             </Button>
           </Box>
           <CustomTypography
             gutterBottom
+            align="center"
             style={{
-              color: "red",
               fontWeight: "bold",
-              fontSize: "1.2rem",
+              fontSize: "1.1rem",
             }}
           >
-            Note: This only creates the auction, you still need to set approval
-            and start the auction once you are done.
+            After creating the auction, you still need to set approval.
+          </CustomTypography>
+          <CustomTypography
+            gutterBottom
+            align="center"
+            style={{
+              fontWeight: "bold",
+              fontSize: "1.1rem",
+            }}
+          >
+            The <span style={{ color: "orange" }}>Auction Address</span> and{" "}
+            <span style={{ color: "orange" }}>NFT Token ID</span> fields have
+            been filled in for you.
           </CustomTypography>
         </DialogContent>
         <DialogActions>

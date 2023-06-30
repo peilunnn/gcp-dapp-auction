@@ -15,15 +15,15 @@ const CustomTypography = styled(Typography)`
   font-weight: 600;
 `;
 
-const NftApprovalCard = () => {
+const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
   const { enqueueSnackbar } = useSnackbar();
   const {
     state: { web3, networkID, accounts },
   } = useEth();
   const nftJson = require("../contracts/MintNFT.json");
   const [vars, setVars] = useState({
-    auctionContractAddress: "",
-    tokenId: "",
+    auctionContractAddress: auctionContractAddress || "",
+    tokenId: tokenId || "",
   });
 
   const handleAddressInput = (event) => {
@@ -42,7 +42,10 @@ const NftApprovalCard = () => {
 
   const handleApproval = async () => {
     let auctionContractAddress = nftJson.networks[networkID].address;
-    let mintNFTContract = new web3.eth.Contract(nftJson.abi, auctionContractAddress);
+    let mintNFTContract = new web3.eth.Contract(
+      nftJson.abi,
+      auctionContractAddress
+    );
     const tokenId = parseInt(vars.tokenId);
     try {
       await mintNFTContract.methods
@@ -73,7 +76,7 @@ const NftApprovalCard = () => {
           <TextField
             placeholder="Auction Address"
             name="auctionContractAddress"
-            value={vars.auctionContractAddress}
+            value={auctionContractAddress}
             onChange={handleAddressInput}
             margin="normal"
             required

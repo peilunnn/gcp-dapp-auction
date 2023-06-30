@@ -1,6 +1,5 @@
 import { Card, Box, Grid, Typography, Divider, Stack } from "@mui/material";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEth } from "../contexts/EthContext";
 import {
   displayInGwei,
@@ -26,6 +25,7 @@ function Account({ auctions }) {
       for (let i = 0; i < auctions.length; i++) {
         if (auctions[i].seller === accounts[0]) {
           setAuction(auctions[i]);
+          break; // Stop searching after finding the first auction
         }
       }
     }
@@ -36,12 +36,7 @@ function Account({ auctions }) {
       <Grid spacing={0} container>
         <Grid item xs={12} md={6}>
           <Box p={4}>
-            <CustomTypography
-              sx={{
-                pb: 3,
-              }}
-              variant="h3"
-            >
+            <CustomTypography sx={{ pb: 3 }} variant="h3">
               Your Latest Auction
             </CustomTypography>
             {auction ? (
@@ -62,6 +57,7 @@ function Account({ auctions }) {
                 </CustomTypography>
                 <CustomTypography
                   variant="h3"
+                  color="orange"
                   sx={{ marginTop: "10px", marginBottom: "10px" }}
                 >
                   <a href={`#${auction.auctionContract._address}`}>
@@ -182,7 +178,12 @@ function Account({ auctions }) {
           >
             <Divider absolute orientation="vertical" />
           </Box>
-          <NftApprovalCard />
+          {auction && (
+            <NftApprovalCard
+              auctionContractAddress={auction.auctionContract._address}
+              tokenId={auction.nftId}
+            />
+          )}
         </Grid>
       </Grid>
     </Card>
