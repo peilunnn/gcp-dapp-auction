@@ -15,7 +15,7 @@ export function pinNFT(
   mintNFTContract,
   accounts,
   setTokenId,
-  setContractAddress,
+  setMintNFTContractAddress,
   setLoading
 ) {
   if (!(selectedFile && name.trim() !== "")) {
@@ -49,7 +49,7 @@ export function pinNFT(
         variant: "success",
       });
       setTokenId(tokenId);
-      setContractAddress(contractAddress);
+      setMintNFTContractAddress(contractAddress);
     })
     .catch((error) => {
       console.log("Error uploading file:", error);

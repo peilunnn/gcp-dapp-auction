@@ -132,7 +132,7 @@ function Account({ auctions }) {
                     spacing={2}
                   >
                     <CustomTypography variant="h4">
-                      Minimal increment
+                      Minimum Increment
                     </CustomTypography>
                     {displayInGwei(auction.increment)} gwei
                   </Stack>

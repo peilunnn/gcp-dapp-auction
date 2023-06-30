@@ -159,7 +159,7 @@ function AuctionDetails({ auction, refetchData }) {
             alignItems="center"
             spacing={2}
           >
-            <CustomTypography>Minimal increment</CustomTypography>
+            <CustomTypography>Minimum Increment</CustomTypography>
             {displayInGwei(auction.increment)} gwei
           </Stack>
           <Stack
