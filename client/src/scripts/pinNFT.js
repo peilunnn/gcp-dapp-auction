@@ -15,7 +15,8 @@ export function pinNFT(
   mintNFTContract,
   accounts,
   setTokenId,
-  setContractAddress
+  setContractAddress,
+  setLoading
 ) {
   if (!(selectedFile && name.trim() !== "")) {
     enqueueSnackbar("Please select a picture and provide a name", {
@@ -27,10 +28,11 @@ export function pinNFT(
   formData.append("file", selectedFile);
   formData.append("name", name);
   formData.append("description", description);
-  
+
   axios
     .post(beEndpoint, formData)
     .then(async (response) => {
+      setLoading(false);
       const metadataURI = response.data.metadataURI;
       const tokenId = await mintNFT(
         web3,

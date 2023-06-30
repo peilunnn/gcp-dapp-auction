@@ -287,17 +287,18 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                 alignItems="center"
                 gap="10px"
               >
-                {role === "seller" && (
-                  <CustomTypography>
-                    As the seller, you can{" "}
-                    <Button variant="contained" onClick={handleStartAuction}>
-                      Start
-                    </Button>{" "}
-                    <Button variant="contained" onClick={handleEnd}>
-                      End
-                    </Button>
-                  </CustomTypography>
-                )}
+                {role === "seller" &&
+                  !auctionData.started && (
+                    <CustomTypography>
+                      As the seller, you can{" "}
+                      <Button variant="contained" onClick={handleStartAuction}>
+                        Start
+                      </Button>{" "}
+                      <Button variant="contained" onClick={handleEnd}>
+                        End
+                      </Button>
+                    </CustomTypography>
+                  )}
                 {(role === "notBidder" || role === "bidder") && (
                   <Box display="flex">
                     <TextField
