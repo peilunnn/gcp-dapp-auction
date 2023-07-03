@@ -1,5 +1,5 @@
-import { Card, Box, Grid, Typography, List, Button } from '@mui/material';
-import AuctionDetails from './AuctionDetails';
+import { Card, Box, Grid, Typography, List, Button } from "@mui/material";
+import AuctionDetails from "./AuctionDetails";
 import { styled } from "@mui/system";
 
 const CustomTypography = styled(Typography)`
@@ -7,15 +7,15 @@ const CustomTypography = styled(Typography)`
   font-weight: 600;
 `;
 
-function Listing({ auctions, refetchData }) {
+function Listing({ auctions, refetchData, loading, setLoading }) {
   if (auctions === undefined) {
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100%',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
         }}
       >
         <CustomTypography variant="h3">Loading...</CustomTypography>
@@ -31,7 +31,7 @@ function Listing({ auctions, refetchData }) {
         mt={4}
         variant="h4"
       >
-        All Auctions{' '}
+        All Auctions{" "}
         <Button
           onClick={() => {
             refetchData();
@@ -55,7 +55,7 @@ function Listing({ auctions, refetchData }) {
           >
             <List
               sx={{
-                width: '80%',
+                width: "80%",
               }}
             >
               {auctions === [] ? (
@@ -72,6 +72,8 @@ function Listing({ auctions, refetchData }) {
                     auction={auction}
                     refetchData={refetchData}
                     key={idx}
+                    loading={loading}
+                    setLoading={setLoading}
                   />
                 ))
               )}

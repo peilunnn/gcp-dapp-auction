@@ -1,5 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, CircularProgress } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -17,10 +17,6 @@ import { useEth } from "../contexts/EthContext";
 const CustomTypography = styled(Typography)`
   font-family: "Google Sans", sans-serif;
   font-weight: 600;
-
-  span.highlight {
-    color: orange;
-  }
 `;
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -277,23 +273,12 @@ export default function Creation({
             gutterBottom
             align="center"
             style={{
+              color: "red",
               fontWeight: "bold",
               fontSize: "1.1rem",
             }}
           >
-            After creating the auction, you still need to set approval.
-          </CustomTypography>
-          <CustomTypography
-            gutterBottom
-            align="center"
-            style={{
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-            }}
-          >
-            The <span style={{ color: "orange" }}>Auction Address</span> and{" "}
-            <span style={{ color: "orange" }}>NFT Token ID</span> fields have
-            been filled in for you.
+            Note: after this, set approval before you can start your auction.
           </CustomTypography>
         </DialogContent>
         <DialogActions>

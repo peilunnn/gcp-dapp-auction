@@ -1,3 +1,4 @@
+import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
@@ -63,7 +64,13 @@ const calculateTimeTillExpiry = (auctionData) => {
   };
 };
 
-function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
+function NFTListingBidModal({
+  pinataMetadata,
+  auctionData,
+  refetchData,
+  loading,
+  setLoading,
+}) {
   const { enqueueSnackbar } = useSnackbar();
   const {
     state: { accounts },
@@ -78,7 +85,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
   };
   const [highestBid, setHighestBid] = useState(auctionData.highestBid);
   const [highestBidder, setHighestBidder] = useState(auctionData.highestBidder);
-  const [role, setRole] = useState("bidder"); // 'seller', 'highestBidder', 'bidder', 'notBidder'
+  const [role, setRole] = useState("bidder");
   const { timeTillExpiryHours, timeTillExpiryMinutes, timeTillExpirySeconds } =
     calculateTimeTillExpiry(auctionData);
   const [currBidAmount, setCurrBidAmount] = useState(0);
@@ -162,9 +169,13 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
       enqueueSnackbar("Auction already started!", { variant: "error" });
       return;
     }
+
+    setLoading(true);
+
     const auctionContract = auctionData.auctionContract;
     try {
       await auctionContract.methods.start().send({ from: accounts[0] });
+      setLoading(false);
       enqueueSnackbar("Auction Successfully Started", { variant: "success" });
       handleClose();
     } catch (err) {
@@ -173,7 +184,6 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
   };
 
   const handleWithdraw = async () => {
-    // highest bidder cannot withdraw
     if (highestBidder === accounts[0]) {
       enqueueSnackbar("You are the highest bidder! You cannot withdraw!", {
         variant: "error",
@@ -198,11 +208,14 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
     }
   };
 
-  const handleEnd = async () => {
+  const handleEndAuction = async () => {
     if (auctionData.ended) {
       enqueueSnackbar("Auction already ended!", { variant: "error" });
       return;
     }
+
+    setLoading(true);
+
     if (
       accounts[0] !== auctionData.seller &&
       accounts[0] !== auctionData.highestBidder
@@ -219,6 +232,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
     const auctionContract = auctionData.auctionContract;
     try {
       await auctionContract.methods.end().send({ from: accounts[0] });
+      setLoading(false);
       enqueueSnackbar("Successfully ended the auction!", {
         variant: "success",
       });
@@ -287,18 +301,55 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                 alignItems="center"
                 gap="10px"
               >
-                {role === "seller" &&
-                  !auctionData.started && (
-                    <CustomTypography>
-                      As the seller, you can{" "}
-                      <Button variant="contained" onClick={handleStartAuction}>
-                        Start
-                      </Button>{" "}
-                      <Button variant="contained" onClick={handleEnd}>
-                        End
-                      </Button>
-                    </CustomTypography>
-                  )}
+                {role === "seller" && !loading && (
+                  <>
+                    {!auctionData.started && !auctionData.ended && (
+                      <CustomTypography>
+                        As the seller, you can{" "}
+                        <Button
+                          variant="contained"
+                          onClick={handleStartAuction}
+                        >
+                          Start
+                        </Button>
+                      </CustomTypography>
+                    )}
+                    {auctionData.started && !auctionData.ended && (
+                      <CustomTypography>
+                        As the seller, you can{" "}
+                        <Button variant="contained" onClick={handleEndAuction}>
+                          End
+                        </Button>
+                      </CustomTypography>
+                    )}
+                  </>
+                )}
+
+                {loading && (
+                  <Box
+                    position="relative"
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        color: "#FF9900",
+                      }}
+                    />
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        color: "#FF9900",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Waiting for wallet confirmation...
+                    </Typography>
+                  </Box>
+                )}
                 {(role === "notBidder" || role === "bidder") && (
                   <Box display="flex">
                     <TextField
@@ -332,7 +383,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                 {role === "highestBidder" && (
                   <CustomTypography>
                     As the highest bidder:{" "}
-                    <Button variant="contained" onClick={handleEnd}>
+                    <Button variant="contained" onClick={handleEndAuction}>
                       End
                     </Button>
                   </CustomTypography>

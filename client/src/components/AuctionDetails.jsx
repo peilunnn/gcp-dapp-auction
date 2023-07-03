@@ -59,7 +59,7 @@ const ListItemWrapper = styled(ListItem)(
 `
 );
 
-function AuctionDetails({ auction, refetchData }) {
+function AuctionDetails({ auction, refetchData, loading, setLoading }) {
   const { pinataMetadata } = auction;
   const {
     state: { accounts },
@@ -202,6 +202,8 @@ function AuctionDetails({ auction, refetchData }) {
             pinataMetadata={pinataMetadata}
             auctionData={auction}
             refetchData={refetchData}
+            loading={loading}
+            setLoading={setLoading}
           />
         </Box>
       </Box>

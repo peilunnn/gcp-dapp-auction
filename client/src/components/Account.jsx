@@ -22,10 +22,11 @@ function Account({ auctions }) {
 
   useEffect(() => {
     if (auctions !== undefined && auctions.length > 0) {
-      for (let i = 0; i < auctions.length; i++) {
+      debugger;
+      for (let i = auctions.length - 1; i >= 0; i--) {
         if (auctions[i].seller === accounts[0]) {
           setAuction(auctions[i]);
-          break; // Stop searching after finding the first auction
+          break; // Stop searching after finding the latest auction
         }
       }
     }
