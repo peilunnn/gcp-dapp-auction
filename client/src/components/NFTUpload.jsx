@@ -13,14 +13,20 @@ import { pinNFT } from "../scripts/pinNFT";
 import { getMintNFTContract } from "../utils";
 import Creation from "./Creation";
 
-function NFTUpload({ web3, networkID, accounts, refetchData }) {
+function NFTUpload({
+  web3,
+  networkID,
+  accounts,
+  refetchData,
+  loading,
+  setLoading,
+}) {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const { enqueueSnackbar } = useSnackbar();
   const [mintNFTContractAddress, setMintNFTContractAddress] = useState(null);
   const [tokenId, setTokenId] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
   const mintNFTContract = getMintNFTContract(web3, networkID);
@@ -186,6 +192,8 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
                 refetchData={refetchData}
                 mintNFTContractAddress={mintNFTContractAddress}
                 tokenId={tokenId}
+                loading={loading}
+                setLoading={setLoading}
               />
             </Box>
           </Box>

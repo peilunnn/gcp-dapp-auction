@@ -1,14 +1,21 @@
-import React, { useCallback, useEffect, useReducer } from 'react';
-import Web3 from 'web3';
-import EthContext from './EthContext';
-import { actions, initialState, reducer } from './state';
+import React, { useCallback, useEffect, useReducer } from "react";
+import Web3 from "web3";
+import EthContext from "./EthContext";
+import { actions, initialState, reducer } from "./state";
 
 function EthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const init = useCallback(async (artifact) => {
+    if (!Web3.givenProvider) {
+      console.error(
+        "MetaMask or another Ethereum provider not detected. Please install it to continue."
+      );
+      return;
+    }
+
     if (artifact) {
-      const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
+      const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
       const accounts = await web3.eth.requestAccounts();
       const networkID = await web3.eth.net.getId();
       const { abi } = artifact;
@@ -18,6 +25,7 @@ function EthProvider({ children }) {
         contract = new web3.eth.Contract(abi, address);
       } catch (err) {
         console.error(err);
+        return;
       }
       dispatch({
         type: actions.init,
@@ -29,10 +37,11 @@ function EthProvider({ children }) {
   useEffect(() => {
     const tryInit = async () => {
       try {
-        const artifact = require('../../contracts/AuctionFactory.json');
+        const artifact = require("../../contracts/AuctionFactory.json");
         init(artifact);
       } catch (err) {
         console.error(err);
+        return;
       }
     };
 
@@ -40,7 +49,13 @@ function EthProvider({ children }) {
   }, [init]);
 
   useEffect(() => {
-    const events = ['chainChanged', 'accountsChanged'];
+    if (!window.ethereum) {
+      console.log(
+        "Ethereum provider not available. Please install MetaMask or another Ethereum provider to continue."
+      );
+      return;
+    }
+    const events = ["chainChanged", "accountsChanged"];
     const handleChange = () => {
       init(state.artifact);
     };
