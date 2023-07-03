@@ -6,12 +6,9 @@ import {
   Button,
   Box,
   TextField,
-  Tooltip,
-  IconButton,
   CircularProgress,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
 import { pinNFT } from "../scripts/pinNFT";
 import { getMintNFTContract } from "../utils";
 import Creation from "./Creation";
@@ -184,28 +181,6 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
         </Box>
         {tokenId && mintNFTContractAddress && !loading && (
           <Box mt={2} textAlign="center">
-            <Typography
-              variant="h6"
-              gutterBottom
-              style={{
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-              }}
-            >
-              Now you can create an auction for your newly minted NFT.
-            </Typography>
-            <Typography
-              variant="h6"
-              gutterBottom
-              style={{
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-              }}
-            >
-              The <span style={{ color: "orange" }}>NFT Address</span> and{" "}
-              <span style={{ color: "orange" }}>NFT Token ID</span> fields have
-              been filled in for you.{" "}
-            </Typography>
             <Box mt={2} display="flex" justifyContent="center">
               <Creation
                 refetchData={refetchData}
