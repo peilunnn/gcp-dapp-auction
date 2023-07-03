@@ -61,6 +61,8 @@ export default function Creation({
   refetchData,
   mintNFTContractAddress,
   tokenId,
+  loading,
+  setLoading,
 }) {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -72,6 +74,8 @@ export default function Creation({
   let auctionFactoryContract;
 
   const handleCreate = async (e) => {
+    setLoading(true);
+
     e.preventDefault();
     if (vars.startingBid <= 0) {
       enqueueSnackbar("Starting Bid must be greater than 0", {
@@ -109,7 +113,7 @@ export default function Creation({
       let auctionDeployedAddress =
         val.events.ContractCreated.returnValues.newContractAddress;
       console.log(auctionDeployedAddress);
-      setOpen(false);
+      setLoading(false);
       enqueueSnackbar("Auction Created", { variant: "success" });
       setVars({
         nftAddress: "",
@@ -126,7 +130,7 @@ export default function Creation({
     }
   };
 
-  const handleClickOpen = () => {
+  const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
@@ -144,7 +148,7 @@ export default function Creation({
     <div>
       <Button
         variant="outlined"
-        onClick={handleClickOpen}
+        onClick={handleOpen}
         size="large"
         sx={{
           padding: "10px 30px",
