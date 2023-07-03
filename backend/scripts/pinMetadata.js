@@ -1,14 +1,14 @@
 require("dotenv").config({ path: `${__dirname}/.env` });
 const axios = require("axios");
 
-const pinataEndpoint = process.env.PINATA_JSON_ENDPOINT;
+const pinataEndpoint = process.env.REACT_APP_PINATA_JSON_ENDPOINT;
 const pinataApiKey = process.env.REACT_APP_PINATA_API_KEY;
 const pinataApiSecret = process.env.REACT_APP_PINATA_API_SECRET;
 
 const pinMetadata = async (metadata) => {
   try {
     var data = JSON.stringify({
-      pinataContent: metadata
+      pinataContent: metadata,
     });
 
     const request = {

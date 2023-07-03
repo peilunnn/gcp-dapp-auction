@@ -9,7 +9,7 @@ function EthProvider({ children }) {
   const init = useCallback(async (artifact) => {
     if (!Web3.givenProvider) {
       console.error(
-        "MetaMask or another Ethereum provider not detected. Please install it to continue."
+        "Ethereum provider not detected."
       );
       return;
     }
@@ -51,7 +51,7 @@ function EthProvider({ children }) {
   useEffect(() => {
     if (!window.ethereum) {
       console.log(
-        "Ethereum provider not available. Please install MetaMask or another Ethereum provider to continue."
+        "Please install MetaMask or another Ethereum provider to continue."
       );
       return;
     }

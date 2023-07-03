@@ -3,7 +3,7 @@ const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
 
-const pinataEndpoint = process.env.PINATA_IMAGE_ENDPOINT;
+const pinataEndpoint = process.env.REACT_APP_PINATA_IMAGE_ENDPOINT;
 const pinataApiKey = process.env.REACT_APP_PINATA_API_KEY;
 const pinataApiSecret = process.env.REACT_APP_PINATA_API_SECRET;
 
