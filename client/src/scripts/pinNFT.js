@@ -32,7 +32,6 @@ export function pinNFT(
   axios
     .post(beEndpoint, formData)
     .then(async (response) => {
-      setMintLoading(false);
       const metadataURI = response.data.metadataURI;
       const tokenId = await mintNFT(
         web3,
@@ -48,6 +47,7 @@ export function pinNFT(
       enqueueSnackbar("Successfully pinned and minted NFT", {
         variant: "success",
       });
+      setMintLoading(false);
       setTokenId(tokenId);
       setMintNFTContractAddress(contractAddress);
     })

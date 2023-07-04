@@ -4,17 +4,28 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { useState } from "react";
 import Alert from "@mui/material/Alert";
 
-const devChainId = "0x539"; // Dev Network on localhost:8545 via Ganache
-const stagingChainId = "0xaa36a7"; // Sepolia Testnet
+console.log(process.env);
 
 const targetChainId =
-  process.env.NODE_ENV === "development" ? devChainId : stagingChainId;
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_LOCAL_GANACHE_CHAIN_ID
+    : process.env.REACT_APP_SEPOLIA_TESTNET_CHAIN_ID;
+
+const targetRpcUrl =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_LOCAL_GANACHE_URL
+    : process.env.REACT_APP_SEPOLIA_TESTNET_URL;
+
+const targetChainName =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_LOCAL_GANACHE_CHAIN_NAME
+    : process.env.REACT_APP_SEPOLIA_TESTNET_CHAIN_NAME;
 
 const Injected = new InjectedConnector({
   supportedChainIds: [
     1, // Ethereum Mainnet
-    parseInt(devChainId, 16),
-    parseInt(stagingChainId, 16),
+    parseInt(process.env.REACT_APP_LOCAL_GANACHE_CHAIN_ID, 16),
+    parseInt(process.env.REACT_APP_SEPOLIA_TESTNET_CHAIN_ID, 16),
   ],
 });
 
@@ -61,15 +72,8 @@ const ConnectWallet = () => {
               params: [
                 {
                   chainId: targetChainId,
-                  chainName:
-                    process.env.NODE_ENV === "development"
-                      ? "development"
-                      : "bne",
-                  rpcUrls: [
-                    process.env.NODE_ENV === "development"
-                      ? "http://localhost:8545"
-                      : "TODO",
-                  ],
+                  chainName: targetChainName,
+                  rpcUrls: [targetRpcUrl],
                   nativeCurrency: {
                     name: "ETH",
                     symbol: "ETH",
@@ -96,7 +100,9 @@ const ConnectWallet = () => {
         }
       }
     } else {
-      setErrorMessage("Please make sure you have MetaMask installed, then refresh the page.");
+      setErrorMessage(
+        "Please make sure you have MetaMask installed, then refresh the page."
+      );
     }
   };
 
@@ -104,8 +110,7 @@ const ConnectWallet = () => {
     <div>
       {active ? (
         <Button variant="outlined" color="success" onClick={deactivate}>
-          ✅ Account {account.slice(0, 5)}... on chain{" "}
-          {targetChainId.toString(16)}
+          ✅ Account {account.slice(0, 5)}... on chain {targetChainId.toString(16)}
         </Button>
       ) : errorMessage ? (
         <Alert severity="error">{errorMessage}</Alert>
