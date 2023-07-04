@@ -1,9 +1,11 @@
 import {
+  Box,
   Card,
   CardContent,
   Typography,
   Button,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useEth } from "../contexts/EthContext";
@@ -15,7 +17,12 @@ const CustomTypography = styled(Typography)`
   font-weight: 600;
 `;
 
-const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
+const NftApprovalCard = ({
+  auctionContractAddress,
+  tokenId,
+  loading,
+  setLoading,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const {
     state: { web3, networkID, accounts },
@@ -41,6 +48,7 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
   };
 
   const handleApproval = async () => {
+    setLoading(true);
     let auctionContractAddress = nftJson.networks[networkID].address;
     let mintNFTContract = new web3.eth.Contract(
       nftJson.abi,
@@ -54,6 +62,8 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
       enqueueSnackbar("Approval successful", {
         variant: "success",
       });
+
+      setLoading(false);
       setVars({
         auctionContractAddress: "",
         tokenId: "",
@@ -95,21 +105,50 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
             type="number"
           />
         </form>
-        <Button
-          onClick={handleApproval}
-          variant="outlined"
-          sx={{
-            padding: "10px 30px",
-            marginTop: "8px",
-            color: "#fff",
-            backgroundColor: "#FF9900",
-            "&:hover": {
-              backgroundColor: "#cc7a00",
-            },
-          }}
-        >
-          Approve
-        </Button>
+
+        {!loading && (
+          <Button
+            onClick={handleApproval}
+            variant="outlined"
+            sx={{
+              padding: "10px 30px",
+              marginTop: "8px",
+              color: "#fff",
+              backgroundColor: "#FF9900",
+              "&:hover": {
+                backgroundColor: "#cc7a00",
+              },
+            }}
+          >
+            Approve
+          </Button>
+        )}
+        {loading && (
+          <Box
+            position="relative"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ marginTop: "20px" }}
+          >
+            <CircularProgress
+              size={24}
+              sx={{
+                color: "#FF9900",
+              }}
+            />
+            <Typography
+              variant="subtitle1"
+              sx={{
+                color: "#FF9900",
+                marginTop: "10px",
+              }}
+            >
+              Waiting for wallet confirmation...
+            </Typography>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );
