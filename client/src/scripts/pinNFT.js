@@ -53,5 +53,6 @@ export function pinNFT(
     })
     .catch((error) => {
       console.log("Error uploading file:", error);
+      setMintLoading(false);
     });
 }

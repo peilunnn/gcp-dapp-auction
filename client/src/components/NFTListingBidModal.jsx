@@ -223,6 +223,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
     }
     if (auctionData.endAt > Math.floor(Date.now() / 1000)) {
       enqueueSnackbar("Auction is not over yet", { variant: "error" });
+      setEndLoading(false);
       return;
     }
     const auctionContract = auctionData.auctionContract;

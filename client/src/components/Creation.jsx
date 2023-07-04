@@ -129,6 +129,7 @@ export default function Creation({
     } catch (err) {
       console.log(err);
       enqueueSnackbar("Transaction Rejected", { variant: "error" });
+      setCreateLoading(false);
       return;
     }
   };

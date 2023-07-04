@@ -69,6 +69,7 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
       enqueueSnackbar("Approval failed", {
         variant: "error",
       });
+      setApproveLoading(false);
     }
   };
 
