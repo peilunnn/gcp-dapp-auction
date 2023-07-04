@@ -96,7 +96,7 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
             id="nftTokenId"
             placeholder="NFT token ID"
             name="tokenId"
-            value={vars.tokenId}
+            value={tokenId}
             onChange={handleNftIdInput}
             type="number"
           />

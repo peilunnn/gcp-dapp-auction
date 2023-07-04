@@ -4,8 +4,6 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { useState } from "react";
 import Alert from "@mui/material/Alert";
 
-console.log(process.env);
-
 const targetChainId =
   process.env.NODE_ENV === "development"
     ? process.env.REACT_APP_LOCAL_GANACHE_CHAIN_ID
