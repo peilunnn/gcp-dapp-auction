@@ -17,12 +17,7 @@ const CustomTypography = styled(Typography)`
   font-weight: 600;
 `;
 
-const NftApprovalCard = ({
-  auctionContractAddress,
-  tokenId,
-  loading,
-  setLoading,
-}) => {
+const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
   const { enqueueSnackbar } = useSnackbar();
   const {
     state: { web3, networkID, accounts },
@@ -32,6 +27,7 @@ const NftApprovalCard = ({
     auctionContractAddress: auctionContractAddress || "",
     tokenId: tokenId || "",
   });
+  const [approveLoading, setApproveLoading] = useState(false);
 
   const handleAddressInput = (event) => {
     setVars({
@@ -48,7 +44,7 @@ const NftApprovalCard = ({
   };
 
   const handleApproval = async () => {
-    setLoading(true);
+    setApproveLoading(true);
     let auctionContractAddress = nftJson.networks[networkID].address;
     let mintNFTContract = new web3.eth.Contract(
       nftJson.abi,
@@ -63,7 +59,7 @@ const NftApprovalCard = ({
         variant: "success",
       });
 
-      setLoading(false);
+      setApproveLoading(false);
       setVars({
         auctionContractAddress: "",
         tokenId: "",
@@ -106,7 +102,7 @@ const NftApprovalCard = ({
           />
         </form>
 
-        {!loading && (
+        {!approveLoading && (
           <Button
             onClick={handleApproval}
             variant="outlined"
@@ -123,7 +119,7 @@ const NftApprovalCard = ({
             Approve
           </Button>
         )}
-        {loading && (
+        {approveLoading && (
           <Box
             position="relative"
             display="flex"

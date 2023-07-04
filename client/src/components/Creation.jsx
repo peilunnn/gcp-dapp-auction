@@ -61,11 +61,10 @@ export default function Creation({
   refetchData,
   mintNFTContractAddress,
   tokenId,
-  loading,
-  setLoading,
 }) {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const [createLoading, setCreateLoading] = useState(false);
 
   const {
     state: { web3, networkID, accounts },
@@ -76,7 +75,7 @@ export default function Creation({
   const handleCreate = async (e) => {
     e.preventDefault();
 
-    setLoading(true);
+    setCreateLoading(true);
 
     if (vars.startingBid <= 0) {
       enqueueSnackbar("Starting Bid must be greater than 0", {
@@ -102,7 +101,6 @@ export default function Creation({
       auctionFactoryContractAddress
     );
     try {
-      debugger;
       let val = await auctionFactoryContract.methods
         .createNewAuction(
           vars.nftAddress || mintNFTContractAddress,
@@ -112,7 +110,7 @@ export default function Creation({
           vars.duration * 60 * 60 // convert from hours in form input to seconds in Auction constructor
         )
         .send({ from: accounts[0] });
-      setLoading(false);
+      setCreateLoading(false);
 
       let auctionDeployedAddress =
         val.events.ContractCreated.returnValues.newContractAddress;
@@ -262,7 +260,7 @@ export default function Creation({
               }}
               value={vars.duration}
             />
-            {!loading && (
+            {!createLoading && (
               <Button
                 type="submit"
                 fullWidth
@@ -279,7 +277,7 @@ export default function Creation({
                 Create
               </Button>
             )}
-            {loading && (
+            {createLoading && (
               <Box
                 position="relative"
                 display="flex"

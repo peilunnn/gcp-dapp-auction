@@ -14,7 +14,7 @@ const CustomTypography = styled(Typography)`
   font-weight: 600;
 `;
 
-function Account({ auctions, loading, setLoading }) {
+function Account({ auctions }) {
   const [auction, setAuction] = useState();
   const {
     state: { accounts },
@@ -182,8 +182,6 @@ function Account({ auctions, loading, setLoading }) {
             <NftApprovalCard
               auctionContractAddress={auction.auctionContract._address}
               tokenId={auction.nftId}
-              loading={loading}
-              setLoading={setLoading}
             />
           )}
         </Grid>
