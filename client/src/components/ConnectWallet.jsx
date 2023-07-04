@@ -4,20 +4,9 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { useState } from "react";
 import Alert from "@mui/material/Alert";
 
-const targetChainId =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_LOCAL_GANACHE_CHAIN_ID
-    : process.env.REACT_APP_SEPOLIA_TESTNET_CHAIN_ID;
-
-const targetRpcUrl =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_LOCAL_GANACHE_URL
-    : process.env.REACT_APP_SEPOLIA_TESTNET_URL;
-
-const targetChainName =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_LOCAL_GANACHE_CHAIN_NAME
-    : process.env.REACT_APP_SEPOLIA_TESTNET_CHAIN_NAME;
+const targetChainName = process.env.REACT_APP_CHAIN_NAME;
+const targetChainId = process.env.REACT_APP_CHAIN_ID;
+const targetRpcUrl = process.env.REACT_APP_RPC_URL;
 
 const Injected = new InjectedConnector({
   supportedChainIds: [
@@ -108,7 +97,8 @@ const ConnectWallet = () => {
     <div>
       {active ? (
         <Button variant="outlined" color="success" onClick={deactivate}>
-          ✅ Account {account.slice(0, 5)}... on chain {targetChainId.toString(16)}
+          ✅ Account {account.slice(0, 5)}... on chain{" "}
+          {targetChainId.toString(16)}
         </Button>
       ) : errorMessage ? (
         <Alert severity="error">{errorMessage}</Alert>

@@ -13,7 +13,7 @@ import { useState } from "react";
 import { getAuctionFactoryContract, getAuctions } from "./utils";
 import { useSnackbar } from "notistack";
 
-function AuctionApp() {
+function AuctionApp() {  
   useEffect(() => {
     var scrollToTopBtn = document.querySelector(".scrollToTopBtn");
     var rootElement = document.documentElement;

@@ -176,6 +176,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
       handleClose();
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
+      setStartLoading(false);
     }
   };
 
@@ -236,6 +237,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
       handleClose();
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
+      setEndLoading(false);
     }
   };
 
