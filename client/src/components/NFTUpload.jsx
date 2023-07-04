@@ -185,7 +185,7 @@ function NFTUpload({
             )}
           </Box>
         </Box>
-        {tokenId && mintNFTContractAddress && !loading && (
+        {tokenId && mintNFTContractAddress && (
           <Box mt={2} textAlign="center">
             <Box mt={2} display="flex" justifyContent="center">
               <Creation
