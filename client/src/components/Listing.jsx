@@ -7,7 +7,7 @@ const CustomTypography = styled(Typography)`
   font-weight: 600;
 `;
 
-function Listing({ auctions, refetchData }) {
+function Listing({ auctions, refetchData, loading, setLoading }) {
   if (auctions === undefined) {
     return (
       <Box
@@ -72,6 +72,8 @@ function Listing({ auctions, refetchData }) {
                     auction={auction}
                     refetchData={refetchData}
                     key={idx}
+                    loading={loading}
+                    setLoading={setLoading}
                   />
                 ))
               )}
