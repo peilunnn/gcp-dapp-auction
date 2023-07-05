@@ -129,7 +129,6 @@ const ConnectWallet = () => {
       // Otherwise, if user is on a different network, attempt to switch to the target network
       try {
         setLoading(true);
-        await promptConnectAccount();
         setIsConnected(true);
         await switchToTargetChain();
         setLoading(false);

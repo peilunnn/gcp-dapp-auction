@@ -81,7 +81,17 @@ function AuctionDetails({ auction, refetchData, loading, setLoading }) {
         <CustomTypography
           sx={{ fontWeight: "bold" }}
         >{`Description: ${pinataMetadata.description}`}</CustomTypography>
-        <Tooltip title={auction.seller} arrow>
+        <Tooltip
+          title={
+            auction.started &&
+            auction.ended &&
+            auction.highestBidder !==
+              "0x0000000000000000000000000000000000000000"
+              ? auction.highestBidder
+              : auction.seller
+          }
+          arrow
+        >
           <CustomTypography sx={{ fontWeight: "bold" }}>
             {`Owned by: ${
               auction.started &&

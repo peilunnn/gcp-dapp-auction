@@ -85,6 +85,8 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
   const [currBidAmount, setCurrBidAmount] = useState(0);
   const [startLoading, setStartLoading] = useState(false);
   const [endLoading, setEndLoading] = useState(false);
+  const [submitBidLoading, setSubmitBidLoading] = useState(false);
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
 
   useEffect(() => {
     if (accounts[0] === auctionData.seller) {
@@ -121,7 +123,8 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
     setCurrBidAmount(event.target.value * Math.pow(10, 9));
   };
 
-  const submitBid = async () => {
+  const handleSubmitBid = async () => {
+    setSubmitBidLoading(true);
     if (currBidAmount <= 0) {
       enqueueSnackbar("Please enter a valid bid amount", { variant: "error" });
       return;
@@ -140,6 +143,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
         "Bid amount should be greater than highest bid + increment!",
         { variant: "warning" }
       );
+      setSubmitBidLoading(false);
       return;
     } else {
       let sendAmount = currBidAmount - auctionData.userBidAmount;
@@ -151,11 +155,13 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
           .bid()
           .send({ from: accounts[0], value: sendAmount });
         enqueueSnackbar("Successfully submitted bid!", { variant: "success" });
+        setSubmitBidLoading(false);
         auctionData.userBidAmount = currBidAmount;
         setRole("highestBidder");
         console.log(auctionData.userBidAmount);
       } catch (err) {
         enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
+        setSubmitBidLoading(false);
       }
     }
   };
@@ -181,6 +187,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
   };
 
   const handleWithdraw = async () => {
+    setWithdrawLoading(true);
     if (highestBidder === accounts[0]) {
       enqueueSnackbar("You are the highest bidder! You cannot withdraw!", {
         variant: "error",
@@ -199,9 +206,11 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
       enqueueSnackbar("Successfully withdrew your bid amount", {
         variant: "success",
       });
+      setWithdrawLoading(false);
       handleClose();
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
+      setWithdrawLoading(false);
     }
   };
 
@@ -330,7 +339,6 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                       )}
                   </>
                 )}
-
                 {(startLoading || endLoading) && (
                   <Box
                     position="relative"
@@ -357,7 +365,12 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                   </Box>
                 )}
                 {(role === "notBidder" || role === "bidder") && (
-                  <Box display="flex">
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    gap="16px"
+                    sx={{ marginTop: "16px" }}
+                  >
                     <TextField
                       id="modal-bid"
                       label="My Bid (GWei)"
@@ -368,31 +381,71 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
                       size="small"
                       onChange={handleBidAmountChange}
                     />
-                    <Button variant="contained" onClick={submitBid}>
-                      Submit Bid
+                    <Button
+                      variant="contained"
+                      disabled={submitBidLoading}
+                      onClick={handleSubmitBid}
+                    >
+                      {submitBidLoading ? (
+                        <Box
+                          position="relative"
+                          display="flex"
+                          flexDirection="column"
+                          alignItems="center"
+                          justifyContent="center"
+                          width="100%"
+                          height="100%"
+                        >
+                          <CircularProgress
+                            size={24}
+                            sx={{
+                              color: "#FF9900",
+                              position: "absolute",
+                              top: "50%",
+                              left: "50%",
+                              marginTop: "-12px",
+                              marginLeft: "-12px",
+                            }}
+                          />
+                        </Box>
+                      ) : (
+                        "Submit Bid"
+                      )}
                     </Button>
                   </Box>
                 )}
 
-                {role === "bidder" && (
-                  <Box display="flex">
+                {role !== "seller" && role !== "highestBidder" && (
+                  <Box display="flex" sx={{ marginTop: "16px" }}>
                     <CustomTypography>
-                      No longer interested?{" "}
-                      <Button variant="contained" onClick={handleWithdraw}>
-                        {" "}
-                        Withdraw{" "}
+                      No longer interested?
+                      <Button
+                        variant="contained"
+                        disabled={withdrawLoading}
+                        onClick={handleWithdraw}
+                        sx={{ marginLeft: "12px" }}
+                      >
+                        {withdrawLoading ? (
+                          <Box
+                            position="relative"
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <CircularProgress
+                              size={24}
+                              sx={{
+                                color: "#FF9900",
+                              }}
+                            />
+                          </Box>
+                        ) : (
+                          "Withdraw"
+                        )}
                       </Button>
                     </CustomTypography>
                   </Box>
-                )}
-
-                {role === "highestBidder" && (
-                  <CustomTypography>
-                    As the highest bidder:{" "}
-                    <Button variant="contained" onClick={handleEndAuction}>
-                      End
-                    </Button>
-                  </CustomTypography>
                 )}
               </Box>
             </Box>
