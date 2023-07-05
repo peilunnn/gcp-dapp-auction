@@ -16,7 +16,7 @@ export function pinNFT(
   accounts,
   setTokenId,
   setMintNFTContractAddress,
-  setLoading
+  setMintLoading
 ) {
   if (!(selectedFile && name.trim() !== "")) {
     enqueueSnackbar("Please select a picture and provide a name", {
@@ -32,7 +32,6 @@ export function pinNFT(
   axios
     .post(beEndpoint, formData)
     .then(async (response) => {
-      setLoading(false);
       const metadataURI = response.data.metadataURI;
       const tokenId = await mintNFT(
         web3,
@@ -48,10 +47,12 @@ export function pinNFT(
       enqueueSnackbar("Successfully pinned and minted NFT", {
         variant: "success",
       });
+      setMintLoading(false);
       setTokenId(tokenId);
       setMintNFTContractAddress(contractAddress);
     })
     .catch((error) => {
       console.log("Error uploading file:", error);
+      setMintLoading(false);
     });
 }

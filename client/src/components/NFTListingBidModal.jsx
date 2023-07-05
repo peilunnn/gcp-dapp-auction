@@ -64,13 +64,7 @@ const calculateTimeTillExpiry = (auctionData) => {
   };
 };
 
-function NFTListingBidModal({
-  pinataMetadata,
-  auctionData,
-  refetchData,
-  loading,
-  setLoading,
-}) {
+function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
   const { enqueueSnackbar } = useSnackbar();
   const {
     state: { accounts },
@@ -89,6 +83,8 @@ function NFTListingBidModal({
   const { timeTillExpiryHours, timeTillExpiryMinutes, timeTillExpirySeconds } =
     calculateTimeTillExpiry(auctionData);
   const [currBidAmount, setCurrBidAmount] = useState(0);
+  const [startLoading, setStartLoading] = useState(false);
+  const [endLoading, setEndLoading] = useState(false);
 
   useEffect(() => {
     if (accounts[0] === auctionData.seller) {
@@ -170,16 +166,17 @@ function NFTListingBidModal({
       return;
     }
 
-    setLoading(true);
+    setStartLoading(true);
 
     const auctionContract = auctionData.auctionContract;
     try {
       await auctionContract.methods.start().send({ from: accounts[0] });
-      setLoading(false);
+      setStartLoading(false);
       enqueueSnackbar("Auction Successfully Started", { variant: "success" });
       handleClose();
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
+      setStartLoading(false);
     }
   };
 
@@ -214,7 +211,7 @@ function NFTListingBidModal({
       return;
     }
 
-    setLoading(true);
+    setEndLoading(true);
 
     if (
       accounts[0] !== auctionData.seller &&
@@ -227,18 +224,20 @@ function NFTListingBidModal({
     }
     if (auctionData.endAt > Math.floor(Date.now() / 1000)) {
       enqueueSnackbar("Auction is not over yet", { variant: "error" });
+      setEndLoading(false);
       return;
     }
     const auctionContract = auctionData.auctionContract;
     try {
       await auctionContract.methods.end().send({ from: accounts[0] });
-      setLoading(false);
+      setEndLoading(false);
       enqueueSnackbar("Successfully ended the auction!", {
         variant: "success",
       });
       handleClose();
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
+      setEndLoading(false);
     }
   };
 
@@ -301,31 +300,38 @@ function NFTListingBidModal({
                 alignItems="center"
                 gap="10px"
               >
-                {role === "seller" && !loading && (
+                {role === "seller" && (
                   <>
-                    {!auctionData.started && !auctionData.ended && (
-                      <CustomTypography>
-                        As the seller, you can{" "}
-                        <Button
-                          variant="contained"
-                          onClick={handleStartAuction}
-                        >
-                          Start
-                        </Button>
-                      </CustomTypography>
-                    )}
-                    {auctionData.started && !auctionData.ended && (
-                      <CustomTypography>
-                        As the seller, you can{" "}
-                        <Button variant="contained" onClick={handleEndAuction}>
-                          End
-                        </Button>
-                      </CustomTypography>
-                    )}
+                    {!auctionData.started &&
+                      !auctionData.ended &&
+                      !startLoading && (
+                        <CustomTypography>
+                          As the seller, you can{" "}
+                          <Button
+                            variant="contained"
+                            onClick={handleStartAuction}
+                          >
+                            Start
+                          </Button>
+                        </CustomTypography>
+                      )}
+                    {auctionData.started &&
+                      !auctionData.ended &&
+                      !endLoading && (
+                        <CustomTypography>
+                          As the seller, you can{" "}
+                          <Button
+                            variant="contained"
+                            onClick={handleEndAuction}
+                          >
+                            End
+                          </Button>
+                        </CustomTypography>
+                      )}
                   </>
                 )}
 
-                {loading && (
+                {(startLoading || endLoading) && (
                   <Box
                     position="relative"
                     display="flex"

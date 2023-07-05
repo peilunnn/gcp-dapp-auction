@@ -84,7 +84,10 @@ function AuctionDetails({ auction, refetchData, loading, setLoading }) {
         <Tooltip title={auction.seller} arrow>
           <CustomTypography sx={{ fontWeight: "bold" }}>
             {`Owned by: ${
-              auction.started && auction.ended && auction.highestBidder
+              auction.started &&
+              auction.ended &&
+              auction.highestBidder !==
+                "0x0000000000000000000000000000000000000000"
                 ? auction.highestBidder.slice(0, 8) + "..."
                 : auction.seller.slice(0, 8) + "..."
             }`}

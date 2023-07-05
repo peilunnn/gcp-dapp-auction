@@ -13,14 +13,7 @@ import { pinNFT } from "../scripts/pinNFT";
 import { getMintNFTContract } from "../utils";
 import Creation from "./Creation";
 
-function NFTUpload({
-  web3,
-  networkID,
-  accounts,
-  refetchData,
-  loading,
-  setLoading,
-}) {
+function NFTUpload({ web3, networkID, accounts, refetchData }) {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -28,6 +21,7 @@ function NFTUpload({
   const [mintNFTContractAddress, setMintNFTContractAddress] = useState(null);
   const [tokenId, setTokenId] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [mintLoading, setMintLoading] = useState(false);
 
   const mintNFTContract = getMintNFTContract(web3, networkID);
 
@@ -38,7 +32,7 @@ function NFTUpload({
   };
 
   const handleMintButtonClick = async () => {
-    setLoading(true);
+    setMintLoading(true);
     await pinNFT(
       uploadedImage,
       name,
@@ -52,7 +46,7 @@ function NFTUpload({
       accounts,
       setTokenId,
       setMintNFTContractAddress,
-      setLoading
+      setMintLoading
     );
   };
 
@@ -140,7 +134,7 @@ function NFTUpload({
             alignItems="center"
             justifyContent="center"
           >
-            {!loading && (
+            {!mintLoading && (
               <Button
                 onClick={handleMintButtonClick}
                 disabled={!uploadedImage || name.trim() === ""}
@@ -158,7 +152,7 @@ function NFTUpload({
                 Mint
               </Button>
             )}
-            {loading && (
+            {mintLoading && (
               <Box
                 position="relative"
                 display="flex"
@@ -185,15 +179,13 @@ function NFTUpload({
             )}
           </Box>
         </Box>
-        {tokenId && mintNFTContractAddress && !loading && (
+        {tokenId && mintNFTContractAddress && (
           <Box mt={2} textAlign="center">
             <Box mt={2} display="flex" justifyContent="center">
               <Creation
                 refetchData={refetchData}
                 mintNFTContractAddress={mintNFTContractAddress}
                 tokenId={tokenId}
-                loading={loading}
-                setLoading={setLoading}
               />
             </Box>
           </Box>

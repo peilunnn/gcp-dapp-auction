@@ -3,4 +3,5 @@ backend/node_modules/**
 truffle/node_modules/**
 backend/scripts/.env
 truffle/.env
+client/.env
 *.env.*

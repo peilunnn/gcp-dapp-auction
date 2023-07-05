@@ -13,9 +13,7 @@ import { useState } from "react";
 import { getAuctionFactoryContract, getAuctions } from "./utils";
 import { useSnackbar } from "notistack";
 
-function AuctionApp() {
-  const [loading, setLoading] = useState(false);
-
+function AuctionApp() {  
   useEffect(() => {
     var scrollToTopBtn = document.querySelector(".scrollToTopBtn");
     var rootElement = document.documentElement;
@@ -115,22 +113,14 @@ function AuctionApp() {
             networkID={networkID}
             accounts={accounts}
             refetchData={refetchData}
-            loading={loading}
-            setLoading={setLoading}
           />
           <Grid item xs={12}>
-            <Account
-              auctions={auctions}
-              loading={loading}
-              setLoading={setLoading}
-            />
+            <Account auctions={auctions} />
           </Grid>
         </Grid>
         <Listing
           auctions={auctions}
           refetchData={refetchData}
-          loading={loading}
-          setLoading={setLoading}
         />
       </Container>
       <button className="scrollToTopBtn cursor-pointer">☝️</button>

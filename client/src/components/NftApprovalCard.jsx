@@ -1,9 +1,11 @@
 import {
+  Box,
   Card,
   CardContent,
   Typography,
   Button,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useEth } from "../contexts/EthContext";
@@ -25,6 +27,7 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
     auctionContractAddress: auctionContractAddress || "",
     tokenId: tokenId || "",
   });
+  const [approveLoading, setApproveLoading] = useState(false);
 
   const handleAddressInput = (event) => {
     setVars({
@@ -41,6 +44,7 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
   };
 
   const handleApproval = async () => {
+    setApproveLoading(true);
     let auctionContractAddress = nftJson.networks[networkID].address;
     let mintNFTContract = new web3.eth.Contract(
       nftJson.abi,
@@ -54,6 +58,8 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
       enqueueSnackbar("Approval successful", {
         variant: "success",
       });
+
+      setApproveLoading(false);
       setVars({
         auctionContractAddress: "",
         tokenId: "",
@@ -63,6 +69,7 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
       enqueueSnackbar("Approval failed", {
         variant: "error",
       });
+      setApproveLoading(false);
     }
   };
 
@@ -90,26 +97,55 @@ const NftApprovalCard = ({ auctionContractAddress, tokenId }) => {
             id="nftTokenId"
             placeholder="NFT token ID"
             name="tokenId"
-            value={vars.tokenId}
+            value={tokenId}
             onChange={handleNftIdInput}
             type="number"
           />
         </form>
-        <Button
-          onClick={handleApproval}
-          variant="outlined"
-          sx={{
-            padding: "10px 30px",
-            marginTop: "8px",
-            color: "#fff",
-            backgroundColor: "#FF9900",
-            "&:hover": {
-              backgroundColor: "#cc7a00",
-            },
-          }}
-        >
-          Approve
-        </Button>
+
+        {!approveLoading && (
+          <Button
+            onClick={handleApproval}
+            variant="outlined"
+            sx={{
+              padding: "10px 30px",
+              marginTop: "8px",
+              color: "#fff",
+              backgroundColor: "#FF9900",
+              "&:hover": {
+                backgroundColor: "#cc7a00",
+              },
+            }}
+          >
+            Approve
+          </Button>
+        )}
+        {approveLoading && (
+          <Box
+            position="relative"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ marginTop: "20px" }}
+          >
+            <CircularProgress
+              size={24}
+              sx={{
+                color: "#FF9900",
+              }}
+            />
+            <Typography
+              variant="subtitle1"
+              sx={{
+                color: "#FF9900",
+                marginTop: "10px",
+              }}
+            >
+              Waiting for wallet confirmation...
+            </Typography>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

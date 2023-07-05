@@ -61,11 +61,10 @@ export default function Creation({
   refetchData,
   mintNFTContractAddress,
   tokenId,
-  loading,
-  setLoading,
 }) {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const [createLoading, setCreateLoading] = useState(false);
 
   const {
     state: { web3, networkID, accounts },
@@ -74,9 +73,10 @@ export default function Creation({
   let auctionFactoryContract;
 
   const handleCreate = async (e) => {
-    setLoading(true);
-
     e.preventDefault();
+
+    setCreateLoading(true);
+
     if (vars.startingBid <= 0) {
       enqueueSnackbar("Starting Bid must be greater than 0", {
         variant: "error",
@@ -110,10 +110,13 @@ export default function Creation({
           vars.duration * 60 * 60 // convert from hours in form input to seconds in Auction constructor
         )
         .send({ from: accounts[0] });
+      setCreateLoading(false);
+
       let auctionDeployedAddress =
         val.events.ContractCreated.returnValues.newContractAddress;
       console.log(auctionDeployedAddress);
-      setLoading(false);
+
+      handleClose();
       enqueueSnackbar("Auction Created", { variant: "success" });
       setVars({
         nftAddress: "",
@@ -126,6 +129,7 @@ export default function Creation({
     } catch (err) {
       console.log(err);
       enqueueSnackbar("Transaction Rejected", { variant: "error" });
+      setCreateLoading(false);
       return;
     }
   };
@@ -257,21 +261,49 @@ export default function Creation({
               }}
               value={vars.duration}
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: "#FF9900",
-                "&:hover": {
-                  backgroundColor: "#cc7a00",
-                },
-              }}
-            >
-              Create
-            </Button>
+            {!createLoading && (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                  backgroundColor: "#FF9900",
+                  "&:hover": {
+                    backgroundColor: "#cc7a00",
+                  },
+                }}
+              >
+                Create
+              </Button>
+            )}
+            {createLoading && (
+              <Box
+                position="relative"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ marginTop: "20px" }}
+              >
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    color: "#FF9900",
+                  }}
+                />
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    color: "#FF9900",
+                    marginTop: "10px",
+                  }}
+                >
+                  Waiting for wallet confirmation...
+                </Typography>
+              </Box>
+            )}
           </Box>
           <CustomTypography
             gutterBottom
@@ -280,6 +312,7 @@ export default function Creation({
               color: "red",
               fontWeight: "bold",
               fontSize: "1.1rem",
+              marginTop: "10px",
             }}
           >
             Note: after this, set approval before you can start your auction.
