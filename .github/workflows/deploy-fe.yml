@@ -1,20 +1,18 @@
 name: Deploy to Cloud Run
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      network-name:
+        required: true
+        type: string
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: "read"
-      id-token: "write"
 
     steps:
       - name: Checkout repository
@@ -55,27 +53,26 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
-      - name: Deploy smart contracts to BNE Sepolia Testnet
+      - name: Deploy smart contracts to BNE node
         run: |
           cd truffle
-          truffle migrate --reset --network bne
+          truffle migrate --reset --network ${{ inputs.network-name }}
         env:
           MNEMONIC: ${{ secrets.MNEMONIC }}
           ETH_CLIENT_URL: ${{ secrets.ETH_CLIENT_URL }}
           API_KEY: ${{ secrets.API_KEY }}
 
-      - name: Create .env.staging file
+      - name: Create .env.${{ inputs.environment }} file
         run: |
           cd client
-          echo "${{ secrets.ENV_STAGING }}" > .env.staging
+          if [[ "${{ inputs.environment }}" == "staging" ]]; then
+            echo "${{ secrets.ENV_STAGING }}" > .env.staging
+          elif [[ "${{ inputs.environment }}" == "production" ]]; then
+            echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
+          fi
 
       - name: Build FE image and deploy to Cloud Run
         run: |
           cd client
           docker build -t dapp-fe-image .
-          gcloud run deploy dapp-fe-staging --source . --region=asia-southeast1 --port=3000 --service-account=${{ secrets.SERVICE_ACCOUNT }}
-
-      - name: Remove .env.staging file
-        run: |
-          cd client
-          rm .env.staging
+          gcloud run deploy dapp-fe-${{ inputs.environment }} --source . --region=asia-southeast1 --port=3000 --service-account=${{ secrets.SERVICE_ACCOUNT }}

@@ -1,0 +1,18 @@
+name: Deploy to Cloud Run
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call-deploy-fe:
+    permissions:
+      contents: "read"
+      id-token: "write"
+      
+    uses: ./.github/workflows/deploy-fe.yml
+    with:
+      network-name: bneSepolia
+      environment: staging
+    secrets: inherit
