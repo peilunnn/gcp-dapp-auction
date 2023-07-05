@@ -71,7 +71,7 @@ module.exports = {
     bneMainnet: {
       provider: () =>
         new HDWalletProvider(mnemonic, `${ethClientURL}?key=${apiKey}`),
-      network_id: 1,
+      network_id: "1",
     },
     //
     // Useful for private networks
