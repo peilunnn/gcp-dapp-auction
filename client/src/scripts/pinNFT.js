@@ -1,7 +1,7 @@
 import axios from "axios";
 import { mintNFT } from "../utils";
 
-const beEndpoint = process.env.REACT_APP_BE_ENDPOINT;
+const beEndpoint = process.env.REACT_APP_BE_URL;
 
 export function pinNFT(
   selectedFile,
