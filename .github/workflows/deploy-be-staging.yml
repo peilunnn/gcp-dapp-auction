@@ -1,4 +1,4 @@
-name: Deploy FE Staging to Cloud Run
+name: Deploy BE Staging to Cloud Run
 
 on:
   pull_request:
@@ -6,13 +6,12 @@ on:
       - main
 
 jobs:
-  call-deploy-fe:
+  call-deploy-be:
     permissions:
       contents: "read"
       id-token: "write"
       
-    uses: ./.github/workflows/deploy-fe.yml
+    uses: ./.github/workflows/deploy-be.yml
     with:
-      network-name: bneSepolia
       environment: staging
     secrets: inherit

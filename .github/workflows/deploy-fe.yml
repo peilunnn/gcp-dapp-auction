@@ -1,4 +1,4 @@
-name: Deploy to Cloud Run
+name: Deploy FE to Cloud Run
 
 on:
   workflow_call:
@@ -39,13 +39,6 @@ jobs:
           key: ${{ runner.os }}-truffle-${{ hashFiles('truffle/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-truffle-
-
-      - name: Install dependencies
-        if: steps.cache-npm-truffle.outputs.cache-hit != 'true'
-        run: |
-          cd truffle
-          npm i -g truffle
-          npm install --legacy-peer-deps
 
       - name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v0.4.0"
