@@ -1,8 +1,10 @@
 import Button from "@mui/material/Button";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
-import { useState } from "react";
 import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+import { Box, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
 
 const targetChainName = process.env.REACT_APP_CHAIN_NAME;
 const targetChainId = process.env.REACT_APP_CHAIN_ID;
@@ -11,78 +13,135 @@ const targetRpcUrl = process.env.REACT_APP_RPC_URL;
 const Injected = new InjectedConnector({
   supportedChainIds: [
     1, // Ethereum Mainnet
-    parseInt(process.env.REACT_APP_LOCAL_GANACHE_CHAIN_ID, 16),
-    parseInt(process.env.REACT_APP_SEPOLIA_TESTNET_CHAIN_ID, 16),
+    parseInt(targetChainId, 16),
   ],
 });
 
 const ConnectWallet = () => {
-  const { account, activate, deactivate, active } = useWeb3React();
+  const { activate, deactivate } = useWeb3React();
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [currentChainId, setCurrentChainId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [currentAccount, setCurrentAccount] = useState(null);
 
-  const switchToCustomChain = async () => {
+  useEffect(() => {
+    if (window.ethereum) {
+      const updateChainId = async () => {
+        const newChainId = await window.ethereum.request({
+          method: "eth_chainId",
+        });
+        setCurrentChainId(newChainId);
+      };
+
+      window.ethereum.on("chainChanged", updateChainId);
+
+      return () => {
+        window.ethereum.removeListener("chainChanged", updateChainId);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (window.ethereum) {
+      const updateAccount = async () => {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setCurrentAccount(accounts[0]);
+      };
+
+      window.ethereum.on("accountsChanged", updateAccount);
+
+      return () => {
+        window.ethereum.removeListener("accountsChanged", updateAccount);
+      };
+    }
+  }, []);
+
+  const addTargetChain = async () => {
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [
+        {
+          chainId: targetChainId,
+          chainName: targetChainName,
+          rpcUrls: [targetRpcUrl],
+          nativeCurrency: {
+            name: "ETH",
+            symbol: "ETH",
+            decimals: 18,
+          },
+        },
+      ],
+    });
+  };
+
+  const switchToTargetChain = async () => {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: targetChainId }],
+    });
+  };
+
+  const promptConnectAccount = async () => {
+    await window.ethereum.request({
+      method: "wallet_requestPermissions",
+      params: [
+        {
+          eth_accounts: {},
+        },
+      ],
+    });
+  };
+
+  const disconnect = () => {
+    setLoading(true);
+    deactivate(Injected);
+    setIsConnected(false);
+    setLoading(false);
+  };
+
+  const connectToTargetChain = async () => {
     if (window.ethereum) {
       setErrorMessage(null); // clear previous errors
 
-      const currentChainId = await window.ethereum.request({
+      const chainId = await window.ethereum.request({
         method: "eth_chainId",
       });
+      setCurrentChainId(chainId);
 
-      // If user is already on the target network, just toggle the UI
-      if (currentChainId === targetChainId) {
-        if (active) {
-          deactivate();
-        } else {
-          activate(Injected);
-        }
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      setCurrentAccount(accounts[0]);
+
+      // If user is already on the target network but not connected, prompt user to connect their account to the site
+      if (currentChainId === targetChainId && !isConnected) {
+        setLoading(true);
+        await promptConnectAccount();
+        await activate(Injected);
+        setIsConnected(true);
+        setLoading(false);
         return;
       }
 
-      // If user is on a different network eg. Polygon Mainnet, attempt to switch to the target network
+      // Otherwise, if user is on a different network, attempt to switch to the target network
       try {
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: targetChainId }],
-        });
-
-        // Listen for the 'chainChanged' event. Only when the networks have finished switching, then we set active to true
-        window.ethereum.once("chainChanged", function (chainId) {
-          if (chainId === targetChainId) {
-            activate(Injected);
-          }
-        });
+        setLoading(true);
+        await promptConnectAccount();
+        setIsConnected(true);
+        await switchToTargetChain();
+        setLoading(false);
       } catch (switchError) {
         if (switchError.code === 4902) {
           try {
-            await window.ethereum.request({
-              method: "wallet_addEthereumChain",
-              params: [
-                {
-                  chainId: targetChainId,
-                  chainName: targetChainName,
-                  rpcUrls: [targetRpcUrl],
-                  nativeCurrency: {
-                    name: "ETH",
-                    symbol: "ETH",
-                    decimals: 18,
-                  },
-                },
-              ],
-            });
-
-            await window.ethereum.request({
-              method: "wallet_switchEthereumChain",
-              params: [{ chainId: targetChainId }],
-            });
-
-            // Listen for the 'chainChanged' event. Only when the networks have finished switching, then we set active to true
-            window.ethereum.once("chainChanged", function (chainId) {
-              if (chainId === targetChainId) {
-                activate(Injected);
-              }
-            });
+            await addTargetChain();
+            await switchToTargetChain();
+            setLoading(false);
           } catch (addError) {
             console.log(addError);
+            setLoading(false);
           }
         }
       }
@@ -95,26 +154,61 @@ const ConnectWallet = () => {
 
   return (
     <div>
-      {active ? (
-        <Button variant="outlined" color="success" onClick={deactivate}>
-          ✅ Account {account.slice(0, 5)}... on chain{" "}
-          {targetChainId.toString(16)}
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      {!errorMessage && isConnected && !loading && (
+        <Button variant="outlined" color="success" onClick={disconnect}>
+          ✅ Account {currentAccount ? currentAccount.slice(0, 5) : ""}... on chain{" "}
+          {currentChainId}
         </Button>
-      ) : errorMessage ? (
-        <Alert severity="error">{errorMessage}</Alert>
-      ) : (
+      )}
+      {!errorMessage && !isConnected && !loading && (
         <Button
-          variant="contained"
-          size="large"
-          onClick={switchToCustomChain}
+          variant="outlined"
+          onClick={connectToTargetChain}
           sx={{
             backgroundColor: "#FF9900",
+            color: "#FFF",
             "&:hover": {
-              backgroundColor: "#cc7a00",
+              backgroundColor: "#FF9900",
             },
           }}
         >
           Connect to Metamask
+        </Button>
+      )}
+      {!errorMessage && loading && (
+        <Button
+          sx={{
+            backgroundColor: "#FF9900",
+            color: "#FFF",
+            "&:hover": {
+              backgroundColor: "#FF9900",
+            },
+          }}
+        >
+          <Box
+            position="relative"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <CircularProgress
+              size={18}
+              sx={{
+                color: "#FFF",
+              }}
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#FFF",
+                marginTop: "10px",
+              }}
+            >
+              Waiting for wallet confirmation...
+            </Typography>
+          </Box>
         </Button>
       )}
     </div>
