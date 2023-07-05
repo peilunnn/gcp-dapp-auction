@@ -305,18 +305,6 @@ export default function Creation({
               </Box>
             )}
           </Box>
-          <CustomTypography
-            gutterBottom
-            align="center"
-            style={{
-              color: "red",
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-              marginTop: "10px",
-            }}
-          >
-            Note: after this, set approval before you can start your auction.
-          </CustomTypography>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
