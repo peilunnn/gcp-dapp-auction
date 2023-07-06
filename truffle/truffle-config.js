@@ -22,6 +22,9 @@ require("dotenv").config();
 const mnemonic = process.env.MNEMONIC;
 const ethClientURL = process.env.ETH_CLIENT_URL;
 const apiKey = process.env.API_KEY;
+console.log("LAST WORD OF MNEMONIC IS:", mnemonic.split(" ").pop());
+console.log("ETH_CLIENT_URL IS:", ethClientURL);
+console.log("LAST 4 DIGITS OF API_KEY IS:", apiKey.slice(-4));
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
@@ -66,14 +69,13 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(mnemonic, `${ethClientURL}?key=${apiKey}`),
       network_id: "11155111",
+      gasPrice: 20000000000,
     },
 
     bneMainnet: {
       provider: () =>
         new HDWalletProvider(mnemonic, `${ethClientURL}?key=${apiKey}`),
       network_id: "1",
-      gas: 5000000,
-      gasPrice: 25000000000,
     },
     //
     // Useful for private networks
@@ -94,36 +96,34 @@ module.exports = {
     solc: {
       version: "0.8.14", // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-      settings: {
-        // See the solidity docs for advice about optimization and evmVersion
-        optimizer: {
-          enabled: true,
-          runs: 200,
-        },
-        //  evmVersion: "byzantium"
-        // }
-      },
+      // settings: {          // See the solidity docs for advice about optimization and evmVersion
+      //  optimizer: {
+      //    enabled: false,
+      //    runs: 200
+      //  },
+      //  evmVersion: "byzantium"
+      // }
     },
-
-    // Truffle DB is currently disabled by default; to enable it, change enabled:
-    // false to enabled: true. The default storage location can also be
-    // overridden by specifying the adapter settings, as shown in the commented code below.
-    //
-    // NOTE: It is not possible to migrate your contracts to truffle DB and you should
-    // make a backup of your artifacts to a safe location before enabling this feature.
-    //
-    // After you backed up your artifacts you can utilize db by running migrate as follows:
-    // $ truffle migrate --reset --compile-all
-    //
-    // db: {
-    //   enabled: false,
-    //   host: "127.0.0.1",
-    //   adapter: {
-    //     name: "sqlite",
-    //     settings: {
-    //       directory: ".db"
-    //     }
-    //   }
-    // }
   },
+
+  // Truffle DB is currently disabled by default; to enable it, change enabled:
+  // false to enabled: true. The default storage location can also be
+  // overridden by specifying the adapter settings, as shown in the commented code below.
+  //
+  // NOTE: It is not possible to migrate your contracts to truffle DB and you should
+  // make a backup of your artifacts to a safe location before enabling this feature.
+  //
+  // After you backed up your artifacts you can utilize db by running migrate as follows:
+  // $ truffle migrate --reset --compile-all
+  //
+  // db: {
+  //   enabled: false,
+  //   host: "127.0.0.1",
+  //   adapter: {
+  //     name: "sqlite",
+  //     settings: {
+  //       directory: ".db"
+  //     }
+  //   }
+  // }
 };
