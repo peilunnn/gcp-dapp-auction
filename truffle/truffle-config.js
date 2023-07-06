@@ -72,6 +72,8 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(mnemonic, `${ethClientURL}?key=${apiKey}`),
       network_id: "1",
+      gas: 5000000,
+      gasPrice: 25000000000,
     },
     //
     // Useful for private networks
