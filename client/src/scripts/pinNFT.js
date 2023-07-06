@@ -1,7 +1,7 @@
 import axios from "axios";
 import { mintNFT } from "../utils";
 
-const beEndpoint = process.env.REACT_APP_BE_URL;
+const beUrl = process.env.REACT_APP_BE_URL;
 
 export function pinNFT(
   selectedFile,
@@ -30,7 +30,7 @@ export function pinNFT(
   formData.append("description", description);
 
   axios
-    .post(beEndpoint, formData)
+    .post(beUrl, formData)
     .then(async (response) => {
       const metadataURI = response.data.metadataURI;
       const tokenId = await mintNFT(
