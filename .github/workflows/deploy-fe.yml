@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: "14"
 
-      - name: Install npm dependencies
+      - name: Install truffle globally
         run: |
           cd truffle
           npm install -g truffle
@@ -37,26 +37,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-truffle-
 
-      - name: Deploy smart contracts to BNE node
-        id: deploy-contracts
-        continue-on-error: true
+      - name: Create truffle .env file
         run: |
           cd truffle
-          truffle migrate --reset --network ${{ inputs.network-name }}
-        env:
-          MNEMONIC: ${{ secrets.MNEMONIC }}
-          ETH_CLIENT_URL: ${{ secrets.ETH_CLIENT_URL }}
-          API_KEY: ${{ secrets.API_KEY }}
+          if [[ "${{ inputs.environment }}" == "staging" ]]; then
+            echo "${{ secrets.TRUFFLE_ENV_STAGING }}" > .env
+          elif [[ "${{ inputs.environment }}" == "production" ]]; then
+            echo "${{ secrets.TRUFFLE_ENV_PRODUCTION }}" > .env
+          fi
 
-      - name: Retry deploy smart contracts
-        if: steps.deploy-contracts.outcome == 'failure'
+      - name: Deploy smart contracts to BNE node
         run: |
           cd truffle
           truffle migrate --reset --network ${{ inputs.network-name }}
-        env:
-          MNEMONIC: ${{ secrets.MNEMONIC }}
-          ETH_CLIENT_URL: ${{ secrets.ETH_CLIENT_URL }}
-          API_KEY: ${{ secrets.API_KEY }}
+        continue-on-error: true
+
+      - name: Retry on failure of deploying smart contracts
+        if: failure()
+        run: |
+          cd truffle
+          truffle migrate --reset --network ${{ inputs.network-name }}
 
       - name: Set up Docker CLI
         uses: docker/setup-buildx-action@v1
@@ -67,7 +67,7 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
-      - name: Create .env.${{ inputs.environment }} file
+      - name: Create client .env.${{ inputs.environment }} file
         run: |
           cd client
           if [[ "${{ inputs.environment }}" == "staging" ]]; then
