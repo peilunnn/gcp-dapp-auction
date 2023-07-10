@@ -14,11 +14,6 @@ import * as React from "react";
 import { useState } from "react";
 import { useEth } from "../contexts/EthContext";
 
-const CustomTypography = styled(Typography)`
-  font-family: "Google Sans", sans-serif;
-  font-weight: 600;
-`;
-
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -104,7 +99,7 @@ export default function Creation({
       let val = await auctionFactoryContract.methods
         .createNewAuction(
           vars.nftAddress || mintNFTContractAddress,
-          vars.nftId || tokenId,
+          vars.nftTokenId || tokenId,
           vars.startingBid * Math.pow(10, 9),
           vars.increment * Math.pow(10, 9), //convert from Gwei in form input to wei in Auction constructor
           vars.duration * 60 * 60 // convert from hours in form input to seconds in Auction constructor
@@ -120,7 +115,7 @@ export default function Creation({
       enqueueSnackbar("Auction Created", { variant: "success" });
       setVars({
         nftAddress: "",
-        nftId: "",
+        nftTokenId: "",
         startingBid: 0,
         increment: 0,
         duration: 0,
@@ -142,7 +137,7 @@ export default function Creation({
   };
   const [vars, setVars] = useState({
     nftAddress: mintNFTContractAddress,
-    nftId: tokenId,
+    nftTokenId: tokenId,
     startingBid: 0,
     increment: 0,
     duration: 0,
@@ -207,10 +202,10 @@ export default function Creation({
               onChange={(event) => {
                 setVars({
                   ...vars,
-                  nftId: event.target.value,
+                  nftTokenId: event.target.value,
                 });
               }}
-              value={vars.nftId}
+              value={vars.nftTokenId}
             />
             <TextField
               margin="normal"

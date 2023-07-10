@@ -11,6 +11,7 @@ import { useEth } from "../contexts/EthContext";
 import { displayInGwei } from "../utils";
 import CountdownTimer from "./CountdownTimer";
 import { styled } from "@mui/system";
+import { insertIntoNftBids } from "../scripts/sendDataToBigQuery";
 
 const CustomTypography = styled(Typography)`
   font-family: "Google Sans", sans-serif;
@@ -127,6 +128,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
     setSubmitBidLoading(true);
     if (currBidAmount <= 0) {
       enqueueSnackbar("Please enter a valid bid amount", { variant: "error" });
+      setSubmitBidLoading(false);
       return;
     }
 
@@ -134,6 +136,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
       enqueueSnackbar("Bid amount is lower than highest bid", {
         variant: "error",
       });
+      setSubmitBidLoading(false);
       return;
     } else if (
       currBidAmount - highestBid < auctionData.increment &&
@@ -149,6 +152,7 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
       let sendAmount = currBidAmount - auctionData.userBidAmount;
       console.log(currBidAmount, auctionData.userBidAmount, sendAmount);
       const auctionContract = auctionData.auctionContract;
+
       try {
         console.log(`sending amount = ${sendAmount}`);
         await auctionContract.methods
@@ -156,6 +160,8 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
           .send({ from: accounts[0], value: sendAmount });
         enqueueSnackbar("Successfully submitted bid!", { variant: "success" });
         setSubmitBidLoading(false);
+        await insertIntoNftBids(auctionData.nftId, accounts[0], currBidAmount);
+
         auctionData.userBidAmount = currBidAmount;
         setRole("highestBidder");
         console.log(auctionData.userBidAmount);
