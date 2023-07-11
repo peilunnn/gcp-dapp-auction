@@ -11,7 +11,10 @@ import { useEth } from "../contexts/EthContext";
 import { displayInGwei } from "../utils";
 import CountdownTimer from "./CountdownTimer";
 import { styled } from "@mui/system";
-import { insertIntoNftBids } from "../scripts/sendDataToBigQuery";
+import {
+  insertIntoNftBids,
+  insertIntoNftSales,
+} from "../scripts/sendDataToBigQuery";
 
 const CustomTypography = styled(Typography)`
   font-family: "Google Sans", sans-serif;
@@ -246,6 +249,19 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
     try {
       await auctionContract.methods.end().send({ from: accounts[0] });
       setEndLoading(false);
+      console.log(
+        auctionData.nftId,
+        auctionData.seller,
+        auctionData.highestBidder,
+        currBidAmount
+      );
+      await insertIntoNftSales(
+        auctionData.nftId,
+        auctionData.seller,
+        auctionData.highestBidder,
+        currBidAmount
+      );
+
       enqueueSnackbar("Successfully ended the auction!", {
         variant: "success",
       });
