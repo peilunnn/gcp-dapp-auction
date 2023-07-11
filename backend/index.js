@@ -99,6 +99,68 @@ app.post("/insertIntoNftBids", async (req, res) => {
   }
 });
 
+app.post("/insertIntoNftSales", async (req, res) => {
+  const {
+    nftTokenId,
+    sellerWalletAddress,
+    highestBidderWalletAddress,
+    bidAmount,
+  } = req.body;
+
+  const datasetId = "nft_auction_dataset";
+  const tableId = "nft_sales_table";
+
+  // Check if the dataset exists, and create it if it doesn't
+  const [datasetExists] = await bigquery.dataset(datasetId).exists();
+
+  if (!datasetExists) {
+    await bigquery.createDataset(datasetId);
+  }
+
+  // Check if the table exists, and create it if it doesn't
+  const [tableExists] = await bigquery
+    .dataset(datasetId)
+    .table(tableId)
+    .exists();
+  if (!tableExists) {
+    // Define your table schema
+    // This should match the structure of the data in the 'data' parameter
+    const schema = [
+      { name: "nft_token_id", type: "INTEGER", mode: "REQUIRED" },
+      { name: "seller_wallet_address", type: "STRING", mode: "REQUIRED" },
+      { name: "highest_bidder_wallet_address", type: "STRING", mode: "REQUIRED" },
+      { name: "bid_amount", type: "INTEGER", mode: "REQUIRED" },
+    ];
+
+    await bigquery.dataset(datasetId).createTable(tableId, { schema });
+  }
+
+  try {
+    const row = {
+      nft_token_id: parseInt(nftTokenId),
+      seller_wallet_address: sellerWalletAddress,
+      highest_bidder_wallet_address: highestBidderWalletAddress,
+      bid_amount: parseInt(bidAmount),
+    };
+
+    const options = {
+      datasetId,
+      tableId,
+      rows: [row],
+    };
+
+    await bigquery
+      .dataset(options.datasetId)
+      .table(options.tableId)
+      .insert(options.rows);
+    console.log("Row inserted into nft_sales successfully");
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error inserting row into nft_sales:", error);
+    res.sendStatus(500);
+  }
+});
+
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
 });
