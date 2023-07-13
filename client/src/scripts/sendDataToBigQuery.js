@@ -2,8 +2,6 @@ import axios from "axios";
 
 const beNftBidsUrl = process.env.REACT_APP_BE_NFT_BIDS_URL;
 const beNftSalesUrl = process.env.REACT_APP_BE_NFT_SALES_URL;
-console.log(process.env);
-console.log(beNftSalesUrl);
 
 const insertIntoNftBids = async (
   nftTokenId,

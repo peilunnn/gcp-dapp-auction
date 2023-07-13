@@ -47,14 +47,17 @@ app.post("/pin", upload.single("file"), async (req, res) => {
 app.post("/insertIntoNftBids", async (req, res) => {
   const { nftTokenId, bidderWalletAddress, bidAmount } = req.body;
 
-  const datasetId = "nft_auction_dataset";
+  const datasetId = "nft_auction_dataset_sg";
   const tableId = "nft_bids_table";
 
   // Check if the dataset exists, and create it if it doesn't
   const [datasetExists] = await bigquery.dataset(datasetId).exists();
 
   if (!datasetExists) {
-    await bigquery.createDataset(datasetId);
+    const options = {
+      location: "asia-southeast1",
+    };
+    await bigquery.createDataset(datasetId, options);
   }
 
   // Check if the table exists, and create it if it doesn't
@@ -107,14 +110,17 @@ app.post("/insertIntoNftSales", async (req, res) => {
     bidAmount,
   } = req.body;
 
-  const datasetId = "nft_auction_dataset";
+  const datasetId = "nft_auction_dataset_sg";
   const tableId = "nft_sales_table";
 
   // Check if the dataset exists, and create it if it doesn't
   const [datasetExists] = await bigquery.dataset(datasetId).exists();
 
   if (!datasetExists) {
-    await bigquery.createDataset(datasetId);
+    const options = {
+      location: "asia-southeast1",
+    };
+    await bigquery.createDataset(datasetId, options);
   }
 
   // Check if the table exists, and create it if it doesn't
@@ -128,7 +134,11 @@ app.post("/insertIntoNftSales", async (req, res) => {
     const schema = [
       { name: "nft_token_id", type: "INTEGER", mode: "REQUIRED" },
       { name: "seller_wallet_address", type: "STRING", mode: "REQUIRED" },
-      { name: "highest_bidder_wallet_address", type: "STRING", mode: "REQUIRED" },
+      {
+        name: "highest_bidder_wallet_address",
+        type: "STRING",
+        mode: "REQUIRED",
+      },
       { name: "bid_amount", type: "INTEGER", mode: "REQUIRED" },
     ];
 
@@ -157,6 +167,69 @@ app.post("/insertIntoNftSales", async (req, res) => {
     res.sendStatus(200);
   } catch (error) {
     console.error("Error inserting row into nft_sales:", error);
+    res.sendStatus(500);
+  }
+});
+
+app.post("/insertIntoMintTransactions", async (req, res) => {
+  const { transactionHash, user, gasUsed, effectiveGasPrice, status } =
+    req.body;
+
+  const datasetId = "nft_auction_dataset_sg";
+  const tableId = "mint_transactions_table";
+
+  // Check if the dataset exists, and create it if it doesn't
+  const [datasetExists] = await bigquery.dataset(datasetId).exists();
+
+  if (!datasetExists) {
+    const options = {
+      location: "asia-southeast1",
+    };
+    await bigquery.createDataset(datasetId, options);
+  }
+
+  // Check if the table exists, and create it if it doesn't
+  const [tableExists] = await bigquery
+    .dataset(datasetId)
+    .table(tableId)
+    .exists();
+  if (!tableExists) {
+    // Define your table schema
+    // This should match the structure of the data in the 'data' parameter
+    const schema = [
+      { name: "transaction_hash", type: "STRING", mode: "REQUIRED" },
+      { name: "user", type: "STRING", mode: "REQUIRED" },
+      { name: "gas_used", type: "INTEGER", mode: "REQUIRED" },
+      { name: "effective_gas_price", type: "INTEGER", mode: "REQUIRED" },
+      { name: "status", type: "STRING", mode: "REQUIRED" },
+    ];
+
+    await bigquery.dataset(datasetId).createTable(tableId, { schema });
+  }
+
+  try {
+    const row = {
+      transaction_hash: transactionHash,
+      user: user,
+      gas_used: gasUsed,
+      effective_gas_price: effectiveGasPrice,
+      status: status.toString(),
+    };
+
+    const options = {
+      datasetId,
+      tableId,
+      rows: [row],
+    };
+
+    await bigquery
+      .dataset(options.datasetId)
+      .table(options.tableId)
+      .insert(options.rows);
+    console.log("Row inserted into mint_transactions successfully");
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error inserting row into mint_transactions:", error);
     res.sendStatus(500);
   }
 });
