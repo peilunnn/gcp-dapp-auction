@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import { useSnackbar } from "notistack";
 import PropTypes from "prop-types";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useEth } from "../contexts/EthContext";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -66,6 +66,22 @@ export default function Creation({
   } = useEth();
   const auctionJson = require("../contracts/AuctionFactory.json");
   let auctionFactoryContract;
+
+  const [vars, setVars] = useState({
+    nftAddress: mintNFTContractAddress,
+    nftTokenId: tokenId,
+    startingBid: 0,
+    increment: 0,
+    duration: 0,
+  });
+
+  useEffect(() => {
+    setVars((prevVars) => ({
+      ...prevVars,
+      nftAddress: mintNFTContractAddress,
+      nftTokenId: tokenId,
+    }));
+  }, [mintNFTContractAddress, tokenId]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -132,16 +148,18 @@ export default function Creation({
   const handleOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
+    setVars((prevVars) => ({
+      ...prevVars,
+      nftAddress: mintNFTContractAddress,
+      nftTokenId: tokenId,
+      startingBid: 0,
+      increment: 0,
+      duration: 0,
+    }));
   };
-  const [vars, setVars] = useState({
-    nftAddress: mintNFTContractAddress,
-    nftTokenId: tokenId,
-    startingBid: 0,
-    increment: 0,
-    duration: 0,
-  });
 
   return (
     <div>
