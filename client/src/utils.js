@@ -1,4 +1,7 @@
 import axios from "axios";
+require("dotenv").config();
+
+const beMintTransactionsUrl = process.env.REACT_APP_BE_MINT_TRANSACTIONS_URL;
 
 export function getAuctionFactoryContract(web3, networkID) {
   if (web3 === null || networkID === null) {
@@ -56,6 +59,28 @@ export async function mintNFT(web3, mintNFTContract, accounts, metadataURI) {
   const receipt = await mintNFTContract.methods
     .mint(metadataURI)
     .send({ from: accounts[0] });
+
+  const transactionHash = receipt.transactionHash;
+  const user = receipt.from;
+  const gasUsed = receipt.gasUsed;
+  const effectiveGasPrice = receipt.effectiveGasPrice;
+  const status = receipt.status;
+
+  try {
+    const response = await axios.post(beMintTransactionsUrl, {
+      transactionHash,
+      user,
+      gasUsed,
+      effectiveGasPrice,
+      status
+    });
+
+    console.log("Row inserted into mint_transactions successfully");
+    console.log("Response:", response.data);
+  } catch (error) {
+    console.error("Error inserting row into mint_transactions:", error);
+  }
+
   const tokenId = receipt.events.Transfer.returnValues.tokenId;
   return tokenId;
 }
