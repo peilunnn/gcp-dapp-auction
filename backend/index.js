@@ -6,7 +6,6 @@ const { pinImage } = require("./scripts/pinImage");
 const { pinMetadata } = require("./scripts/pinMetadata");
 const { BigQuery } = require("@google-cloud/bigquery");
 const { GoogleAuth } = require("google-auth-library");
-const axios = require("axios");
 
 const bigquery = new BigQuery();
 

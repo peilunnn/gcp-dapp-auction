@@ -3,13 +3,10 @@ import { mintNFT } from "../utils";
 
 const bePinUrl = process.env.REACT_APP_BE_PIN_URL;
 
-export function pinNFT(
-  selectedFile,
-  name,
-  description,
-  setSelectedFile,
-  setName,
-  setDescription,
+export function pinAIGeneratedNft(
+  generatedFile,
+  prompt,
+  setPrompt,
   enqueueSnackbar,
   web3,
   mintNFTContract,
@@ -18,16 +15,10 @@ export function pinNFT(
   setMintNFTContractAddress,
   setMintLoading
 ) {
-  if (!(selectedFile && name.trim() !== "")) {
-    enqueueSnackbar("Please select a picture and provide a name", {
-      variant: "error",
-    });
-  }
-
   const formData = new FormData();
-  formData.append("file", selectedFile);
-  formData.append("name", name);
-  formData.append("description", description);
+  formData.append("file", generatedFile);
+  formData.append("name", prompt);
+  formData.append("description", "");
 
   axios
     .post(bePinUrl, formData)
@@ -41,9 +32,7 @@ export function pinNFT(
       );
       const contractAddress = mintNFTContract.options.address;
 
-      setSelectedFile(null);
-      setName("");
-      setDescription("");
+      setPrompt("");
       enqueueSnackbar("Successfully pinned and minted NFT", {
         variant: "success",
       });

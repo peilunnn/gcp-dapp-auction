@@ -11,22 +11,50 @@ import {
 } from "@mui/material";
 import { generateAIArt } from "../scripts/generateAIArt";
 import { useSnackbar } from "notistack";
+import { pinAIGeneratedNft } from "../scripts/pinAIGeneratedNft";
+import { getMintNFTContract } from "../utils";
+import Creation from "./Creation";
 
-const NFTAIGenerated = () => {
+const NFTAIGenerated = ({ web3, networkID, accounts, refetchData }) => {
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState(null);
   const [mintLoading, setMintLoading] = useState(false);
   const [generateLoading, setGenerateLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const [tokenId, setTokenId] = useState(null);
+  const [mintNFTContractAddress, setMintNFTContractAddress] = useState(null);
+
+  const mintNFTContract = getMintNFTContract(web3, networkID);
 
   const handleGenerateButtonClick = async () => {
     setGenerateLoading(true);
-    await generateAIArt(prompt, setImage, setGenerateLoading, enqueueSnackbar);
+    generateAIArt(prompt, setImage, setGenerateLoading, enqueueSnackbar);
   };
 
-  const mintImage = () => {
-    // Implement your minting functionality here.
-    // This will be specific to the blockchain and smart contract you are using.
+  const handleMintButtonClick = async () => {
+    setMintLoading(true);
+
+    fetch(image)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const file = new File([blob], `${prompt}.jpg`, { type: "image/jpeg" });
+        pinAIGeneratedNft(
+          file,
+          prompt,
+          setPrompt,
+          enqueueSnackbar,
+          web3,
+          mintNFTContract,
+          accounts,
+          setTokenId,
+          setMintNFTContractAddress,
+          setMintLoading
+        );
+      })
+      .catch((error) => {
+        console.error("Error during the minting process:", error);
+        setMintLoading(false);
+      });
   };
 
   return (
@@ -117,19 +145,57 @@ const NFTAIGenerated = () => {
                 style={{ maxWidth: "100%", display: "block", margin: "auto" }}
               />
               <Box paddingY={2}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => mintImage()}
-                  sx={{
-                    backgroundColor: "#FF9900",
-                    display: "block",
-                    margin: "auto",
-                  }}
-                >
-                  Mint
-                </Button>
+                {!mintLoading && (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleMintButtonClick()}
+                    sx={{
+                      backgroundColor: "#FF9900",
+                      display: "block",
+                      margin: "auto",
+                    }}
+                  >
+                    Mint
+                  </Button>
+                )}
+                {mintLoading && (
+                  <Box
+                    position="relative"
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        color: "#FF9900",
+                      }}
+                    />
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        color: "#FF9900",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Waiting for wallet confirmation...
+                    </Typography>
+                  </Box>
+                )}
               </Box>{" "}
+              {tokenId && mintNFTContractAddress && (
+                <Box mt={2} textAlign="center">
+                  <Box mt={2} display="flex" justifyContent="center">
+                    <Creation
+                      refetchData={refetchData}
+                      mintNFTContractAddress={mintNFTContractAddress}
+                      tokenId={tokenId}
+                    />
+                  </Box>
+                </Box>
+              )}
             </Grid>
           </Grid>
         )}
