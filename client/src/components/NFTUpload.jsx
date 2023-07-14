@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { pinNFT } from "../scripts/pinNFT";
+import { pinUploadedNft } from "../scripts/pinUploadedNft";
 import { getMintNFTContract } from "../utils";
 import Creation from "./Creation";
 
@@ -33,7 +33,7 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
 
   const handleMintButtonClick = async () => {
     setMintLoading(true);
-    await pinNFT(
+    await pinUploadedNft(
       uploadedImage,
       name,
       description,

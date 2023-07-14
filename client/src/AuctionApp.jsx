@@ -5,7 +5,15 @@ import NFTAIGenerated from "./components/NFTAIGenerated";
 
 import PageHeader from "./components/PageHeader";
 import PageTitleWrapper from "./components/PageTitleWrapper";
-import { Box, alpha, lighten, Container, Grid, useTheme, Typography } from "@mui/material";
+import {
+  Box,
+  alpha,
+  lighten,
+  Container,
+  Grid,
+  useTheme,
+  Typography,
+} from "@mui/material";
 
 import RootHeader from "./components/RootHeader";
 import Listing from "./components/Listing";
@@ -131,7 +139,12 @@ function AuctionApp() {
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={5} md={5}>
-                <NFTAIGenerated />
+                <NFTAIGenerated
+                  web3={web3}
+                  networkID={networkID}
+                  accounts={accounts}
+                  refetchData={refetchData}
+                />
               </Grid>
             </Grid>
           </Grid>
