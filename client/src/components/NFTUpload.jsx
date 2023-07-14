@@ -55,9 +55,16 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
       sx={{
         border: "1px solid #ccc",
         mt: "20px",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <CardContent>
+      <CardContent
+        sx={{
+          flex: "1 0 auto",
+        }}
+      >
         <Typography variant="h6" component="div" gutterBottom align="center">
           <strong style={{ fontSize: "1.4rem" }}>Upload and Mint a NFT</strong>
         </Typography>

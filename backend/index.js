@@ -5,6 +5,8 @@ const { PINATA_BASE_URL, FOLDER_NAME } = require("./constants");
 const { pinImage } = require("./scripts/pinImage");
 const { pinMetadata } = require("./scripts/pinMetadata");
 const { BigQuery } = require("@google-cloud/bigquery");
+const { GoogleAuth } = require("google-auth-library");
+const axios = require("axios");
 
 const bigquery = new BigQuery();
 
@@ -231,6 +233,43 @@ app.post("/insertIntoMintTransactions", async (req, res) => {
   } catch (error) {
     console.error("Error inserting row into mint_transactions:", error);
     res.sendStatus(500);
+  }
+});
+
+app.post("/generateAIArt", async (req, res) => {
+  const { prompt, sampleCount } = req.body;
+
+  const auth = new GoogleAuth({
+    scopes: "https://www.googleapis.com/auth/cloud-platform",
+  });
+
+  const client = await auth.getClient();
+  const projectId = await auth.getProjectId();
+  const url = `https://us-central1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/us-central1/publishers/google/models/imagegeneration:predict`;
+
+  try {
+    const response = await client.request({
+      url,
+      method: "post",
+      data: {
+        instances: [
+          {
+            prompt: prompt,
+          },
+        ],
+        parameters: {
+          sampleCount: sampleCount,
+        },
+      },
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    });
+
+    res.send(response.data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
   }
 });
 

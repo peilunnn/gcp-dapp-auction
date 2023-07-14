@@ -1,10 +1,11 @@
 import Account from "./components/Account";
 import { useEth } from "./contexts/EthContext";
 import NFTUpload from "./components/NFTUpload";
+import NFTAIGenerated from "./components/NFTAIGenerated";
 
 import PageHeader from "./components/PageHeader";
 import PageTitleWrapper from "./components/PageTitleWrapper";
-import { Box, alpha, lighten, Container, Grid, useTheme } from "@mui/material";
+import { Box, alpha, lighten, Container, Grid, useTheme, Typography } from "@mui/material";
 
 import RootHeader from "./components/RootHeader";
 import Listing from "./components/Listing";
@@ -13,7 +14,7 @@ import { useState } from "react";
 import { getAuctionFactoryContract, getAuctions } from "./utils";
 import { useSnackbar } from "notistack";
 
-function AuctionApp() {  
+function AuctionApp() {
   useEffect(() => {
     var scrollToTopBtn = document.querySelector(".scrollToTopBtn");
     var rootElement = document.documentElement;
@@ -72,6 +73,7 @@ function AuctionApp() {
       variant: "success",
     });
   }
+
   return (
     <Box
       sx={{
@@ -108,20 +110,36 @@ function AuctionApp() {
           alignItems="stretch"
           spacing={4}
         >
-          <NFTUpload
-            web3={web3}
-            networkID={networkID}
-            accounts={accounts}
-            refetchData={refetchData}
-          />
+          <Grid item xs={12}>
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+            >
+              <Grid item xs={12} sm={5} md={5}>
+                <NFTUpload
+                  web3={web3}
+                  networkID={networkID}
+                  accounts={accounts}
+                  refetchData={refetchData}
+                />
+              </Grid>
+              <Grid item xs={12} sm={2} md={2}>
+                <Typography variant="h3" component="div" align="center">
+                  or...
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={5} md={5}>
+                <NFTAIGenerated />
+              </Grid>
+            </Grid>
+          </Grid>
           <Grid item xs={12}>
             <Account auctions={auctions} />
           </Grid>
         </Grid>
-        <Listing
-          auctions={auctions}
-          refetchData={refetchData}
-        />
+        <Listing auctions={auctions} refetchData={refetchData} />
       </Container>
       <button className="scrollToTopBtn cursor-pointer">☝️</button>
     </Box>
