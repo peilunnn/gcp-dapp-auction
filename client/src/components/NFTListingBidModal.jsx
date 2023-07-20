@@ -277,12 +277,6 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
       <Button onClick={handleOpen}>Open</Button>
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Box display="flex" justifyContent={"space-between"}>
-            <Button onClick={() => logAuctionData(auctionData)}>
-              Debug auction in console
-            </Button>
-            <Button onClick={handleClose}>Close</Button>
-          </Box>
           <Box
             sx={{
               marginLeft: "14px",
