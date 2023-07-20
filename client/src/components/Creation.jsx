@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { useEth } from "../contexts/EthContext";
+const nftJson = require("../contracts/MintNFT.json");
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -117,7 +118,7 @@ export default function Creation({
           vars.nftAddress || mintNFTContractAddress,
           vars.nftTokenId || tokenId,
           vars.startingBid * Math.pow(10, 9),
-          vars.increment * Math.pow(10, 9), //convert from Gwei in form input to wei in Auction constructor
+          vars.increment * Math.pow(10, 9), // convert from Gwei in form input to wei in Auction constructor
           vars.duration * 60 * 60 // convert from hours in form input to seconds in Auction constructor
         )
         .send({ from: accounts[0] });
@@ -126,6 +127,25 @@ export default function Creation({
       let auctionDeployedAddress =
         val.events.ContractCreated.returnValues.newContractAddress;
       console.log(auctionDeployedAddress);
+
+      let mintNFTContract = new web3.eth.Contract(
+        nftJson.abi,
+        vars.nftAddress || mintNFTContractAddress
+      );
+      try {
+        debugger;
+        await mintNFTContract.methods
+          .approve(auctionDeployedAddress, tokenId || vars.nftTokenId)
+          .send({ from: accounts[0] });
+        enqueueSnackbar("Approval successful", {
+          variant: "success",
+        });
+      } catch (err) {
+        console.log(err);
+        enqueueSnackbar("Approval failed", {
+          variant: "error",
+        });
+      }
 
       handleClose();
       enqueueSnackbar("Auction Created", { variant: "success" });

@@ -24,7 +24,6 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
   const [mintLoading, setMintLoading] = useState(false);
 
   const mintNFTContract = getMintNFTContract(web3, networkID);
-  const nftJson = require("../contracts/MintNFT.json");
 
   const handleUploadImage = (event) => {
     const img = event.target.files[0];
@@ -35,7 +34,7 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
   const handleMintButtonClick = async () => {
     setMintLoading(true);
 
-    await pinUploadedNft(
+    pinUploadedNft(
       uploadedImage,
       name,
       description,
@@ -50,15 +49,6 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
       setMintNFTContractAddress,
       setMintLoading
     );
-
-    let auctionContractAddress = nftJson.networks[networkID].address;
-    let mintNFTContract = new web3.eth.Contract(
-      nftJson.abi,
-      auctionContractAddress
-    );
-    await mintNFTContract.methods
-      .approve(auctionContractAddress, tokenId)
-      .send({ from: accounts[0] });
   };
 
   return (
