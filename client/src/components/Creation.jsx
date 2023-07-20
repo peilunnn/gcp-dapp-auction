@@ -133,7 +133,6 @@ export default function Creation({
         vars.nftAddress || mintNFTContractAddress
       );
       try {
-        debugger;
         await mintNFTContract.methods
           .approve(auctionDeployedAddress, tokenId || vars.nftTokenId)
           .send({ from: accounts[0] });

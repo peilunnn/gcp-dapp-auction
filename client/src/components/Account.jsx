@@ -1,11 +1,7 @@
-import { Card, Box, Grid, Typography, Divider, Stack } from "@mui/material";
+import { Card, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useEth } from "../contexts/EthContext";
-import {
-  displayInGwei,
-  displayInHours,
-  displayTimestampInHumanReadable,
-} from "../utils";
+import { displayInGwei } from "../utils";
 import { styled } from "@mui/system";
 
 const CustomTypography = styled(Typography)`

@@ -53,10 +53,6 @@ function getRPCErrorMessage(err) {
   return msg;
 }
 
-const logAuctionData = async (auctionData) => {
-  console.log("Auction data: ", auctionData);
-};
-
 const calculateTimeTillExpiry = (auctionData) => {
   const expiryTime = auctionData.endAt;
   const currentTime = Math.floor(Date.now() / 1000);
