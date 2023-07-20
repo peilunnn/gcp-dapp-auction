@@ -128,50 +128,6 @@ function AuctionDetails({ auction, refetchData, loading, setLoading }) {
             alignItems="center"
             spacing={2}
           >
-            <CustomTypography>Auction Address</CustomTypography>
-            <Tooltip title={auction.auctionContract._address} arrow>
-              <CustomTypography>
-                {auction.auctionContract._address.slice(0, 8) + "..."}
-              </CustomTypography>
-            </Tooltip>
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            spacing={2}
-          >
-            <CustomTypography>NFT Address</CustomTypography>
-            <Tooltip title={auction.nft} arrow>
-              <CustomTypography>
-                {auction.nft.slice(0, 8) + "..."}
-              </CustomTypography>
-            </Tooltip>
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            spacing={2}
-          >
-            <CustomTypography>Token ID</CustomTypography>
-            {auction.nftId}
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            spacing={2}
-          >
-            <CustomTypography>Token Standard</CustomTypography>
-            ERC-721
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            spacing={2}
-          >
             <CustomTypography>Minimum Increment</CustomTypography>
             {displayInGwei(auction.increment)} gwei
           </Stack>
