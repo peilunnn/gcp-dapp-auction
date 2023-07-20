@@ -201,12 +201,14 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
       enqueueSnackbar("You are the highest bidder! You cannot withdraw!", {
         variant: "error",
       });
+      setWithdrawLoading(false);
       return;
     }
     if (highestBidder === "0x0000000000000000000000000000000000000000") {
       enqueueSnackbar("No one has placed any bid yet!", {
         variant: "error",
       });
+      setWithdrawLoading(false);
       return;
     }
     const auctionContract = auctionData.auctionContract;
@@ -274,7 +276,9 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
 
   return (
     <>
-      <Button onClick={handleOpen}>Open</Button>
+      {!(auctionData.started && auctionData.ended) && (
+        <Button onClick={handleOpen}>Open</Button>
+      )}
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <Box
