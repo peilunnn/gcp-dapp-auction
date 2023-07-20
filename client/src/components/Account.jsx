@@ -1,11 +1,6 @@
-import { Card, Box, Grid, Typography, Divider, Stack } from "@mui/material";
+import { Card, Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useEth } from "../contexts/EthContext";
-import {
-  displayInGwei,
-  displayInHours,
-  displayTimestampInHumanReadable,
-} from "../utils";
 import NftApprovalCard from "./NftApprovalCard";
 import { styled } from "@mui/system";
 
@@ -42,7 +37,7 @@ function Account({ auctions }) {
             {auction ? (
               <Box>
                 <CustomTypography variant="h1" gutterBottom>
-                  {displayInGwei(auction.highestBid)} gwei 💰
+                  {auction.highestBid} gwei 💰
                 </CustomTypography>
                 <CustomTypography
                   variant="h4"
@@ -64,94 +59,6 @@ function Account({ auctions }) {
                     Go to Auction
                   </a>
                 </CustomTypography>
-                <Box
-                  display="flex"
-                  sx={{
-                    flexDirection: "column",
-                  }}
-                >
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <CustomTypography variant="h4">Title</CustomTypography>
-                    {auction.pinataMetadata.name}
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <CustomTypography variant="h4">
-                      Auction Address
-                    </CustomTypography>
-                    {auction.auctionContract._address}
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <CustomTypography variant="h4">
-                      NFT Address
-                    </CustomTypography>
-                    {auction.nft}
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <CustomTypography variant="h4">Token ID</CustomTypography>
-                    {auction.nftId}
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <CustomTypography variant="h4">
-                      Token Standard
-                    </CustomTypography>
-                    ERC-721
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <CustomTypography variant="h4">
-                      Minimum Increment
-                    </CustomTypography>
-                    {displayInGwei(auction.increment)} gwei
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <CustomTypography variant="h4">Start At</CustomTypography>
-                    {displayTimestampInHumanReadable(auction.startAt)}
-                  </Stack>
-
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <CustomTypography variant="h4">Duration</CustomTypography>
-                    {displayInHours(auction.duration)} hours
-                  </Stack>
-                </Box>
               </Box>
             ) : (
               <CustomTypography variant="h4">
@@ -170,14 +77,6 @@ function Account({ auctions }) {
           xs={12}
           md={6}
         >
-          <Box
-            component="span"
-            sx={{
-              display: { xs: "none", md: "inline-block" },
-            }}
-          >
-            <Divider absolute orientation="vertical" />
-          </Box>
           {auction && (
             <NftApprovalCard
               auctionContractAddress={auction.auctionContract._address}
