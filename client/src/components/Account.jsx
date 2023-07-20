@@ -1,7 +1,11 @@
-import { Card, Box, Grid, Typography } from "@mui/material";
+import { Card, Box, Grid, Typography, Divider, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useEth } from "../contexts/EthContext";
-import NftApprovalCard from "./NftApprovalCard";
+import {
+  displayInGwei,
+  displayInHours,
+  displayTimestampInHumanReadable,
+} from "../utils";
 import { styled } from "@mui/system";
 
 const CustomTypography = styled(Typography)`
@@ -37,7 +41,7 @@ function Account({ auctions }) {
             {auction ? (
               <Box>
                 <CustomTypography variant="h1" gutterBottom>
-                  {auction.highestBid} gwei 💰
+                  {displayInGwei(auction.highestBid)} gwei 💰
                 </CustomTypography>
                 <CustomTypography
                   variant="h4"
@@ -59,6 +63,13 @@ function Account({ auctions }) {
                     Go to Auction
                   </a>
                 </CustomTypography>
+                <Box
+                  display="flex"
+                  sx={{
+                    flexDirection: "column",
+                  }}
+                >
+                </Box>
               </Box>
             ) : (
               <CustomTypography variant="h4">
@@ -77,12 +88,14 @@ function Account({ auctions }) {
           xs={12}
           md={6}
         >
-          {auction && (
-            <NftApprovalCard
-              auctionContractAddress={auction.auctionContract._address}
-              tokenId={auction.nftId}
-            />
-          )}
+          <Box
+            component="span"
+            sx={{
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            <Divider absolute orientation="vertical" />
+          </Box>
         </Grid>
       </Grid>
     </Card>
