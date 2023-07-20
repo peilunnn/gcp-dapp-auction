@@ -93,7 +93,7 @@ function AuctionDetails({ auction, refetchData, loading, setLoading }) {
           arrow
         >
           <CustomTypography sx={{ fontWeight: "bold" }}>
-            {`Owned by: ${
+            {`Owned By: ${
               auction.started &&
               auction.ended &&
               auction.highestBidder !==

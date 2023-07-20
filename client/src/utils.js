@@ -2,6 +2,7 @@ import axios from "axios";
 require("dotenv").config();
 
 const beMintTransactionsUrl = process.env.REACT_APP_BE_MINT_TRANSACTIONS_URL;
+let cache = {};
 
 export function getAuctionFactoryContract(web3, networkID) {
   if (web3 === null || networkID === null) {
@@ -121,13 +122,22 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
       const metadataURI = await mintNFTContract.methods
         .tokenURI(tokenId)
         .call();
-      const nftMetadata = (
-        await axios.get(metadataURI, {
-          headers: {
-            Accept: "text/plain",
-          },
-        })
-      ).data;
+      
+      let nftMetadata;
+      
+      if (cache[metadataURI]) {
+        nftMetadata = cache[metadataURI];
+      } else {
+        nftMetadata = (
+          await axios.get(metadataURI, {
+            headers: {
+              Accept: "text/plain",
+            },
+          })
+        ).data;
+        cache[metadataURI] = nftMetadata;
+      }
+
       const nftMetadataJSON = JSON.parse(nftMetadata);
       const auction = {
         pinataImageUri: nftMetadataJSON.image,
