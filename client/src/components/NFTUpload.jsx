@@ -56,7 +56,6 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
       sx={{
         border: "1px solid #ccc",
         mt: "20px",
-        height: "100%",
         display: "flex",
         flexDirection: "column",
       }}
@@ -100,7 +99,7 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
             <img
               src={imagePreview}
               alt="Preview"
-              style={{ maxWidth: "100%", maxHeight: "300px" }}
+              style={{ maxWidth: "100%", height: "auto" }}
             />
           </Box>
         )}

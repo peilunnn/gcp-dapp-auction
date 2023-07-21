@@ -11,8 +11,8 @@ import {
   lighten,
   Container,
   Grid,
+  Button,
   useTheme,
-  Typography,
 } from "@mui/material";
 
 import RootHeader from "./components/RootHeader";
@@ -21,8 +21,15 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { getAuctionFactoryContract, getAuctions } from "./utils";
 import { useSnackbar } from "notistack";
+import ReactCardFlip from "react-card-flip";
 
 function AuctionApp() {
+  const [showNFTUpload, setShowNFTUpload] = useState(true);
+
+  const handleFlip = () => {
+    setShowNFTUpload(!showNFTUpload);
+  };
+
   useEffect(() => {
     var scrollToTopBtn = document.querySelector(".scrollToTopBtn");
     var rootElement = document.documentElement;
@@ -45,6 +52,7 @@ function AuctionApp() {
       scrollFunction();
     };
   });
+
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -54,6 +62,7 @@ function AuctionApp() {
   const {
     state: { web3, networkID, accounts },
   } = useEth();
+
   useEffect(() => {
     if (web3 && networkID) {
       setAuctionFactoryContract(getAuctionFactoryContract(web3, networkID));
@@ -111,48 +120,47 @@ function AuctionApp() {
         <PageHeader refetchData={refetchData} />
       </PageTitleWrapper>
       <Container maxWidth="lg">
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={4}
-        >
+        <Grid container spacing={4}>
           <Grid item xs={12}>
-            <Grid
-              container
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
+            <div
+              className="button-card-container"
+              style={{ display: "flex", justifyContent: "center" }}
             >
-              <Grid item xs={12} sm={5} md={5}>
-                <NFTUpload
-                  web3={web3}
-                  networkID={networkID}
-                  accounts={accounts}
-                  refetchData={refetchData}
-                />
-              </Grid>
-              <Grid item xs={12} sm={2} md={2}>
-                <Typography variant="h3" component="div" align="center">
-                  or...
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={5} md={5}>
-                <NFTAIGenerated
-                  web3={web3}
-                  networkID={networkID}
-                  accounts={accounts}
-                  refetchData={refetchData}
-                />
-              </Grid>
-            </Grid>
+              <Button variant="contained" onClick={handleFlip}>
+                Flip
+              </Button>
+              <div style={{ width: "50%", height: "50%" }}>
+                <ReactCardFlip
+                  isFlipped={showNFTUpload}
+                  flipDirection="horizontal"
+                >
+                  <div style={{ width: "100%", height: "100%" }}>
+                    <NFTUpload
+                      web3={web3}
+                      networkID={networkID}
+                      accounts={accounts}
+                      refetchData={refetchData}
+                    />
+                  </div>
+                  <div style={{ width: "100%", height: "100%" }}>
+                    <NFTAIGenerated
+                      web3={web3}
+                      networkID={networkID}
+                      accounts={accounts}
+                      refetchData={refetchData}
+                    />
+                  </div>
+                </ReactCardFlip>
+              </div>
+            </div>
           </Grid>
           <Grid item xs={12}>
             <Account auctions={auctions} />
           </Grid>
+          <Grid item xs={12}>
+            <Listing auctions={auctions} refetchData={refetchData} />
+          </Grid>
         </Grid>
-        <Listing auctions={auctions} refetchData={refetchData} />
       </Container>
       <button className="scrollToTopBtn cursor-pointer">☝️</button>
     </Box>
