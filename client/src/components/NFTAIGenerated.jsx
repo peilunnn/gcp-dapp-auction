@@ -62,7 +62,6 @@ const NFTAIGenerated = ({ web3, networkID, accounts, refetchData }) => {
       sx={{
         border: "1px solid #ccc",
         mt: "20px",
-        height: "100%",
         display: "flex",
         flexDirection: "column",
       }}
@@ -142,7 +141,12 @@ const NFTAIGenerated = ({ web3, networkID, accounts, refetchData }) => {
               <img
                 src={image}
                 alt="Generated artwork"
-                style={{ maxWidth: "100%", display: "block", margin: "auto" }}
+                style={{
+                  maxWidth: "100%",
+                  height: "auto",
+                  display: "block",
+                  margin: "auto",
+                }}
               />
               <Box paddingY={2}>
                 {!mintLoading && (
