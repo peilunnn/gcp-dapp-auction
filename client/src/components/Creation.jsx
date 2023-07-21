@@ -93,17 +93,20 @@ export default function Creation({
       enqueueSnackbar("Starting Bid must be greater than 0", {
         variant: "error",
       });
+      setCreateLoading(false);
       return;
     }
     if (vars.duration <= 0) {
       enqueueSnackbar("Duration must be greater or equal to 1 hour", {
         variant: "error",
       });
+      setCreateLoading(false);
       return;
     }
 
     if (vars.increment <= 0) {
       enqueueSnackbar("Increment must be greater than 0", { variant: "error" });
+      setCreateLoading(false);
       return;
     }
 
@@ -211,39 +214,6 @@ export default function Creation({
         </BootstrapDialogTitle>
         <DialogContent dividers>
           <Box component="form" onSubmit={handleCreate} sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="nftAddress"
-              label="NFT Address"
-              name="nftAddress"
-              placeholder="0x..."
-              autoFocus
-              onChange={(event) => {
-                setVars({
-                  ...vars,
-                  nftAddress: event.target.value,
-                });
-              }}
-              value={vars.nftAddress}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="nftTokenId"
-              label="NFT Token ID"
-              id="nftTokenId"
-              type="number"
-              onChange={(event) => {
-                setVars({
-                  ...vars,
-                  nftTokenId: event.target.value,
-                });
-              }}
-              value={vars.nftTokenId}
-            />
             <TextField
               margin="normal"
               required
