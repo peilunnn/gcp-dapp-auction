@@ -16,7 +16,7 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
 4. Check the port that Ganache is running on (7545 if Ganache Desktop or 8545 if Ganache CLI, by default)
    
    ```
-   ganache-cli --defaultBalanceEther 1000
+   ganache-cli --defaultBalanceEther 10 --networkId 1337 
    ```
 
    Then edit `truffle-config.js` (`networks/development`) to match the port
@@ -52,7 +52,7 @@ You must first install Node.js >= v14.0.0 and npm >= 6.12.0
    cd ..
    cd client
    npm ci
-   npm start
+   npm run dev
    ```
 
 4. In another terminal, seed the app with dummy auctions

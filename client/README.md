@@ -6,9 +6,5 @@ The scripts require secrets to be filled, so you need to create a `.env` file in
 
 ```bash
 npm install --legacy-peer-deps
-npm start
+npm run dev
 ```
-
-## Credits
-
-NFT images are collected from the web and we do not own any of them. We are not responsible for any copyright issues.

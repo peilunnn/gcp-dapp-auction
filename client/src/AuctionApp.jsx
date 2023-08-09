@@ -1,5 +1,4 @@
 import Account from "./components/Account";
-import { useEth } from "./contexts/EthContext";
 import NFTUpload from "./components/NFTUpload";
 import NFTAIGenerated from "./components/NFTAIGenerated";
 
@@ -25,6 +24,9 @@ import ReactCardFlip from "react-card-flip";
 
 function AuctionApp() {
   const [showNFTUpload, setShowNFTUpload] = useState(true);
+  const [web3, setWeb3] = useState(null);
+  const [networkID, setNetworkID] = useState(null);
+  const [accounts, setAccounts] = useState(null);
 
   const handleFlip = () => {
     setShowNFTUpload(!showNFTUpload);
@@ -59,9 +61,6 @@ function AuctionApp() {
   // call functions in contract
   const [auctionFactoryContract, setAuctionFactoryContract] = useState(null);
   const [auctions, setAuctions] = useState([]);
-  const {
-    state: { web3, networkID, accounts },
-  } = useEth();
 
   useEffect(() => {
     if (web3 && networkID) {
@@ -115,7 +114,11 @@ function AuctionApp() {
         },
       }}
     >
-      <RootHeader />
+      <RootHeader
+        setWeb3={setWeb3}
+        setAccounts={setAccounts}
+        setNetworkID={setNetworkID}
+      />
       <PageTitleWrapper>
         <PageHeader refetchData={refetchData} />
       </PageTitleWrapper>

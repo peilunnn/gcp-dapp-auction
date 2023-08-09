@@ -12,8 +12,10 @@
     "@mui/lab": "^5.0.0-alpha.106",
     "@mui/material": "^5.10.11",
     "@mui/styles": "^5.10.10",
+    "@walletconnect/sign-client": "^2.9.2",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
+    "@web3auth/modal": "^6.1.7",
     "axios": "^1.4.0",
     "dotenv": "^16.0.3",
     "dotenv-webpack": "^8.0.1",
@@ -43,16 +45,9 @@
       "react-app/jest"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
