@@ -1,5 +1,5 @@
-import { Box, Card, Container, styled } from '@mui/material';
-import ConnectWallet from './ConnectWallet';
+import { Box, Card, Container, styled } from "@mui/material";
+import ConnectWallet from "./ConnectWallet";
 const HeaderWrapper = styled(Card)(
   ({ theme }) => `
     width: 100%;
@@ -10,7 +10,11 @@ const HeaderWrapper = styled(Card)(
   `
 );
 
-function RootHeader() {
+function RootHeader({
+  setWeb3,
+  setAccounts,
+  setNetworkID,
+}) {
   return (
     <HeaderWrapper>
       <Container maxWidth="lg">
@@ -23,13 +27,14 @@ function RootHeader() {
           >
             <Box display="flex" alignItems="center" gap={2}>
               <img src="/favicon.ico" alt="logo"></img>
-              <h2 style={{ cursor: 'default' }}>
-                NFT
-                <span style={{ color: 'khaki', font: 'bold' }}>Auction</span>
-              </h2>
+              <h2 style={{ cursor: "default" }}>NFTAuctionHouse</h2>
             </Box>
             <Box>
-              <ConnectWallet />
+              <ConnectWallet
+                setWeb3={setWeb3}
+                setAccounts={setAccounts}
+                setNetworkID={setNetworkID}
+              />
             </Box>
           </Box>
         </Box>
