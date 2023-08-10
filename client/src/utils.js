@@ -48,12 +48,7 @@ export function getMintNFTContract(web3, networkID) {
 }
 
 export async function mintNFT(web3, mintNFTContract, accounts, metadataURI) {
-  if (
-    web3 === null ||
-    mintNFTContract === null ||
-    accounts == null ||
-    mintNFTContract === undefined
-  ) {
+  if (web3 === null || mintNFTContract === null || accounts == null) {
     console.log("Unable to get auctions. web3 or mintNFTContract is null.");
     return [];
   }
@@ -73,7 +68,7 @@ export async function mintNFT(web3, mintNFTContract, accounts, metadataURI) {
       user,
       gasUsed,
       effectiveGasPrice,
-      status
+      status,
     });
 
     console.log("Row inserted into mint_transactions successfully");
@@ -122,9 +117,9 @@ export async function getAuctions(web3, auctionFactoryContract, accounts) {
       const metadataURI = await mintNFTContract.methods
         .tokenURI(tokenId)
         .call();
-      
+
       let nftMetadata;
-      
+
       if (cache[metadataURI]) {
         nftMetadata = cache[metadataURI];
       } else {

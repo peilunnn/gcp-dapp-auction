@@ -54,6 +54,9 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function Creation({
+  web3,
+  accounts,
+  networkID,
   refetchData,
   mintNFTContractAddress,
   tokenId,
@@ -62,9 +65,6 @@ export default function Creation({
   const { enqueueSnackbar } = useSnackbar();
   const [createLoading, setCreateLoading] = useState(false);
 
-  const {
-    state: { web3, networkID, accounts },
-  } = useEth();
   const auctionJson = require("../contracts/AuctionFactory.json");
   let auctionFactoryContract;
 

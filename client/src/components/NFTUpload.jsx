@@ -190,6 +190,9 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
           <Box mt={2} textAlign="center">
             <Box mt={2} display="flex" justifyContent="center">
               <Creation
+                web3={web3}
+                accounts={accounts}
+                networkID={networkID}
                 refetchData={refetchData}
                 mintNFTContractAddress={mintNFTContractAddress}
                 tokenId={tokenId}

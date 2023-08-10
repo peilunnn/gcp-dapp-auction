@@ -1,3 +1,6 @@
+import { useEth } from "./contexts/EthContext";
+import { getAuctionFactoryContract, getAuctions } from "./utils";
+
 import Account from "./components/Account";
 import NFTUpload from "./components/NFTUpload";
 import NFTAIGenerated from "./components/NFTAIGenerated";
@@ -16,17 +19,23 @@ import {
 
 import RootHeader from "./components/RootHeader";
 import Listing from "./components/Listing";
-import { useEffect } from "react";
-import { useState } from "react";
-import { getAuctionFactoryContract, getAuctions } from "./utils";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import ReactCardFlip from "react-card-flip";
 
 function AuctionApp() {
   const [showNFTUpload, setShowNFTUpload] = useState(true);
-  const [web3, setWeb3] = useState(null);
-  const [networkID, setNetworkID] = useState(null);
-  const [accounts, setAccounts] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
+  const theme = useTheme();
+  const [auctionFactoryContract, setAuctionFactoryContract] = useState(null);
+  const [auctions, setAuctions] = useState([]);
+  const {
+    state: { web3auth, web3, networkID, accounts },
+  } = useEth();
+
+  useEffect(() => {
+    console.log(`in auctionapp: ${web3auth} ${web3}, ${networkID}, ${accounts}`);
+  }, [web3auth, web3, networkID, accounts]);
 
   const handleFlip = () => {
     setShowNFTUpload(!showNFTUpload);
@@ -54,13 +63,6 @@ function AuctionApp() {
       scrollFunction();
     };
   });
-
-  const theme = useTheme();
-  const { enqueueSnackbar } = useSnackbar();
-
-  // call functions in contract
-  const [auctionFactoryContract, setAuctionFactoryContract] = useState(null);
-  const [auctions, setAuctions] = useState([]);
 
   useEffect(() => {
     if (web3 && networkID) {
@@ -115,9 +117,10 @@ function AuctionApp() {
       }}
     >
       <RootHeader
-        setWeb3={setWeb3}
-        setAccounts={setAccounts}
-        setNetworkID={setNetworkID}
+        web3auth={web3auth}
+        web3={web3}
+        networkID={networkID}
+        accounts={accounts}
       />
       <PageTitleWrapper>
         <PageHeader refetchData={refetchData} />
