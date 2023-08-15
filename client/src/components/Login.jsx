@@ -1,68 +1,110 @@
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Box, Typography } from "@mui/material";
+import { Box, Card, Typography, styled } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useEth } from "../contexts/EthContext";
-
-const targetChainName = process.env.REACT_APP_CHAIN_NAME;
-const targetChainId = process.env.REACT_APP_CHAIN_ID;
-const targetRpcUrl = process.env.REACT_APP_RPC_URL;
-const artifact = require("../contracts/AuctionFactory.json");
+import Modal from "@mui/material/Modal";
 
 const Login = ({ web3auth, web3, networkID, accounts }) => {
-  const { init } = useEth();
+  const { init, deinitialize, addTargetChain, switchToTargetChain } = useEth();
+  const [isInitialized, setIsInitialized] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
+  const [profileName, setProfileName] = useState(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [ethBalance, setEthBalance] = useState(0);
+  const [usdBalance, setUsdBalance] = useState(0);
+
+  const CustomTypography = styled(Typography)`
+    font-family: "Google Sans", sans-serif;
+  `;
 
   useEffect(() => {
     console.log(`in login: ${web3auth} ${web3}, ${networkID}, ${accounts}`);
   }, [web3auth, web3, networkID, accounts]);
 
-  const addTargetChain = async () => {
-    const targetChain = {
-      chainId: targetChainId,
-      displayName: targetChainName,
-      chainNamespace: "eip155",
-      tickerName: targetChainName,
-      ticker: "ETH",
-      decimals: 18,
-      rpcTarget: targetRpcUrl,
-      blockExplorer: "https://etherscan.io",
-    };
-    await web3auth?.addChain(targetChain);
-  };
+  useEffect(() => {
+    if (isInitialized && web3auth) {
+      const postInitOperations = async () => {
+        await addTargetChain();
+        await switchToTargetChain();
+        setIsLoggedIn(true);
 
-  const switchToTargetChain = async () => {
-    await web3auth?.switchChain({ chainId: targetChainId });
+        // Set up profile image
+        const userInfo = await web3auth.getUserInfo();
+        setProfileImageUrl(userInfo.profileImage);
+        setProfileName(userInfo.name);
+
+        // Set up wallet balances
+        const ethBalanceInWei = await web3.eth.getBalance(accounts[0]);
+        const ethBalanceInEther = parseFloat(
+          web3.utils.fromWei(ethBalanceInWei, "ether")
+        );
+        setEthBalance(ethBalanceInEther);
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+        );
+        const data = await response.json();
+        const ethToUsdRate = data.ethereum.usd;
+        const usdBalance = ethBalanceInEther * ethToUsdRate;
+        setUsdBalance(usdBalance);
+
+        setLoading(false);
+      };
+      postInitOperations();
+    }
+  }, [isInitialized]);
+
+  const handleProfileClick = () => {
+    setIsProfileModalOpen(true);
   };
 
   const logout = async () => {
-    await web3auth.logout();
+    deinitialize();
     setIsLoggedIn(false);
+    setIsInitialized(false);
+    setErrorMessage(null);
+    setProfileImageUrl(null);
+    setProfileName(null);
+    setEthBalance(0);
+    setUsdBalance(0);
   };
 
   const login = async () => {
-    setLoading(true);
-
-    await init(artifact);
-    setIsLoggedIn(true);
-
-    await addTargetChain();
-    await switchToTargetChain();
-
-    setLoading(false);
+    try {
+      if (web3auth?.isConnected) {
+        await web3auth.disconnect();
+      }
+      setLoading(true);
+      await init();
+      setIsInitialized(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <div>
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       {!errorMessage && isLoggedIn && !loading && (
-        <Button variant="contained" color="success" onClick={logout}>
-          Logout
-        </Button>
+        <Box display="flex" alignItems="center">
+          {profileImageUrl && (
+            <img
+              src={profileImageUrl}
+              alt="User Profile"
+              width="50"
+              height="50"
+              style={{ borderRadius: "50%", marginRight: "20px" }}
+              onClick={handleProfileClick}
+            />
+          )}
+          <Button variant="contained" color="success" onClick={logout}>
+            Logout
+          </Button>
+        </Box>
       )}
       {!errorMessage && !isLoggedIn && !loading && (
         <Button
@@ -114,6 +156,68 @@ const Login = ({ web3auth, web3, networkID, accounts }) => {
           </Box>
         </Button>
       )}
+      <Modal
+        open={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      >
+        <Card
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "1px solid #ccc",
+            boxShadow: 24,
+            p: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CustomTypography variant="h3" component="h2" textAlign="center">
+            {profileName}
+          </CustomTypography>
+          <img
+            src={profileImageUrl}
+            alt="User Profile"
+            width="100"
+            height="100"
+            style={{ borderRadius: "50%", margin: "10px 0" }}
+          />
+          {accounts && (
+            <CustomTypography
+              variant="h6"
+              component="h2"
+              textAlign="center"
+              sx={{ margin: "10px" }}
+            >
+              {accounts[0]}
+            </CustomTypography>
+          )}
+          <Box
+            sx={{
+              width: "100%",
+              height: "1px",
+              bgcolor: "grey",
+              my: 2,
+            }}
+          ></Box>
+          <CustomTypography variant="h3" textAlign="center">
+            {ethBalance.toFixed(4)} ETH
+          </CustomTypography>
+          <CustomTypography
+            variant="h4 "
+            textAlign="center"
+            sx={{ color: "grey", margin: "10px" }}
+          >
+            {usdBalance.toFixed(2)} USD
+          </CustomTypography>
+          <Button onClick={() => setIsProfileModalOpen(false)}>Close</Button>
+        </Card>
+      </Modal>{" "}
     </div>
   );
 };

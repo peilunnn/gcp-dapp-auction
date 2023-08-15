@@ -12,7 +12,6 @@ import { useSnackbar } from "notistack";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { useEth } from "../contexts/EthContext";
 const nftJson = require("../contracts/MintNFT.json");
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -54,9 +53,10 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function Creation({
+  auctionFactoryJson,
   web3,
-  accounts,
   networkID,
+  accounts,
   refetchData,
   mintNFTContractAddress,
   tokenId,
@@ -65,7 +65,6 @@ export default function Creation({
   const { enqueueSnackbar } = useSnackbar();
   const [createLoading, setCreateLoading] = useState(false);
 
-  const auctionJson = require("../contracts/AuctionFactory.json");
   let auctionFactoryContract;
 
   const [vars, setVars] = useState({
@@ -110,9 +109,10 @@ export default function Creation({
       return;
     }
 
-    let auctionFactoryContractAddress = auctionJson.networks[networkID].address;
+    let auctionFactoryContractAddress =
+      auctionFactoryJson.networks[networkID].address;
     auctionFactoryContract = new web3.eth.Contract(
-      auctionJson.abi,
+      auctionFactoryJson.abi,
       auctionFactoryContractAddress
     );
     try {

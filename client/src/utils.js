@@ -29,8 +29,13 @@ export function getAuctionFactoryContract(web3, networkID) {
 }
 
 export function getMintNFTContract(web3, networkID) {
-  if (web3 === null || networkID === null) {
-    console.log("Unable to get MintNFT contract. web3 or networkID is null.");
+  if (web3 === null) {
+    console.log("Unable to get MintNFT contract, web3 is null.");
+    return;
+  }
+
+  if (networkID === null) {
+    console.log("Unable to get MintNFT contract, networkID is null.");
     return;
   }
 
@@ -39,6 +44,7 @@ export function getMintNFTContract(web3, networkID) {
     console.log("Unable to get MintNFT contract. networkID is invalid.");
     return;
   }
+
   const mintNFTAddress = mintNFTJson.networks[networkID].address;
   const mintNFTContract = new web3.eth.Contract(
     mintNFTJson.abi,

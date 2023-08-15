@@ -108,16 +108,36 @@ function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
 
   // As soon as auctionContract is ready, we'll register our Solidity event listener on Auction.bid()
   useEffect(() => {
-    if (auctionData.auctionContract !== null) {
-      auctionData.auctionContract.events.Bid({}, (err, res) => {
-        setHighestBid(parseInt(res.returnValues.amount));
-        setHighestBidder(parseInt(res.returnValues.sender));
+    let subscription;
+
+    if (auctionData.auctionContract) {
+      subscription = auctionData.auctionContract.events.Bid({}, (err, res) => {
         if (err) {
-          console.log(err);
+          console.log(
+            `auction contract address is ${auctionData.auctionContract._address}`
+          );
+          console.error("Error listening to Bid event:", err);
+          console.log(err.data);
+          return;
+        }
+
+        if (res && res.returnValues) {
+          try {
+            setHighestBid(parseInt(res.returnValues.amount));
+            setHighestBidder(res.returnValues.sender);
+          } catch (err) {
+            console.error("Error setting highest bid or bidder:", err);
+          }
         }
       });
     }
-  }, [auctionData.auctionContract, setHighestBid]);
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
+  }, [auctionData.auctionContract]);
 
   const handleBidAmountChange = (event) => {
     setCurrBidAmount(event.target.value * Math.pow(10, 9));

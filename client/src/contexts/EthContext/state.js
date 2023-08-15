@@ -3,11 +3,12 @@ const actions = {
 };
 
 const initialState = {
-  artifact: null,
+  auctionFactoryJson: null,
+  web3auth: null,
   web3: null,
-  accounts: null,
   networkID: null,
-  contract: null
+  accounts: null,
+  contract: null,
 };
 
 const reducer = (state, action) => {
@@ -20,8 +21,4 @@ const reducer = (state, action) => {
   }
 };
 
-export {
-  actions,
-  initialState,
-  reducer
-};
+export { actions, initialState, reducer };
