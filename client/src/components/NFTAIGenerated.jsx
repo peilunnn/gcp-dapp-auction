@@ -15,7 +15,13 @@ import { pinAIGeneratedNft } from "../scripts/pinAIGeneratedNft";
 import { getMintNFTContract } from "../utils";
 import Creation from "./Creation";
 
-const NFTAIGenerated = ({ web3, networkID, accounts, refetchData }) => {
+const NFTAIGenerated = ({
+  auctionFactoryJson,
+  web3,
+  networkID,
+  accounts,
+  refetchData,
+}) => {
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState(null);
   const [mintLoading, setMintLoading] = useState(false);
@@ -193,6 +199,10 @@ const NFTAIGenerated = ({ web3, networkID, accounts, refetchData }) => {
                 <Box mt={2} textAlign="center">
                   <Box mt={2} display="flex" justifyContent="center">
                     <Creation
+                      auctionFactoryJson={auctionFactoryJson}
+                      web3={web3}
+                      networkID={networkID}
+                      accounts={accounts}
                       refetchData={refetchData}
                       mintNFTContractAddress={mintNFTContractAddress}
                       tokenId={tokenId}

@@ -13,7 +13,13 @@ import { pinUploadedNft } from "../scripts/pinUploadedNft";
 import { getMintNFTContract } from "../utils";
 import Creation from "./Creation";
 
-function NFTUpload({ web3, networkID, accounts, refetchData }) {
+function NFTUpload({
+  auctionFactoryJson,
+  web3,
+  networkID,
+  accounts,
+  refetchData,
+}) {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -190,9 +196,10 @@ function NFTUpload({ web3, networkID, accounts, refetchData }) {
           <Box mt={2} textAlign="center">
             <Box mt={2} display="flex" justifyContent="center">
               <Creation
+                auctionFactoryJson={auctionFactoryJson}
                 web3={web3}
-                accounts={accounts}
                 networkID={networkID}
+                accounts={accounts}
                 refetchData={refetchData}
                 mintNFTContractAddress={mintNFTContractAddress}
                 tokenId={tokenId}

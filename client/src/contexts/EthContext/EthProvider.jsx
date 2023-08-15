@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from "react";
+import React, { useCallback, useReducer, useState } from "react";
 import Web3 from "web3";
 import EthContext from "./EthContext";
 import { actions, initialState, reducer } from "./state";
@@ -9,6 +9,8 @@ import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 
+const env = process.env.REACT_APP_ENV;
+const targetChainName = process.env.REACT_APP_CHAIN_NAME;
 const targetChainId = process.env.REACT_APP_CHAIN_ID;
 const targetRpcUrl = process.env.REACT_APP_RPC_URL;
 const bneApiKey = process.env.REACT_APP_BNE_API_KEY;
@@ -17,6 +19,8 @@ const openLoginJwtName = "gcp-dapp-auction-jwt";
 const web3authVerifier = "gcp-dapp-auction-web3auth-verifier";
 const developmentDomain = "http://localhost:3000/auction";
 const stagingDomain = "https://nftauctionhouse.net/auction";
+
+const auctionFactoryJson = require("../../contracts/AuctionFactory.json");
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -29,8 +33,23 @@ const firebaseConfig = {
   measurementId: "G-RW9707JQCS",
 };
 
+const chainConfig = {
+  chainId: targetChainId,
+  displayName: targetChainName,
+  chainNamespace: CHAIN_NAMESPACES.EIP155,
+  tickerName: targetChainName,
+  ticker: "ETH",
+  decimals: 18,
+  rpcTarget: env === "development" ? targetRpcUrl : `${targetRpcUrl}?key=${bneApiKey}`,
+  blockExplorer: "https://etherscan.io",
+};
+
+console.log(process.env);
+console.log(chainConfig);
+
 function EthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [web3auth, setWeb3auth] = useState(null);
 
   const signInWithGoogle = async () => {
     try {
@@ -45,13 +64,16 @@ function EthProvider({ children }) {
     }
   };
 
-  const init = useCallback(async (artifact) => {
+  const addTargetChain = async () => {
+    await web3auth?.addChain(chainConfig);
+  };
+
+  const switchToTargetChain = async () => {
+    await web3auth?.switchChain({ chainId: targetChainId });
+  };
+
+  const init = useCallback(async () => {
     try {
-      const chainConfig = {
-        chainNamespace: CHAIN_NAMESPACES.EIP155,
-        chainId: targetChainId,
-        rpcTarget: `${targetRpcUrl}?key=${bneApiKey}`,
-      };
       const web3auth = new Web3AuthNoModal({
         clientId: web3AuthClientId,
         chainConfig: chainConfig,
@@ -66,6 +88,8 @@ function EthProvider({ children }) {
         privateKeyProvider,
         adapterSettings: {
           uxMode: "popup",
+          storageKey: "local",
+          sessionTime: 604800,
           loginConfig: {
             jwt: {
               name: openLoginJwtName,
@@ -79,10 +103,15 @@ function EthProvider({ children }) {
       web3auth.configureAdapter(openloginAdapter);
 
       await web3auth.init();
+      setWeb3auth(web3auth);
 
       const loginRes = await signInWithGoogle();
       const idToken = await loginRes.user.getIdToken(true);
 
+      // Check if there is an existing wallet connection - eg. when user refreshes the page on accident and has to relogin
+      if (web3auth.connected) {
+        await web3auth.logout();
+      }
       const web3authProvider = await web3auth.connectTo(
         WALLET_ADAPTERS.OPENLOGIN,
         {
@@ -95,22 +124,32 @@ function EthProvider({ children }) {
         }
       );
 
-      if (artifact) {
+      if (auctionFactoryJson) {
         const web3 = new Web3(web3authProvider);
         const networkID = await web3.eth.net.getId();
         const accounts = await web3.eth.getAccounts();
-        const { abi } = artifact;
-        let address, contract;
+        let auctionFactoryAddress, auctionFactoryContract;
         try {
-          address = artifact.networks[networkID].address;
-          contract = new web3.eth.Contract(abi, address);
+          auctionFactoryAddress =
+            auctionFactoryJson.networks[networkID].address;
+          auctionFactoryContract = new web3.eth.Contract(
+            auctionFactoryJson.abi,
+            auctionFactoryAddress
+          );
         } catch (err) {
           console.error(err);
           return;
         }
         dispatch({
           type: actions.init,
-          data: { artifact, web3auth, web3, networkID, accounts, contract },
+          data: {
+            auctionFactoryJson,
+            web3auth,
+            web3,
+            networkID,
+            accounts,
+            auctionFactoryContract,
+          },
         });
       }
     } catch (error) {
@@ -118,12 +157,20 @@ function EthProvider({ children }) {
     }
   }, []);
 
+  const deinitialize = async () => {
+    await web3auth.logout();
+    setWeb3auth(null);
+  };
+
   return (
     <EthContext.Provider
       value={{
         state,
         dispatch,
         init,
+        deinitialize,
+        addTargetChain,
+        switchToTargetChain,
       }}
     >
       {children}

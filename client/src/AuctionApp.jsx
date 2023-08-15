@@ -30,7 +30,7 @@ function AuctionApp() {
   const [auctionFactoryContract, setAuctionFactoryContract] = useState(null);
   const [auctions, setAuctions] = useState([]);
   const {
-    state: { web3auth, web3, networkID, accounts },
+    state: { auctionFactoryJson, web3auth, web3, networkID, accounts },
   } = useEth();
 
   useEffect(() => {
@@ -142,6 +142,7 @@ function AuctionApp() {
                 >
                   <div style={{ width: "100%", height: "100%" }}>
                     <NFTUpload
+                      auctionFactoryJson={auctionFactoryJson}
                       web3={web3}
                       networkID={networkID}
                       accounts={accounts}
@@ -150,6 +151,7 @@ function AuctionApp() {
                   </div>
                   <div style={{ width: "100%", height: "100%" }}>
                     <NFTAIGenerated
+                      auctionFactoryJson={auctionFactoryJson}
                       web3={web3}
                       networkID={networkID}
                       accounts={accounts}
