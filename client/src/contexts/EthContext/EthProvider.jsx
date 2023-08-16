@@ -40,12 +40,10 @@ const chainConfig = {
   tickerName: targetChainName,
   ticker: "ETH",
   decimals: 18,
-  rpcTarget: env === "development" ? targetRpcUrl : `${targetRpcUrl}?key=${bneApiKey}`,
+  rpcTarget:
+    env === "development" ? targetRpcUrl : `${targetRpcUrl}?key=${bneApiKey}`,
   blockExplorer: "https://etherscan.io",
 };
-
-console.log(process.env);
-console.log(chainConfig);
 
 function EthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
