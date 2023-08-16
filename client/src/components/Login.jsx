@@ -39,18 +39,7 @@ const Login = ({ web3auth, web3, networkID, accounts }) => {
         setProfileName(userInfo.name);
 
         // Set up wallet balances
-        const ethBalanceInWei = await web3.eth.getBalance(accounts[0]);
-        const ethBalanceInEther = parseFloat(
-          web3.utils.fromWei(ethBalanceInWei, "ether")
-        );
-        setEthBalance(ethBalanceInEther);
-        const response = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-        );
-        const data = await response.json();
-        const ethToUsdRate = data.ethereum.usd;
-        const usdBalance = ethBalanceInEther * ethToUsdRate;
-        setUsdBalance(usdBalance);
+        await updateEthBalance();
 
         setLoading(false);
       };
@@ -58,8 +47,24 @@ const Login = ({ web3auth, web3, networkID, accounts }) => {
     }
   }, [isInitialized]);
 
+  const updateEthBalance = async () => {
+    const ethBalanceInWei = await web3.eth.getBalance(accounts[0]);
+    const ethBalanceInEther = parseFloat(
+      web3.utils.fromWei(ethBalanceInWei, "ether")
+    );
+    setEthBalance(ethBalanceInEther);
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+    );
+    const data = await response.json();
+    const ethToUsdRate = data.ethereum.usd;
+    const usdBalance = ethBalanceInEther * ethToUsdRate;
+    setUsdBalance(usdBalance);
+  };
+
   const handleProfileClick = () => {
     setIsProfileModalOpen(true);
+    updateEthBalance();
   };
 
   const logout = async () => {
