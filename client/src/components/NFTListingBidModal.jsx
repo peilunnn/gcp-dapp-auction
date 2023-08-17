@@ -64,7 +64,12 @@ const calculateTimeTillExpiry = (auctionData) => {
   };
 };
 
-function NFTListingBidModal({ pinataMetadata, auctionData, refetchData }) {
+function NFTListingBidModal({
+  pinataMetadata,
+  auctionData,
+  refetchData,
+  openConfirmationModal,
+}) {
   const { enqueueSnackbar } = useSnackbar();
   const {
     state: { accounts },

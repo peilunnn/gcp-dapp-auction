@@ -19,6 +19,7 @@ function NFTUpload({
   networkID,
   accounts,
   refetchData,
+  openConfirmationModal,
 }) {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [name, setName] = useState("");
@@ -53,7 +54,8 @@ function NFTUpload({
       accounts,
       setTokenId,
       setMintNFTContractAddress,
-      setMintLoading
+      setMintLoading,
+      openConfirmationModal
     );
   };
 
@@ -203,6 +205,7 @@ function NFTUpload({
                 refetchData={refetchData}
                 mintNFTContractAddress={mintNFTContractAddress}
                 tokenId={tokenId}
+                openConfirmationModal={openConfirmationModal}
               />
             </Box>
           </Box>

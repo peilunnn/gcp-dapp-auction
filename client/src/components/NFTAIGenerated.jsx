@@ -21,6 +21,7 @@ const NFTAIGenerated = ({
   networkID,
   accounts,
   refetchData,
+  openConfirmationModal,
 }) => {
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState(null);
@@ -54,7 +55,8 @@ const NFTAIGenerated = ({
           accounts,
           setTokenId,
           setMintNFTContractAddress,
-          setMintLoading
+          setMintLoading,
+          openConfirmationModal
         );
       })
       .catch((error) => {
@@ -206,6 +208,7 @@ const NFTAIGenerated = ({
                       refetchData={refetchData}
                       mintNFTContractAddress={mintNFTContractAddress}
                       tokenId={tokenId}
+                      openConfirmationModal={openConfirmationModal}
                     />
                   </Box>
                 </Box>

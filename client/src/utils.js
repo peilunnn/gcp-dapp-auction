@@ -181,3 +181,21 @@ export function displayTimestampInHumanReadable(timestamp) {
   }
   return new Date(timestamp * 1000).toLocaleString();
 }
+
+export async function getEthToUSDRate() {
+  const response = await fetch(
+    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+  );
+  const data = await response.json();
+  return data.ethereum.usd;
+}
+
+export async function getEstimatedNetworkFeeInUSD(web3, estimatedGas) {
+  const gasPrice = await web3.eth.getGasPrice();
+  const estimatedCostInWei = web3.utils
+    .toBN(estimatedGas)
+    .mul(web3.utils.toBN(gasPrice));
+  const estimatedCostInEther = web3.utils.fromWei(estimatedCostInWei, "ether");
+  const ethToUsdRate = await getEthToUSDRate();
+  return parseFloat(estimatedCostInEther) * ethToUsdRate;
+}
