@@ -210,6 +210,7 @@ function AuctionApp() {
               auctions={auctions}
               refetchData={refetchData}
               openConfirmationModal={openConfirmationModal}
+              web3={web3}
             />
           </Grid>
         </Grid>

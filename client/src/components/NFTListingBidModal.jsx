@@ -8,7 +8,7 @@ import { useSnackbar } from "notistack";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useEth } from "../contexts/EthContext";
-import { displayInGwei } from "../utils";
+import { displayInGwei, getEstimatedNetworkFeeInUSD } from "../utils";
 import CountdownTimer from "./CountdownTimer";
 import { styled } from "@mui/system";
 import {
@@ -69,6 +69,7 @@ function NFTListingBidModal({
   auctionData,
   refetchData,
   openConfirmationModal,
+  web3
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -206,10 +207,31 @@ function NFTListingBidModal({
 
     const auctionContract = auctionData.auctionContract;
     try {
-      await auctionContract.methods.start().send({ from: accounts[0] });
-      setStartLoading(false);
-      enqueueSnackbar("Auction Successfully Started", { variant: "success" });
-      handleClose();
+      const estimatedGas = await auctionContract.methods
+        .start()
+        .estimateGas({ from: accounts[0] });
+
+      const estimatedNetworkFeeInUSD = await getEstimatedNetworkFeeInUSD(
+        web3,
+        estimatedGas
+      );
+
+      openConfirmationModal(
+        `You're about to start an auction for this NFT for an estimated cost of ${estimatedNetworkFeeInUSD.toFixed(
+          2
+        )} USD`,
+        async () => {
+          await auctionContract.methods.start().send({ from: accounts[0] });
+          setStartLoading(false);
+          enqueueSnackbar("Auction Successfully Started", {
+            variant: "success",
+          });
+          handleClose();
+        },
+        () => {
+          setStartLoading(false);
+        }
+      );
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
       setStartLoading(false);

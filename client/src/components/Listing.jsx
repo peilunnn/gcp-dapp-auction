@@ -7,11 +7,7 @@ const CustomTypography = styled(Typography)`
   font-weight: 600;
 `;
 
-function Listing({
-  auctions,
-  refetchData,
-  openConfirmationModal,
-}) {
+function Listing({ auctions, refetchData, openConfirmationModal, web3 }) {
   if (auctions === undefined) {
     return (
       <Box
@@ -77,6 +73,7 @@ function Listing({
                     refetchData={refetchData}
                     key={idx}
                     openConfirmationModal={openConfirmationModal}
+                    web3={web3}
                   />
                 ))
               )}
