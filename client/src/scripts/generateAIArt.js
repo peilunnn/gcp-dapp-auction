@@ -38,7 +38,7 @@ export function generateAIArt(
     })
     .catch((error) => {
       console.log("Error generating AI art:", error);
-      enqueueSnackbar("Error generating AI art", {
+      enqueueSnackbar("Prompt violates our policies", {
         variant: "error",
       });
       setGenerateLoading(false);

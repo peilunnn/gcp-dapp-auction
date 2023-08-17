@@ -5,7 +5,7 @@ import { Box, Card, Typography, styled } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useEth } from "../contexts/EthContext";
 import Modal from "@mui/material/Modal";
-import { getEthToUSDRate } from "../utils";
+import { getEthToUsdRate } from "../utils";
 
 const Login = ({ web3auth, web3, networkID, accounts }) => {
   const { init, deinitialize, addTargetChain, switchToTargetChain } = useEth();
@@ -50,7 +50,7 @@ const Login = ({ web3auth, web3, networkID, accounts }) => {
       web3.utils.fromWei(ethBalanceInWei, "ether")
     );
     setEthBalance(ethBalanceInEther);
-    const ethToUsdRate = await getEthToUSDRate();
+    const ethToUsdRate = await getEthToUsdRate();
     const usdBalance = ethBalanceInEther * ethToUsdRate;
     setUsdBalance(usdBalance);
   };
