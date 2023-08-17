@@ -59,7 +59,7 @@ const ListItemWrapper = styled(ListItem)(
 `
 );
 
-function AuctionDetails({ auction, refetchData, key, openConfirmationModal }) {
+function AuctionDetails({ auction, refetchData, openConfirmationModal }) {
   const { pinataMetadata } = auction;
   const {
     state: { accounts },

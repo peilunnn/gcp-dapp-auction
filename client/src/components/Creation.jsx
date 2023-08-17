@@ -12,6 +12,7 @@ import { useSnackbar } from "notistack";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { getEstimatedNetworkFeeInUSD } from "../utils";
 const nftJson = require("../contracts/MintNFT.json");
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -60,6 +61,7 @@ export default function Creation({
   refetchData,
   mintNFTContractAddress,
   tokenId,
+  openConfirmationModal,
 }) {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -116,7 +118,7 @@ export default function Creation({
       auctionFactoryContractAddress
     );
     try {
-      let val = await auctionFactoryContract.methods
+      const estimatedGas = await auctionFactoryContract.methods
         .createNewAuction(
           vars.nftAddress || mintNFTContractAddress,
           vars.nftTokenId || tokenId,
@@ -124,41 +126,66 @@ export default function Creation({
           vars.increment * Math.pow(10, 9), // convert from Gwei in form input to wei in Auction constructor
           vars.duration * 60 * 60 // convert from hours in form input to seconds in Auction constructor
         )
-        .send({ from: accounts[0] });
-      setCreateLoading(false);
+        .estimateGas({ from: accounts[0] });
 
-      let auctionDeployedAddress =
-        val.events.ContractCreated.returnValues.newContractAddress;
-      console.log(auctionDeployedAddress);
-
-      let mintNFTContract = new web3.eth.Contract(
-        nftJson.abi,
-        vars.nftAddress || mintNFTContractAddress
+      const estimatedNetworkFeeInUSD = await getEstimatedNetworkFeeInUSD(
+        web3,
+        estimatedGas
       );
-      try {
-        await mintNFTContract.methods
-          .approve(auctionDeployedAddress, tokenId || vars.nftTokenId)
-          .send({ from: accounts[0] });
-        enqueueSnackbar("Approval successful", {
-          variant: "success",
-        });
-      } catch (err) {
-        console.log(err);
-        enqueueSnackbar("Approval failed", {
-          variant: "error",
-        });
-      }
 
-      handleClose();
-      enqueueSnackbar("Auction Created", { variant: "success" });
-      setVars({
-        nftAddress: "",
-        nftTokenId: "",
-        startingBid: 0,
-        increment: 0,
-        duration: 0,
-      });
-      refetchData();
+      openConfirmationModal(
+        `You're about to create an auction for this NFT for an estimated cost of ${estimatedNetworkFeeInUSD.toFixed(
+          2
+        )} USD`,
+        async () => {
+          let val = await auctionFactoryContract.methods
+            .createNewAuction(
+              vars.nftAddress || mintNFTContractAddress,
+              vars.nftTokenId || tokenId,
+              vars.startingBid * Math.pow(10, 9),
+              vars.increment * Math.pow(10, 9), // convert from Gwei in form input to wei in Auction constructor
+              vars.duration * 60 * 60 // convert from hours in form input to seconds in Auction constructor
+            )
+            .send({ from: accounts[0] });
+          setCreateLoading(false);
+
+          let auctionDeployedAddress =
+            val.events.ContractCreated.returnValues.newContractAddress;
+          console.log(auctionDeployedAddress);
+
+          let mintNFTContract = new web3.eth.Contract(
+            nftJson.abi,
+            vars.nftAddress || mintNFTContractAddress
+          );
+          try {
+            await mintNFTContract.methods
+              .approve(auctionDeployedAddress, tokenId || vars.nftTokenId)
+              .send({ from: accounts[0] });
+            enqueueSnackbar("Approval successful", {
+              variant: "success",
+            });
+          } catch (err) {
+            console.log(err);
+            enqueueSnackbar("Approval failed", {
+              variant: "error",
+            });
+          }
+
+          handleClose();
+          enqueueSnackbar("Auction Created", { variant: "success" });
+          setVars({
+            nftAddress: "",
+            nftTokenId: "",
+            startingBid: 0,
+            increment: 0,
+            duration: 0,
+          });
+          refetchData();
+        },
+        () => {
+          setCreateLoading(false);
+        }
+      );
     } catch (err) {
       console.log(err);
       enqueueSnackbar("Transaction Rejected", { variant: "error" });
