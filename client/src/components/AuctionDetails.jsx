@@ -59,7 +59,7 @@ const ListItemWrapper = styled(ListItem)(
 `
 );
 
-function AuctionDetails({ auction, refetchData, openConfirmationModal }) {
+function AuctionDetails({ auction, refetchData, openConfirmationModal, web3 }) {
   const { pinataMetadata } = auction;
   const {
     state: { accounts },
@@ -172,6 +172,7 @@ function AuctionDetails({ auction, refetchData, openConfirmationModal }) {
             auctionData={auction}
             refetchData={refetchData}
             openConfirmationModal={openConfirmationModal}
+            web3={web3}
           />
         </Box>
       </Box>
