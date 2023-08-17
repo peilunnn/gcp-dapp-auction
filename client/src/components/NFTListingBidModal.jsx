@@ -69,7 +69,7 @@ function NFTListingBidModal({
   auctionData,
   refetchData,
   openConfirmationModal,
-  web3
+  web3,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -292,25 +292,45 @@ function NFTListingBidModal({
     }
     const auctionContract = auctionData.auctionContract;
     try {
-      await auctionContract.methods.end().send({ from: accounts[0] });
-      setEndLoading(false);
-      console.log(
-        auctionData.nftId,
-        auctionData.seller,
-        auctionData.highestBidder,
-        currBidAmount
-      );
-      await insertIntoNftSales(
-        auctionData.nftId,
-        auctionData.seller,
-        auctionData.highestBidder,
-        currBidAmount
+      const estimatedGas = await auctionContract.methods
+        .end()
+        .estimateGas({ from: accounts[0] });
+      console.log(estimatedGas);
+
+      const estimatedNetworkFeeInUSD = await getEstimatedNetworkFeeInUSD(
+        web3,
+        estimatedGas
       );
 
-      enqueueSnackbar("Successfully ended the auction!", {
-        variant: "success",
-      });
-      handleClose();
+      openConfirmationModal(
+        `You're about to end an auction for this NFT for an estimated cost of ${estimatedNetworkFeeInUSD.toFixed(
+          2
+        )} USD`,
+        async () => {
+          await auctionContract.methods.end().send({ from: accounts[0] });
+          setEndLoading(false);
+          console.log(
+            auctionData.nftId,
+            auctionData.seller,
+            auctionData.highestBidder,
+            currBidAmount
+          );
+          await insertIntoNftSales(
+            auctionData.nftId,
+            auctionData.seller,
+            auctionData.highestBidder,
+            currBidAmount
+          );
+
+          enqueueSnackbar("Successfully ended the auction!", {
+            variant: "success",
+          });
+          handleClose();
+        },
+        () => {
+          setEndLoading(false);
+        }
+      );
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
       setEndLoading(false);
