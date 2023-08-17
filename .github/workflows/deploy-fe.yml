@@ -37,6 +37,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-truffle-
 
+      - name: Install truffle dependencies if cache is missed
+        if: steps.cache-npm-truffle.outputs.cache-hit != 'true'
+        run: |
+          cd truffle
+          npm install --legacy-peer-deps
+
       - name: Create truffle .env file
         run: |
           cd truffle
