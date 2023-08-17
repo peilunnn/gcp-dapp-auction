@@ -5067,12 +5067,12 @@
     "1337": {
       "events": {},
       "links": {},
-      "address": "0x23F1878B64B4AC668f9c8ef2801966936ebAaa48",
-      "transactionHash": "0x6c83b34aeb4078ecd752c0a500f503a1ba46852d3daceb1dcc83b037580c9247"
+      "address": "0x31bA92D48ca4D87ECB666F12C8ED32c56B34c070",
+      "transactionHash": "0x671db2ef866184b0e054ba6953e04020f55dbd2502fab298d0f2c3f231e280b9"
     }
   },
   "schemaVersion": "3.4.14",
-  "updatedAt": "2023-08-16T14:08:44.037Z",
+  "updatedAt": "2023-08-17T18:42:22.888Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

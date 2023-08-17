@@ -182,7 +182,7 @@ export function displayTimestampInHumanReadable(timestamp) {
   return new Date(timestamp * 1000).toLocaleString();
 }
 
-export async function getEthToUSDRate() {
+export async function getEthToUsdRate() {
   const response = await fetch(
     "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
   );
@@ -196,6 +196,6 @@ export async function getEstimatedNetworkFeeInUSD(web3, estimatedGas) {
     .toBN(estimatedGas)
     .mul(web3.utils.toBN(gasPrice));
   const estimatedCostInEther = web3.utils.fromWei(estimatedCostInWei, "ether");
-  const ethToUsdRate = await getEthToUSDRate();
+  const ethToUsdRate = await getEthToUsdRate();
   return parseFloat(estimatedCostInEther) * ethToUsdRate;
 }

@@ -8,7 +8,11 @@ import { useSnackbar } from "notistack";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useEth } from "../contexts/EthContext";
-import { displayInGwei, getEstimatedNetworkFeeInUSD } from "../utils";
+import {
+  displayInGwei,
+  getEthToUsdRate,
+  getEstimatedNetworkFeeInUSD,
+} from "../utils";
 import CountdownTimer from "./CountdownTimer";
 import { styled } from "@mui/system";
 import {
@@ -112,39 +116,6 @@ function NFTListingBidModal({
     open,
   ]);
 
-  // As soon as auctionContract is ready, we'll register our Solidity event listener on Auction.bid()
-  useEffect(() => {
-    let subscription;
-
-    if (auctionData.auctionContract) {
-      subscription = auctionData.auctionContract.events.Bid({}, (err, res) => {
-        if (err) {
-          console.log(
-            `auction contract address is ${auctionData.auctionContract._address}`
-          );
-          console.error("Error listening to Bid event:", err);
-          console.log(err.data);
-          return;
-        }
-
-        if (res && res.returnValues) {
-          try {
-            setHighestBid(parseInt(res.returnValues.amount));
-            setHighestBidder(res.returnValues.sender);
-          } catch (err) {
-            console.error("Error setting highest bid or bidder:", err);
-          }
-        }
-      });
-    }
-
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
-    };
-  }, [auctionData.auctionContract]);
-
   const handleBidAmountChange = (event) => {
     setCurrBidAmount(event.target.value * Math.pow(10, 9));
   };
@@ -156,7 +127,6 @@ function NFTListingBidModal({
       setSubmitBidLoading(false);
       return;
     }
-
     if (currBidAmount < highestBid) {
       enqueueSnackbar("Bid amount is lower than highest bid", {
         variant: "error",
@@ -175,21 +145,57 @@ function NFTListingBidModal({
       return;
     } else {
       let sendAmount = currBidAmount - auctionData.userBidAmount;
-      console.log(currBidAmount, auctionData.userBidAmount, sendAmount);
       const auctionContract = auctionData.auctionContract;
 
       try {
-        console.log(`sending amount = ${sendAmount}`);
-        await auctionContract.methods
+        const estimatedGas = await auctionContract.methods
           .bid()
-          .send({ from: accounts[0], value: sendAmount });
-        enqueueSnackbar("Successfully submitted bid!", { variant: "success" });
-        setSubmitBidLoading(false);
-        await insertIntoNftBids(auctionData.nftId, accounts[0], currBidAmount);
+          .estimateGas({ from: accounts[0], value: sendAmount });
 
-        auctionData.userBidAmount = currBidAmount;
-        setRole("highestBidder");
-        console.log(auctionData.userBidAmount);
+        const estimatedNetworkFeeInUSD = await getEstimatedNetworkFeeInUSD(
+          web3,
+          estimatedGas
+        );
+
+        const ethToUsdRate = await getEthToUsdRate();
+        const currBidAmountInWei = web3.utils.toBN(currBidAmount);
+        const currBidAmountInEth = web3.utils.fromWei(
+          currBidAmountInWei,
+          "ether"
+        );
+        const currBidAmountInUSD = currBidAmountInEth * ethToUsdRate;
+        openConfirmationModal(
+          `You're about to submit a bid of ${currBidAmountInUSD.toFixed(
+            2
+          )} USD (${web3.utils.fromWei(
+            currBidAmount.toString(),
+            "ether"
+          )} ETH) for this NFT for an estimated cost of ${estimatedNetworkFeeInUSD.toFixed(
+            2
+          )} USD`,
+          async () => {
+            await auctionContract.methods
+              .bid()
+              .send({ from: accounts[0], value: sendAmount });
+            enqueueSnackbar("Successfully submitted bid!", {
+              variant: "success",
+            });
+            setHighestBid(sendAmount);
+            setHighestBidder(accounts[0]);
+            setSubmitBidLoading(false);
+            await insertIntoNftBids(
+              auctionData.nftId,
+              accounts[0],
+              currBidAmount
+            );
+
+            auctionData.userBidAmount = currBidAmount;
+            setRole("highestBidder");
+          },
+          () => {
+            setSubmitBidLoading(false);
+          }
+        );
       } catch (err) {
         enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
         setSubmitBidLoading(false);
@@ -292,45 +298,19 @@ function NFTListingBidModal({
     }
     const auctionContract = auctionData.auctionContract;
     try {
-      const estimatedGas = await auctionContract.methods
-        .end()
-        .estimateGas({ from: accounts[0] });
-      console.log(estimatedGas);
-
-      const estimatedNetworkFeeInUSD = await getEstimatedNetworkFeeInUSD(
-        web3,
-        estimatedGas
+      await auctionContract.methods.end().send({ from: accounts[0] });
+      setEndLoading(false);
+      await insertIntoNftSales(
+        auctionData.nftId,
+        auctionData.seller,
+        auctionData.highestBidder,
+        currBidAmount
       );
 
-      openConfirmationModal(
-        `You're about to end an auction for this NFT for an estimated cost of ${estimatedNetworkFeeInUSD.toFixed(
-          2
-        )} USD`,
-        async () => {
-          await auctionContract.methods.end().send({ from: accounts[0] });
-          setEndLoading(false);
-          console.log(
-            auctionData.nftId,
-            auctionData.seller,
-            auctionData.highestBidder,
-            currBidAmount
-          );
-          await insertIntoNftSales(
-            auctionData.nftId,
-            auctionData.seller,
-            auctionData.highestBidder,
-            currBidAmount
-          );
-
-          enqueueSnackbar("Successfully ended the auction!", {
-            variant: "success",
-          });
-          handleClose();
-        },
-        () => {
-          setEndLoading(false);
-        }
-      );
+      enqueueSnackbar("Successfully ended the auction!", {
+        variant: "success",
+      });
+      handleClose();
     } catch (err) {
       enqueueSnackbar(getRPCErrorMessage(err), { variant: "error" });
       setEndLoading(false);
@@ -357,7 +337,7 @@ function NFTListingBidModal({
               Title: {pinataMetadata.name}
             </CustomTypography>
             <CustomTypography id="modal-modal-description" sx={{ mt: 2 }}>
-              Highest Bid: {displayInGwei(highestBid)} gwei
+              Highest Bid: {displayInGwei(auctionData.highestBid)} gwei
             </CustomTypography>
             <CustomTypography id="modal-modal-description" sx={{ mt: 2 }}>
               Time Till Expiry:{" "}
