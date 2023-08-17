@@ -5,6 +5,7 @@ import { Box, Card, Typography, styled } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useEth } from "../contexts/EthContext";
 import Modal from "@mui/material/Modal";
+import { getEthToUSDRate } from "../utils";
 
 const Login = ({ web3auth, web3, networkID, accounts }) => {
   const { init, deinitialize, addTargetChain, switchToTargetChain } = useEth();
@@ -21,10 +22,6 @@ const Login = ({ web3auth, web3, networkID, accounts }) => {
   const CustomTypography = styled(Typography)`
     font-family: "Google Sans", sans-serif;
   `;
-
-  useEffect(() => {
-    console.log(`in login: ${web3auth} ${web3}, ${networkID}, ${accounts}`);
-  }, [web3auth, web3, networkID, accounts]);
 
   useEffect(() => {
     if (isInitialized && web3auth) {
@@ -53,11 +50,7 @@ const Login = ({ web3auth, web3, networkID, accounts }) => {
       web3.utils.fromWei(ethBalanceInWei, "ether")
     );
     setEthBalance(ethBalanceInEther);
-    const response = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-    );
-    const data = await response.json();
-    const ethToUsdRate = data.ethereum.usd;
+    const ethToUsdRate = await getEthToUSDRate();
     const usdBalance = ethBalanceInEther * ethToUsdRate;
     setUsdBalance(usdBalance);
   };

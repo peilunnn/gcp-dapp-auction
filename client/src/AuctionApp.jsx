@@ -4,6 +4,7 @@ import { getAuctionFactoryContract, getAuctions } from "./utils";
 import Account from "./components/Account";
 import NFTUpload from "./components/NFTUpload";
 import NFTAIGenerated from "./components/NFTAIGenerated";
+import ConfirmationModal from "./components/ConfirmationModal";
 
 import PageHeader from "./components/PageHeader";
 import PageTitleWrapper from "./components/PageTitleWrapper";
@@ -32,10 +33,47 @@ function AuctionApp() {
   const {
     state: { auctionFactoryJson, web3auth, web3, networkID, accounts },
   } = useEth();
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [confirmationCallback, setConfirmationCallback] = useState(null);
+  const [cancelCallback, setCancelCallback] = useState(null);
 
   useEffect(() => {
-    console.log(`in auctionapp: ${web3auth} ${web3}, ${networkID}, ${accounts}`);
-  }, [web3auth, web3, networkID, accounts]);
+    console.log(
+      `auctionFactoryJson: ${auctionFactoryJson}, web3auth: ${web3auth}, web3: ${web3}, networkID: ${networkID}, accounts: ${accounts}`
+    );
+  }, [auctionFactoryJson, web3auth, web3, networkID, accounts]);
+
+  const openConfirmationModal = (message, confirmCallback, cancelCallback) => {
+    setConfirmationMessage(message);
+    setIsConfirmationModalOpen(true);
+    if (confirmCallback) {
+      setConfirmationCallback(() => confirmCallback);
+    }
+    if (cancelCallback) {
+      setCancelCallback(() => cancelCallback);
+    }
+  };
+
+  const handleConfirm = () => {
+    if (confirmationCallback) {
+      confirmationCallback();
+      setConfirmationCallback(null);
+    }
+    closeConfirmationModal();
+  };
+
+    const handleCancel = () => {
+      if (cancelCallback) {
+        cancelCallback();
+        setCancelCallback(null);
+      }
+      closeConfirmationModal();
+    };
+
+  const closeConfirmationModal = () => {
+    setIsConfirmationModalOpen(false);
+  };
 
   const handleFlip = () => {
     setShowNFTUpload(!showNFTUpload);
@@ -147,6 +185,7 @@ function AuctionApp() {
                       networkID={networkID}
                       accounts={accounts}
                       refetchData={refetchData}
+                      openConfirmationModal={openConfirmationModal}
                     />
                   </div>
                   <div style={{ width: "100%", height: "100%" }}>
@@ -156,6 +195,7 @@ function AuctionApp() {
                       networkID={networkID}
                       accounts={accounts}
                       refetchData={refetchData}
+                      openConfirmationModal={openConfirmationModal}
                     />
                   </div>
                 </ReactCardFlip>
@@ -166,11 +206,22 @@ function AuctionApp() {
             <Account auctions={auctions} />
           </Grid>
           <Grid item xs={12}>
-            <Listing auctions={auctions} refetchData={refetchData} />
+            <Listing
+              auctions={auctions}
+              refetchData={refetchData}
+              openConfirmationModal={openConfirmationModal}
+            />
           </Grid>
         </Grid>
       </Container>
       <button className="scrollToTopBtn cursor-pointer">☝️</button>
+      <ConfirmationModal
+        isConfirmationModalOpen={isConfirmationModalOpen}
+        handleConfirm={handleConfirm}
+        handleCancel={handleCancel}
+        closeConfirmationModal={closeConfirmationModal}
+        confirmationMessage={confirmationMessage}
+      />
     </Box>
   );
 }
