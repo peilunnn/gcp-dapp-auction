@@ -204,7 +204,7 @@ const Login = ({ web3auth, web3, networkID, accounts }) => {
             }}
           ></Box>
           <CustomTypography variant="h3" textAlign="center">
-            {ethBalance.toFixed(4)} ETH
+            {ethBalance.toFixed(4)} SepoliaETH
           </CustomTypography>
           <CustomTypography
             variant="h4 "
