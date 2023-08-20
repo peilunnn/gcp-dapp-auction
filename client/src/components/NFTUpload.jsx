@@ -188,7 +188,7 @@ function NFTUpload({
                     marginTop: "10px",
                   }}
                 >
-                  Waiting for wallet confirmation...
+                  Waiting for transaction to execute...
                 </Typography>
               </Box>
             )}

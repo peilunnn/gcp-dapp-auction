@@ -147,7 +147,6 @@ export default function Creation({
               vars.duration * 60 * 60 // convert from hours in form input to seconds in Auction constructor
             )
             .send({ from: accounts[0] });
-          setCreateLoading(false);
 
           let auctionDeployedAddress =
             val.events.ContractCreated.returnValues.newContractAddress;
@@ -164,6 +163,7 @@ export default function Creation({
             enqueueSnackbar("Approval successful", {
               variant: "success",
             });
+            setCreateLoading(false);
           } catch (err) {
             console.log(err);
             enqueueSnackbar("Approval failed", {
@@ -329,7 +329,7 @@ export default function Creation({
                     marginTop: "10px",
                   }}
                 >
-                  Waiting for wallet confirmation...
+                  Waiting for transaction to execute...
                 </Typography>
               </Box>
             )}

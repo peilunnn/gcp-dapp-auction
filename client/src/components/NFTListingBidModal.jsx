@@ -170,7 +170,7 @@ function NFTListingBidModal({
           )} USD (${web3.utils.fromWei(
             currBidAmount.toString(),
             "ether"
-          )} ETH) for this NFT for an estimated cost of ${estimatedNetworkFeeInUSD.toFixed(
+          )} SepoliaETH) for this NFT for an estimated cost of ${estimatedNetworkFeeInUSD.toFixed(
             2
           )} USD`,
           async () => {
@@ -423,7 +423,7 @@ function NFTListingBidModal({
                         marginTop: "10px",
                       }}
                     >
-                      Waiting for wallet confirmation...
+                      Waiting for transaction to execute...
                     </Typography>
                   </Box>
                 )}
